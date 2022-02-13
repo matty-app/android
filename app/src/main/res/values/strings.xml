@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">projectx</string>
+    <string name="app_name">ProjectX</string>
+    <string name="outdoor_adventure">Outdoor adventure</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="register">Register</string>
+    <string name="already_member">I’m already a member.&#160;</string>
+    <string name="sign_in">Sign in</string>
 </resources>
