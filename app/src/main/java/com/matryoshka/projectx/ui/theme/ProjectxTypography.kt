@@ -15,6 +15,6 @@ val ProjectxTypography = Typography(
         color = Gray
     ),
     subtitle1 = TextStyle(
-        color = Gray
+        color = Gray,
     )
 )

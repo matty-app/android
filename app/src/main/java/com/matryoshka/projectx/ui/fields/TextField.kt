@@ -1,9 +1,9 @@
 package com.matryoshka.projectx.ui.fields
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -22,10 +22,11 @@ fun TextField(
         shape = RoundedCornerShape(10.dp)
     ) {
         TextField(
-            value = placeholder,
+            value = "",
+            placeholder = { Text(text = placeholder) },
+            singleLine = true,
             modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp),
+                .fillMaxWidth(),
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = LightGray,
                 focusedIndicatorColor = Color.Transparent,

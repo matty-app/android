@@ -1,4 +1,4 @@
-package com.matryoshka.projectx.ui.signup
+package com.matryoshka.projectx.ui.signin
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -34,8 +34,8 @@ import com.matryoshka.projectx.ui.theme.Gray
 import com.matryoshka.projectx.ui.theme.ProjectxTheme
 
 @Composable
-fun SignUpScreen(
-    onSignInClicked: () -> Unit
+fun SignInScreen(
+    onSignUpClicked: () -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -44,11 +44,12 @@ fun SignUpScreen(
             .padding(horizontal = 12.dp, vertical = 28.dp)
     ) {
         Image(
-            painter = painterResource(id = R.drawable.ic_outdoor_adventure),
+            painter = painterResource(id = R.drawable.ic_login),
             contentDescription = stringResource(id = R.string.outdoor_adventure),
             modifier = Modifier
                 .width(330.dp)
                 .height(230.dp)
+                .padding(top = 40.dp)
         )
 
         Column(
@@ -63,21 +64,11 @@ fun SignUpScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = stringResource(id = R.string.sign_up),
+                    text = stringResource(id = R.string.sign_in),
                     style = MaterialTheme.typography.h4
                 )
             }
             Spacer(modifier = Modifier.height(24.dp))
-            TextField(
-                placeholder = stringResource(id = R.string.name),
-                trailingIcon = {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_account_circle),
-                        contentDescription = ""
-                    )
-                }
-            )
-            Spacer(modifier = Modifier.height(20.dp))
             TextField(
                 placeholder = stringResource(id = R.string.email),
                 trailingIcon = {
@@ -97,7 +88,7 @@ fun SignUpScreen(
                 onClick = { /*TODO*/ }
             ) {
                 Text(
-                    text = stringResource(id = R.string.register),
+                    text = stringResource(id = R.string.log_in),
                     style = MaterialTheme.typography.h6,
                     color = Color.White
                 )
@@ -109,17 +100,17 @@ fun SignUpScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = stringResource(id = R.string.already_member),
+                    text = stringResource(id = R.string.dont_have_account),
                     style = MaterialTheme.typography.subtitle1,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = stringResource(id = R.string.sign_in),
+                    text = stringResource(id = R.string.sign_up),
                     style = MaterialTheme.typography.subtitle1,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colors.primaryVariant,
                     modifier = Modifier
-                        .clickable { onSignInClicked() }
+                        .clickable { onSignUpClicked() }
                 )
             }
         }
@@ -128,10 +119,10 @@ fun SignUpScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun SignUpScreenPreview() {
+fun SignInScreenPreview() {
     ProjectxTheme {
-        SignUpScreen(
-            onSignInClicked = {}
+        SignInScreen(
+            onSignUpClicked = {}
         )
     }
 }

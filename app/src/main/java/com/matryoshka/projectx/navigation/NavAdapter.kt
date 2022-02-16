@@ -21,7 +21,7 @@ class NavAdapter @Inject constructor() {
         _navigationFlow.tryEmit(GoBack)
     }
 
-    private fun navigateTo(route: String, builder: NavOptionsBuilder.() -> Unit = {}) {
+    fun navigateTo(route: String, builder: NavOptionsBuilder.() -> Unit = {}) {
         _navigationFlow.tryEmit(
             NavigateToRoute(route, builder)
         )
