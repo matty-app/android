@@ -17,6 +17,7 @@ class SignInScreenTest {
     fun setContent() {
         composeRule.setContent {
             SignInScreen(
+                onLogInClicked = {},
                 onSignUpClicked = {}
             )
         }

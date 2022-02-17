@@ -10,10 +10,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -22,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -30,11 +28,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.matryoshka.projectx.R
 import com.matryoshka.projectx.ui.fields.TextField
-import com.matryoshka.projectx.ui.theme.Gray
 import com.matryoshka.projectx.ui.theme.ProjectxTheme
 
 @Composable
 fun SignUpScreen(
+    onRegisterClicked: () -> Unit,
     onSignInClicked: () -> Unit
 ) {
     Column(
@@ -47,16 +45,13 @@ fun SignUpScreen(
             painter = painterResource(id = R.drawable.ic_outdoor_adventure),
             contentDescription = stringResource(id = R.string.outdoor_adventure),
             modifier = Modifier
-                .width(330.dp)
-                .height(230.dp)
+                .height(200.dp)
         )
-
+        Spacer(modifier = Modifier.height(24.dp))
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .wrapContentSize(
-                    align = Alignment.BottomCenter
-                )
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Bottom,
+            modifier = Modifier.fillMaxSize()
         ) {
             Row(
                 horizontalArrangement = Arrangement.Start,
@@ -71,7 +66,7 @@ fun SignUpScreen(
             TextField(
                 placeholder = stringResource(id = R.string.name),
                 trailingIcon = {
-                    Image(
+                    Icon(
                         painter = painterResource(id = R.drawable.ic_account_circle),
                         contentDescription = ""
                     )
@@ -81,10 +76,9 @@ fun SignUpScreen(
             TextField(
                 placeholder = stringResource(id = R.string.email),
                 trailingIcon = {
-                    Image(
+                    Icon(
                         imageVector = Icons.Default.Email,
-                        contentDescription = "",
-                        colorFilter = ColorFilter.tint(color = Gray)
+                        contentDescription = ""
                     )
                 }
             )
@@ -94,7 +88,7 @@ fun SignUpScreen(
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
                     .fillMaxWidth(),
-                onClick = { /*TODO*/ }
+                onClick = { onRegisterClicked() }
             ) {
                 Text(
                     text = stringResource(id = R.string.register),
@@ -131,6 +125,7 @@ fun SignUpScreen(
 fun SignUpScreenPreview() {
     ProjectxTheme {
         SignUpScreen(
+            onRegisterClicked = {},
             onSignInClicked = {}
         )
     }

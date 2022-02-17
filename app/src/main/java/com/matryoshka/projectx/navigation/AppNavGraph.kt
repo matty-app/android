@@ -2,19 +2,21 @@ package com.matryoshka.projectx.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.matryoshka.projectx.navigation.Screen.SIGN_IN
-import com.matryoshka.projectx.navigation.Screen.SIGN_UP
+import com.matryoshka.projectx.ui.email.EmailConfirmationRouter
 import com.matryoshka.projectx.ui.signin.SignInRouter
 import com.matryoshka.projectx.ui.signup.SignUpRouter
 
 fun NavGraphBuilder.appNavGraph(
     navAdapter: NavAdapter
 ) {
-    composable(SIGN_UP) {
+    composable(Screen.SIGN_UP) {
         SignUpRouter(navAdapter = navAdapter)
     }
-    composable(SIGN_IN) {
+    composable(Screen.SIGN_IN) {
         SignInRouter(navAdapter = navAdapter)
+    }
+    composable(Screen.EMAIL_CONFIRM) {
+        EmailConfirmationRouter(navAdapter = navAdapter)
     }
 }
 
