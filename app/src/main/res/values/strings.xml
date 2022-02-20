@@ -13,4 +13,7 @@
     <string name="tap_email_link">Tap the link in the email we sent to</string>
     <string name="didnt_get_email">Didn’t get the email?&#160;</string>
     <string name="send_again">Send again</string>
+    <string name="what_interests">What are your interests?</string>
+    <string name="choose_interests">Choose one or more</string>
+    <string name="next">Next</string>
 </resources>

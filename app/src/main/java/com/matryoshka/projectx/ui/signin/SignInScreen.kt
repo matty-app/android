@@ -10,8 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -25,10 +25,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.matryoshka.projectx.R
-import com.matryoshka.projectx.ui.fields.TextField
+import com.matryoshka.projectx.ui.common.TextField
 import com.matryoshka.projectx.ui.theme.ProjectxTheme
 
 @Composable
@@ -42,13 +43,11 @@ fun SignInScreen(
             .fillMaxSize()
             .padding(horizontal = 12.dp, vertical = 28.dp)
     ) {
+        Spacer(modifier = Modifier.height(40.dp))
         Image(
             painter = painterResource(id = R.drawable.ic_login),
             contentDescription = stringResource(id = R.string.outdoor_adventure),
-            modifier = Modifier
-                .width(330.dp)
-                .height(230.dp)
-                .padding(top = 40.dp)
+            modifier = Modifier.height(200.dp)
         )
         Spacer(modifier = Modifier.height(24.dp))
         Column(
@@ -56,18 +55,15 @@ fun SignInScreen(
             verticalArrangement = Arrangement.Bottom,
             modifier = Modifier.fillMaxSize()
         ) {
-            Row(
-                horizontalArrangement = Arrangement.Start,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = stringResource(id = R.string.sign_in),
-                    style = MaterialTheme.typography.h4
-                )
-            }
+            Text(
+                text = stringResource(id = R.string.sign_in),
+                style = MaterialTheme.typography.h4,
+                modifier = Modifier.align(Alignment.Start)
+            )
             Spacer(modifier = Modifier.height(24.dp))
             TextField(
                 placeholder = stringResource(id = R.string.email),
+                keyBoardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 trailingIcon = {
                     Icon(
                         imageVector = Icons.Default.Email,
@@ -95,12 +91,12 @@ fun SignInScreen(
             ) {
                 Text(
                     text = stringResource(id = R.string.dont_have_account),
-                    style = MaterialTheme.typography.subtitle1,
+                    style = MaterialTheme.typography.subtitle2,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = stringResource(id = R.string.sign_up),
-                    style = MaterialTheme.typography.subtitle1,
+                    style = MaterialTheme.typography.subtitle2,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colors.primaryVariant,
                     modifier = Modifier

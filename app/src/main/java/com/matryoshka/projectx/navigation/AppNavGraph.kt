@@ -3,6 +3,7 @@ package com.matryoshka.projectx.navigation
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.matryoshka.projectx.ui.email.EmailConfirmationRouter
+import com.matryoshka.projectx.ui.interests.InterestsRouter
 import com.matryoshka.projectx.ui.signin.SignInRouter
 import com.matryoshka.projectx.ui.signup.SignUpRouter
 
@@ -17,6 +18,9 @@ fun NavGraphBuilder.appNavGraph(
     }
     composable(Screen.EMAIL_CONFIRM) {
         EmailConfirmationRouter(navAdapter = navAdapter)
+    }
+    composable(Screen.INTERESTS) {
+        InterestsRouter()
     }
 }
 

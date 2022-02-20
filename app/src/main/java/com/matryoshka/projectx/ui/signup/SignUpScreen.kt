@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -24,10 +25,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.matryoshka.projectx.R
-import com.matryoshka.projectx.ui.fields.TextField
+import com.matryoshka.projectx.ui.common.TextField
 import com.matryoshka.projectx.ui.theme.ProjectxTheme
 
 @Composable
@@ -44,8 +46,7 @@ fun SignUpScreen(
         Image(
             painter = painterResource(id = R.drawable.ic_outdoor_adventure),
             contentDescription = stringResource(id = R.string.outdoor_adventure),
-            modifier = Modifier
-                .height(200.dp)
+            modifier = Modifier.height(200.dp)
         )
         Spacer(modifier = Modifier.height(24.dp))
         Column(
@@ -53,15 +54,11 @@ fun SignUpScreen(
             verticalArrangement = Arrangement.Bottom,
             modifier = Modifier.fillMaxSize()
         ) {
-            Row(
-                horizontalArrangement = Arrangement.Start,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = stringResource(id = R.string.sign_up),
-                    style = MaterialTheme.typography.h4
-                )
-            }
+            Text(
+                text = stringResource(id = R.string.sign_up),
+                style = MaterialTheme.typography.h4,
+                modifier = Modifier.align(Alignment.Start)
+            )
             Spacer(modifier = Modifier.height(24.dp))
             TextField(
                 placeholder = stringResource(id = R.string.name),
@@ -75,6 +72,7 @@ fun SignUpScreen(
             Spacer(modifier = Modifier.height(20.dp))
             TextField(
                 placeholder = stringResource(id = R.string.email),
+                keyBoardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 trailingIcon = {
                     Icon(
                         imageVector = Icons.Default.Email,
@@ -83,7 +81,6 @@ fun SignUpScreen(
                 }
             )
             Spacer(modifier = Modifier.height(64.dp))
-
             Button(
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
@@ -96,7 +93,6 @@ fun SignUpScreen(
                     color = Color.White
                 )
             }
-
             Spacer(modifier = Modifier.height(30.dp))
             Row(
                 horizontalArrangement = Arrangement.Center,
@@ -104,12 +100,12 @@ fun SignUpScreen(
             ) {
                 Text(
                     text = stringResource(id = R.string.already_member),
-                    style = MaterialTheme.typography.subtitle1,
+                    style = MaterialTheme.typography.subtitle2,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = stringResource(id = R.string.sign_in),
-                    style = MaterialTheme.typography.subtitle1,
+                    style = MaterialTheme.typography.subtitle2,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colors.primaryVariant,
                     modifier = Modifier

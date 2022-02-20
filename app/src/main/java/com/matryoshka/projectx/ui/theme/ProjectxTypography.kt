@@ -1,20 +1,13 @@
 package com.matryoshka.projectx.ui.theme
 
 import androidx.compose.material.Typography
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
+
+private val default = Typography()
 
 val ProjectxTypography = Typography(
-    h4 = TextStyle(
-        color = DarkGray,
-        fontSize = 36.sp,
-        fontWeight = FontWeight.W400,
-    ),
-    body1 = TextStyle(
-        color = Gray
-    ),
-    subtitle1 = TextStyle(
-        color = Gray,
-    )
+    h4 = default.h4.copy(color = DarkGray),
+    h5 = default.h5.copy(color = DarkGray),
+    body1 = default.body1.copy(color = Gray),
+    subtitle1 = default.subtitle1.copy(color = Gray),
+    subtitle2 = default.subtitle2.copy(color = Gray)
 )

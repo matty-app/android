@@ -34,7 +34,8 @@ import com.matryoshka.projectx.ui.theme.ProjectxTheme
 
 @Composable
 fun EmailConfirmationScreen(
-    onBackClicked: () -> Unit
+    onBackClicked: () -> Unit,
+    onSendAgainClicked: () -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -81,40 +82,34 @@ fun EmailConfirmationScreen(
             verticalArrangement = Arrangement.Bottom,
             modifier = Modifier.fillMaxSize()
         ) {
-            Spacer(
-                modifier = Modifier
-                    .height(24.dp)
-                    .weight(weight = 1f, fill = true)
-            )
+            Spacer(modifier = Modifier.height(24.dp))
             Box(
                 contentAlignment = Alignment.Center,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(weight = 1f, fill = true)
             ) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(80.dp)
                 )
             }
-            Spacer(
-                modifier = Modifier
-                    .height(24.dp)
-                    .weight(weight = 1f, fill = true)
-            )
+            Spacer(modifier = Modifier.height(24.dp))
             Row(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
                     text = stringResource(id = R.string.didnt_get_email),
-                    style = MaterialTheme.typography.subtitle1,
+                    style = MaterialTheme.typography.subtitle2,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = stringResource(id = R.string.send_again),
-                    style = MaterialTheme.typography.subtitle1,
+                    style = MaterialTheme.typography.subtitle2,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colors.primaryVariant,
                     modifier = Modifier
-                        .clickable { /*TODO*/ }
+                        .clickable { onSendAgainClicked() }
                 )
             }
         }
@@ -126,7 +121,8 @@ fun EmailConfirmationScreen(
 fun EmailConfirmationScreenPreview() {
     ProjectxTheme {
         EmailConfirmationScreen(
-            onBackClicked = {}
+            onBackClicked = {},
+            onSendAgainClicked = {}
         )
     }
 }
