@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">ProjectX</string>
+    <string name="outdoor_adventure">Outdoor adventure</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="register">Register</string>
+    <string name="already_member">I’m already a member.&#160;</string>
+    <string name="dont_have_account">Don’t have an account?&#160;</string>
+    <string name="sign_in">Sign in</string>
+    <string name="sign_up">Sign up</string>
+    <string name="log_in">Log in</string>
+    <string name="check_email">Check your email</string>
+    <string name="tap_email_link">Tap the link in the email we sent to</string>
+    <string name="didnt_get_email">Didn’t get the email?&#160;</string>
+    <string name="send_again">Send again</string>
+    <string name="what_interests">What are your interests?</string>
+    <string name="choose_interests">Choose one or more</string>
+    <string name="next">Next</string>
+</resources>
