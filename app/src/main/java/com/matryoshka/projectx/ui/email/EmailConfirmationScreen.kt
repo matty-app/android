@@ -34,6 +34,7 @@ import com.matryoshka.projectx.ui.theme.ProjectxTheme
 
 @Composable
 fun EmailConfirmationScreen(
+    email: String,
     onBackClicked: () -> Unit,
     onSendAgainClicked: () -> Unit
 ) {
@@ -73,7 +74,7 @@ fun EmailConfirmationScreen(
             modifier = Modifier.fillMaxWidth()
         )
         Text(
-            text = "azazaza@gmail.com",
+            text = email,
             color = DarkGray,
             modifier = Modifier.fillMaxWidth()
         )
@@ -121,6 +122,7 @@ fun EmailConfirmationScreen(
 fun EmailConfirmationScreenPreview() {
     ProjectxTheme {
         EmailConfirmationScreen(
+            email = "azaza@email.ru",
             onBackClicked = {},
             onSendAgainClicked = {}
         )

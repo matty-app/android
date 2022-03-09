@@ -8,9 +8,11 @@ import com.matryoshka.projectx.navigation.Screen
 @Composable
 fun EmailConfirmationRouter(
     viewModel: EmailConfirmationViewModel = hiltViewModel(),
+    email: String,
     navAdapter: NavAdapter
 ) {
     EmailConfirmationScreen(
+        email = email,
         onBackClicked = navAdapter::goBack,
         onSendAgainClicked = { navAdapter.navigateTo(Screen.INTERESTS) }
     )

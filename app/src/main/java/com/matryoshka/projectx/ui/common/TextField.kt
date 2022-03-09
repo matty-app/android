@@ -15,12 +15,13 @@ import com.matryoshka.projectx.ui.theme.LightGray
 
 @Composable
 fun TextField(
+    inputField: InputField<String>,
     placeholder: String,
     keyBoardOptions: KeyboardOptions = KeyboardOptions.Default,
     trailingIcon: @Composable (() -> Unit)? = null,
 ) {
     TextField(
-        value = "",
+        value = inputField.value ?: "",
         placeholder = { Text(text = placeholder) },
         singleLine = true,
         keyboardOptions = keyBoardOptions,
@@ -36,6 +37,7 @@ fun TextField(
             unfocusedIndicatorColor = Color.Transparent
         ),
         trailingIcon = trailingIcon,
-        onValueChange = {}
+        onValueChange = inputField::onChange
     )
+    FieldError(inputField = inputField)
 }

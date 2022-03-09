@@ -29,11 +29,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.matryoshka.projectx.R
+import com.matryoshka.projectx.ui.common.InputField
 import com.matryoshka.projectx.ui.common.TextField
 import com.matryoshka.projectx.ui.theme.ProjectxTheme
 
 @Composable
 fun SignUpScreen(
+    nameField: InputField<String>,
+    emailField: InputField<String>,
     onRegisterClicked: () -> Unit,
     onSignInClicked: () -> Unit
 ) {
@@ -61,6 +64,7 @@ fun SignUpScreen(
             )
             Spacer(modifier = Modifier.height(24.dp))
             TextField(
+                inputField = nameField,
                 placeholder = stringResource(id = R.string.name),
                 trailingIcon = {
                     Icon(
@@ -69,8 +73,9 @@ fun SignUpScreen(
                     )
                 }
             )
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             TextField(
+                inputField = emailField,
                 placeholder = stringResource(id = R.string.email),
                 keyBoardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 trailingIcon = {
@@ -80,7 +85,7 @@ fun SignUpScreen(
                     )
                 }
             )
-            Spacer(modifier = Modifier.height(64.dp))
+            Spacer(modifier = Modifier.height(48.dp))
             Button(
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
@@ -121,6 +126,8 @@ fun SignUpScreen(
 fun SignUpScreenPreview() {
     ProjectxTheme {
         SignUpScreen(
+            nameField = InputField("Vasya"),
+            emailField = InputField("vasya@gmail.com"),
             onRegisterClicked = {},
             onSignInClicked = {}
         )

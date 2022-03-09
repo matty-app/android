@@ -26,6 +26,12 @@ class NavAdapter @Inject constructor() {
             NavigateToRoute(route, builder)
         )
     }
+
+    fun goToEmailConfirmationScreen(email: String) {
+        navigateTo(
+            route = "${Screen.EMAIL_CONFIRM}?$ARG_EMAIL=$email"
+        )
+    }
 }
 
 sealed class NavigationEvent {

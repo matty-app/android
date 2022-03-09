@@ -7,7 +7,8 @@ import androidx.navigation.compose.NavHost
 @Composable
 fun AppNavHost(
     navController: NavHostController,
-    navAdapter: NavAdapter
+    navAdapter: NavAdapter,
+    startDestination: String = Screen.LAUNCH
 ) {
     NavFlowHandler(
         navController = navController,
@@ -16,7 +17,7 @@ fun AppNavHost(
 
     NavHost(
         navController = navController,
-        startDestination = Screen.SIGN_UP
+        startDestination = startDestination
     ) {
         appNavGraph(navAdapter)
     }

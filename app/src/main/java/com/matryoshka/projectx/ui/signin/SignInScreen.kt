@@ -29,11 +29,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.matryoshka.projectx.R
+import com.matryoshka.projectx.ui.common.InputField
 import com.matryoshka.projectx.ui.common.TextField
 import com.matryoshka.projectx.ui.theme.ProjectxTheme
 
 @Composable
 fun SignInScreen(
+    emailField: InputField<String>,
     onLogInClicked: () -> Unit,
     onSignUpClicked: () -> Unit
 ) {
@@ -62,6 +64,7 @@ fun SignInScreen(
             )
             Spacer(modifier = Modifier.height(24.dp))
             TextField(
+                inputField = emailField,
                 placeholder = stringResource(id = R.string.email),
                 keyBoardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 trailingIcon = {
@@ -112,6 +115,7 @@ fun SignInScreen(
 fun SignInScreenPreview() {
     ProjectxTheme {
         SignInScreen(
+            emailField = InputField("vasya@gmail.com"),
             onLogInClicked = {},
             onSignUpClicked = {}
         )

@@ -16,4 +16,6 @@
     <string name="what_interests">What are your interests?</string>
     <string name="choose_interests">Choose one or more</string>
     <string name="next">Next</string>
+    <string name="name_required">Enter name</string>
+    <string name="valid_email_required">Enter valid email</string>
 </resources>
