@@ -14,7 +14,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun LaunchScreen(
     delayMillis: Long,
-    onDelayFinished: () -> Unit
+    onDelayFinished: suspend () -> Unit
 ) {
     LaunchScreen {
         delay(delayMillis)

@@ -6,7 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.matryoshka.projectx.ui.email.EmailConfirmationRouter
 import com.matryoshka.projectx.ui.interests.InterestsRouter
-import com.matryoshka.projectx.ui.launch.LaunchScreen
+import com.matryoshka.projectx.ui.launch.LaunchScreenRouter
 import com.matryoshka.projectx.ui.launch.SignInLaunchScreenRouter
 import com.matryoshka.projectx.ui.signin.SignInRouter
 import com.matryoshka.projectx.ui.signup.SignUpRouter
@@ -15,10 +15,7 @@ fun NavGraphBuilder.appNavGraph(
     navAdapter: NavAdapter
 ) {
     composable(Screen.LAUNCH) {
-        LaunchScreen(
-            delayMillis = 2500,
-            onDelayFinished = { navAdapter.navigateTo(Screen.SIGN_UP) }
-        )
+        LaunchScreenRouter(delayMillis = 2500)
     }
     composable(Screen.SIGN_IN_LAUNCH) {
         SignInLaunchScreenRouter(navAdapter = navAdapter)

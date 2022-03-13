@@ -1,12 +1,11 @@
 package com.matryoshka.projectx.ui.launch
 
-import android.app.Activity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.matryoshka.projectx.navigation.NavAdapter
 import com.matryoshka.projectx.navigation.Screen
-import com.matryoshka.projectx.ui.common.signInEmail
+import com.matryoshka.projectx.ui.common.ScreenStatus
 
 @Composable
 fun SignInLaunchScreenRouter(
@@ -14,18 +13,15 @@ fun SignInLaunchScreenRouter(
     navAdapter: NavAdapter
 ) {
     val context = LocalContext.current
-    val email = context.signInEmail!!
-    val activity = context as Activity
-    val link = activity.intent.data.toString()
 
     SignInLaunchScreen(
+        status = viewModel.status,
+        error = viewModel.error,
         signIn = {
-            val user = viewModel.signInByEmailLink(email, link)
-
-            if (user == null) {
-                //TODO navigate to error screen
+            viewModel.signInByEmailLink(context)
+            if (viewModel.status != ScreenStatus.ERROR) {
+                navAdapter.navigateTo(Screen.INTERESTS)
             }
-            navAdapter.navigateTo(Screen.INTERESTS)
         }
     )
 }

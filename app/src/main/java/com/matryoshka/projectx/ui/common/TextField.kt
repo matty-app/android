@@ -17,6 +17,7 @@ import com.matryoshka.projectx.ui.theme.LightGray
 fun TextField(
     inputField: InputField<String>,
     placeholder: String,
+    enabled: Boolean = true,
     keyBoardOptions: KeyboardOptions = KeyboardOptions.Default,
     trailingIcon: @Composable (() -> Unit)? = null,
 ) {
@@ -24,6 +25,7 @@ fun TextField(
         value = inputField.value ?: "",
         placeholder = { Text(text = placeholder) },
         singleLine = true,
+        enabled = enabled,
         keyboardOptions = keyBoardOptions,
         modifier = Modifier
             .fillMaxWidth()

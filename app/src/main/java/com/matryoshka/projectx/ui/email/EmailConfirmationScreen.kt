@@ -28,16 +28,25 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.matryoshka.projectx.R
+import com.matryoshka.projectx.ui.common.ErrorToast
+import com.matryoshka.projectx.ui.common.ScreenStatus
 import com.matryoshka.projectx.ui.theme.DarkGray
 import com.matryoshka.projectx.ui.theme.Gray
 import com.matryoshka.projectx.ui.theme.ProjectxTheme
 
 @Composable
 fun EmailConfirmationScreen(
+    state: EmailConfirmationScreenState,
     email: String,
     onBackClicked: () -> Unit,
-    onSendAgainClicked: () -> Unit
+    onSendAgainClicked: (email: String) -> Unit
 ) {
+    val status = state.status
+    val error = state.error
+    if (status == ScreenStatus.ERROR && error != null) {
+        ErrorToast(error = error)
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -110,7 +119,7 @@ fun EmailConfirmationScreen(
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colors.primaryVariant,
                     modifier = Modifier
-                        .clickable { onSendAgainClicked() }
+                        .clickable { onSendAgainClicked(email) }
                 )
             }
         }
@@ -122,6 +131,7 @@ fun EmailConfirmationScreen(
 fun EmailConfirmationScreenPreview() {
     ProjectxTheme {
         EmailConfirmationScreen(
+            state = EmailConfirmationScreenState(),
             email = "azaza@email.ru",
             onBackClicked = {},
             onSendAgainClicked = {}

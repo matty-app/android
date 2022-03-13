@@ -1,5 +1,6 @@
 package com.matryoshka.projectx.ui.signin
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -22,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -29,16 +32,31 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.matryoshka.projectx.R
+import com.matryoshka.projectx.ui.common.ErrorToast
 import com.matryoshka.projectx.ui.common.InputField
+import com.matryoshka.projectx.ui.common.ScreenStatus
 import com.matryoshka.projectx.ui.common.TextField
 import com.matryoshka.projectx.ui.theme.ProjectxTheme
 
 @Composable
 fun SignInScreen(
-    emailField: InputField<String>,
-    onLogInClicked: () -> Unit,
+    state: SignInScreenState,
+    onLogInClicked: (context: Context) -> Unit,
     onSignUpClicked: () -> Unit
 ) {
+    val context = LocalContext.current
+    val status = state.status
+    val error = state.error
+    val enabled = status != ScreenStatus.SUBMITTING
+
+    if (status == ScreenStatus.SUBMITTING) {
+        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+    }
+
+    if (status == ScreenStatus.ERROR && error != null) {
+        ErrorToast(error = error)
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -64,8 +82,9 @@ fun SignInScreen(
             )
             Spacer(modifier = Modifier.height(24.dp))
             TextField(
-                inputField = emailField,
+                inputField = state.emailField,
                 placeholder = stringResource(id = R.string.email),
+                enabled = enabled,
                 keyBoardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 trailingIcon = {
                     Icon(
@@ -77,9 +96,10 @@ fun SignInScreen(
             Spacer(modifier = Modifier.height(64.dp))
             Button(
                 shape = RoundedCornerShape(12.dp),
+                enabled = enabled,
                 modifier = Modifier
                     .fillMaxWidth(),
-                onClick = { onLogInClicked() }
+                onClick = { onLogInClicked(context) }
             ) {
                 Text(
                     text = stringResource(id = R.string.log_in),
@@ -103,7 +123,7 @@ fun SignInScreen(
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colors.primaryVariant,
                     modifier = Modifier
-                        .clickable { onSignUpClicked() }
+                        .clickable { if (enabled) onSignUpClicked() }
                 )
             }
         }
@@ -115,7 +135,7 @@ fun SignInScreen(
 fun SignInScreenPreview() {
     ProjectxTheme {
         SignInScreen(
-            emailField = InputField("vasya@gmail.com"),
+            state = SignInScreenState(emailField = InputField("vasya@gmail.com")),
             onLogInClicked = {},
             onSignUpClicked = {}
         )

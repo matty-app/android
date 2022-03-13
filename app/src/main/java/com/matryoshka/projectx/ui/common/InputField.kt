@@ -3,10 +3,11 @@ package com.matryoshka.projectx.ui.common
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.matryoshka.projectx.ui.validator.Validator
 
 class InputField<T>(
     initialValue: T? = null,
-    private val validator: Validator<T>? = null,
+    private val validators: List<Validator<T>> = listOf(),
 ) {
     var value by mutableStateOf(initialValue)
         private set
@@ -21,16 +22,16 @@ class InputField<T>(
         this.value = value
     }
 
-    fun validate(): Boolean {
-        return validator?.let {
+    suspend fun validate(): Boolean {
+        this.error = null
+        return validators.firstOrNull {
             val error = it.validate(value)
             if (error != null) {
                 this.error = error
-                false
-            } else {
-                this.error = null
                 true
+            } else {
+                false
             }
-        } ?: true
+        } == null
     }
 }
