@@ -6,13 +6,17 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.matryoshka.projectx.support.TestAction
+import com.matryoshka.projectx.ui.common.InputField
 import com.matryoshka.projectx.ui.signup.SignUpScreen
+import com.matryoshka.projectx.ui.signup.SignUpScreenState
 import org.junit.Rule
 import org.junit.Test
 
 class SignUpScreenTest {
     @get:Rule
     val composeRule = createComposeRule()
+    val name = "John"
+    val email = "john@gmail.com"
 
     private fun setContent(
         onRegisterClicked: () -> Unit = {},
@@ -20,6 +24,10 @@ class SignUpScreenTest {
     ) {
         composeRule.setContent {
             SignUpScreen(
+                state = SignUpScreenState(
+                    nameField = InputField(name),
+                    emailField = InputField(email)
+                ),
                 onRegisterClicked = onRegisterClicked,
                 onSignInClicked = onSignInClicked
             )
@@ -30,14 +38,14 @@ class SignUpScreenTest {
     fun shouldShowNameField() {
         setContent()
 
-        composeRule.onNodeWithText("Name").assertIsDisplayed()
+        composeRule.onNodeWithText(name).assertIsDisplayed()
     }
 
     @Test
     fun shouldShowEmailField() {
         setContent()
 
-        composeRule.onNodeWithText("Email").assertIsDisplayed()
+        composeRule.onNodeWithText(email).assertIsDisplayed()
     }
 
     @Test

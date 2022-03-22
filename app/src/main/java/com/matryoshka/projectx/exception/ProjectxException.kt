@@ -13,4 +13,12 @@ open class ProjectxException(
 
     @SuppressLint("StringFormatInvalid")
     fun toLocalString(context: Context) = context.getString(resId, args)
+
+    override fun equals(other: Any?): Boolean {
+        if (other == null || other !is ProjectxException)
+            return false
+        return message == other.message &&
+                resId == other.resId &&
+                args contentDeepEquals other.args
+    }
 }

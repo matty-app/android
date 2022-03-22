@@ -14,7 +14,7 @@ interface AuthService {
 
     suspend fun checkEmailExists(email: String): Boolean
 
-    suspend fun getCurrentUser(): User?
+    fun getCurrentUser(): User?
 
     suspend fun updateUser(user: User)
 }

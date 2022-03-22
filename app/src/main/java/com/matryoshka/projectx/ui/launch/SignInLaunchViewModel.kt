@@ -2,6 +2,8 @@ package com.matryoshka.projectx.ui.launch
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -20,7 +22,8 @@ private const val TAG = "SignInLaunchViewModel"
 
 @HiltViewModel
 class SignInLaunchViewModel @Inject constructor(
-    private val authService: AuthService
+    private val authService: AuthService,
+    private val sharedPrefs: SharedPreferences
 ) : ViewModel() {
 
     var status by mutableStateOf(ScreenStatus.READY)
@@ -28,23 +31,25 @@ class SignInLaunchViewModel @Inject constructor(
 
     var error: ProjectxException? = null
 
-    suspend fun signInByEmailLink(context: Context): User? {
+    suspend fun signInByEmailLink(intent: Intent): User? {
         return try {
-            val email = context.userEmail!!
-            val activity = context as Activity
-            val link = activity.intent.data.toString()
+            val email = sharedPrefs.userEmail!!
+            val link = intent.data.toString()
 
-            if (context.isNewUser) {
-                authService.signUpByEmailLink(email, context.userName!!, link)
+            if (sharedPrefs.isNewUser) {
+                authService.signUpByEmailLink(email, sharedPrefs.userName!!, link)
             } else return authService.signInByEmailLink(email, link)
         } catch (ex: ProjectxException) {
-            error = ex
-            status = ScreenStatus.ERROR
+            setErrorState(ex)
             null
         } catch (ex: Exception) {
-            error = ProjectxException()
-            status = ScreenStatus.ERROR
+            setErrorState(ProjectxException())
             null
         }
+    }
+
+    private fun setErrorState(error: ProjectxException) {
+        this.status = ScreenStatus.ERROR
+        this.error = error
     }
 }
