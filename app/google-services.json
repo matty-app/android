@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "181231519685",
+    "project_id": "projectx-ab579",
+    "storage_bucket": "projectx-ab579.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:181231519685:android:d4323b196853d7ae7e2dac",
+        "android_client_info": {
+          "package_name": "com.matryoshka.projectx"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "181231519685-egoqjs2cse6p1q5576jlpe1527hnjde4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABAl8kYdrL9S-EG4znnT_-2yNB7CiwM24"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "181231519685-egoqjs2cse6p1q5576jlpe1527hnjde4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "181231519685-1rca1fe79nmrsdr7qq29641k114i5861.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.matryoshka.projectx"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

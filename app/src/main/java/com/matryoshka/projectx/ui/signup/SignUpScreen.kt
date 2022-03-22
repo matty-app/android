@@ -1,5 +1,6 @@
 package com.matryoshka.projectx.ui.signup
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -22,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -29,14 +32,31 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.matryoshka.projectx.R
+import com.matryoshka.projectx.ui.common.ErrorToast
+import com.matryoshka.projectx.ui.common.InputField
+import com.matryoshka.projectx.ui.common.ScreenStatus
 import com.matryoshka.projectx.ui.common.TextField
 import com.matryoshka.projectx.ui.theme.ProjectxTheme
 
 @Composable
 fun SignUpScreen(
-    onRegisterClicked: () -> Unit,
+    state: SignUpScreenState,
+    onRegisterClicked: (context: Context) -> Unit,
     onSignInClicked: () -> Unit
 ) {
+    val context = LocalContext.current
+    val status = state.status
+    val error = state.error
+    val enabled = status != ScreenStatus.SUBMITTING
+
+    if (status == ScreenStatus.SUBMITTING) {
+        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+    }
+
+    if (status == ScreenStatus.ERROR && error != null) {
+        ErrorToast(error = error)
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -61,7 +81,9 @@ fun SignUpScreen(
             )
             Spacer(modifier = Modifier.height(24.dp))
             TextField(
+                inputField = state.nameField,
                 placeholder = stringResource(id = R.string.name),
+                enabled = enabled,
                 trailingIcon = {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_account_circle),
@@ -69,9 +91,11 @@ fun SignUpScreen(
                     )
                 }
             )
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             TextField(
+                inputField = state.emailField,
                 placeholder = stringResource(id = R.string.email),
+                enabled = enabled,
                 keyBoardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 trailingIcon = {
                     Icon(
@@ -80,12 +104,13 @@ fun SignUpScreen(
                     )
                 }
             )
-            Spacer(modifier = Modifier.height(64.dp))
+            Spacer(modifier = Modifier.height(48.dp))
             Button(
                 shape = RoundedCornerShape(12.dp),
+                enabled = enabled,
                 modifier = Modifier
                     .fillMaxWidth(),
-                onClick = { onRegisterClicked() }
+                onClick = { onRegisterClicked(context) }
             ) {
                 Text(
                     text = stringResource(id = R.string.register),
@@ -109,7 +134,7 @@ fun SignUpScreen(
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colors.primaryVariant,
                     modifier = Modifier
-                        .clickable { onSignInClicked() }
+                        .clickable { if (enabled) onSignInClicked() }
                 )
             }
         }
@@ -121,6 +146,10 @@ fun SignUpScreen(
 fun SignUpScreenPreview() {
     ProjectxTheme {
         SignUpScreen(
+            state = SignUpScreenState(
+                nameField = InputField("Vasya"),
+                emailField = InputField("vasya@gmail.com")
+            ),
             onRegisterClicked = {},
             onSignInClicked = {}
         )

@@ -11,7 +11,8 @@ fun SignInRouter(
     navAdapter: NavAdapter
 ) {
     SignInScreen(
-        onLogInClicked = { navAdapter.navigateTo(Screen.EMAIL_CONFIRM) },
+        state = viewModel.state,
+        onLogInClicked = viewModel::onLogInClicked,
         onSignUpClicked = { navAdapter.navigateTo(Screen.SIGN_UP) }
     )
 }
