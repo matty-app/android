@@ -8,7 +8,7 @@ import androidx.navigation.compose.NavHost
 fun AppNavHost(
     navController: NavHostController,
     navAdapter: NavAdapter,
-    startDestination: String = Screen.LAUNCH
+    startDestination: String
 ) {
     NavFlowHandler(
         navController = navController,

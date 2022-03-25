@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             ProjectxTheme {
                 AppNavHost(
-                    startDestination = startDestination,
+                    startDestination = Screen.NEW_EVENT_SCREEN,
                     navController = navController,
                     navAdapter = navAdapter
                 )

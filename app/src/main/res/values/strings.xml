@@ -29,4 +29,22 @@
         connection and try again.</string>
     <string name="email_exists">Email already exists</string>
     <string name="email_not_exists">Email doesn\'t exist</string>
+    <string name="location">location</string>
+    <string name="privacy">privacy</string>
+    <string name="arrow_forward">arrow forward</string>
+    <string name="date_time"><![CDATA[Date & time]]></string>
+    <string name="event_public">Public</string>
+    <string name="location_icon">Location icon</string>
+    <string name="select_interest">Select interest</string>
+    <string name="interest_icon">Interest icon</string>
+    <string name="private_details">Private details</string>
+    <string name="summary">Summary</string>
+    <string name="info">Info</string>
+    <string name="title_icon">Title icon</string>
+    <string name="summary_icon">Summary icon</string>
+    <string name="private_details_icon">Private details icon</string>
+    <string name="people_icon">People icon</string>
+    <string name="limit_max_participants">Limit max participants</string>
+    <string name="max_participants">Max participants</string>
+    <string name="event_submit">Submit</string>
 </resources>

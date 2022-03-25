@@ -18,12 +18,12 @@ class SignUpScreenTest {
         onRegisterClicked: () -> Unit = {},
         onSignInClicked: () -> Unit = {},
     ) {
-        composeRule.setContent {
-            SignUpScreen(
-                onRegisterClicked = onRegisterClicked,
-                onSignInClicked = onSignInClicked
-            )
-        }
+//        composeRule.setContent {
+//            SignUpScreen(
+//                onRegisterClicked = onRegisterClicked,
+//                onSignInClicked = onSignInClicked
+//            )
+//        }
     }
 
     @Test

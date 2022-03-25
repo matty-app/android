@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.matryoshka.projectx.ui.validator.Validator
+import kotlin.reflect.KProperty
 
 class InputField<T>(
     initialValue: T? = null,
@@ -34,4 +35,12 @@ class InputField<T>(
             }
         } == null
     }
+}
+
+@Suppress("NOTHING_TO_INLINE")
+inline operator fun <T> InputField<T>.getValue(thisObj: Any?, property: KProperty<*>): T? = value
+
+@Suppress("NOTHING_TO_INLINE")
+inline operator fun <T> InputField<T>.setValue(thisObj: Any?, property: KProperty<*>, value: T) {
+    onChange(value)
 }

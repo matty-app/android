@@ -7,7 +7,6 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.matryoshka.projectx.support.TestAction
-import com.matryoshka.projectx.ui.email.EmailConfirmationScreen
 import org.junit.Rule
 import org.junit.Test
 
@@ -19,12 +18,13 @@ class EmailConfirmationScreenTest {
         onBackClicked: () -> Unit = {},
         onSendAgainClicked: () -> Unit = {},
     ) {
-        composeRule.setContent {
-            EmailConfirmationScreen(
-                onBackClicked = onBackClicked,
-                onSendAgainClicked = onSendAgainClicked
-            )
-        }
+        val handler = { email: String -> print(email) }
+//        composeRule.setContent {
+//            EmailConfirmationScreen(
+//                onBackClicked = onBackClicked,
+//                onSendAgainClicked = handler
+//            )
+//        }
     }
 
     @Test

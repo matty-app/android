@@ -1,6 +1,7 @@
 package com.matryoshka.projectx.navigation
 
 import androidx.navigation.NavOptionsBuilder
+import com.matryoshka.projectx.NavArgument.ARG_EMAIL
 import com.matryoshka.projectx.navigation.NavigationEvent.GoBack
 import com.matryoshka.projectx.navigation.NavigationEvent.NavigateToRoute
 import kotlinx.coroutines.channels.BufferOverflow
