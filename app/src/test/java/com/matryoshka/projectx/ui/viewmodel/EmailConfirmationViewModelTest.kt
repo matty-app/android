@@ -3,6 +3,7 @@ package com.matryoshka.projectx.ui.viewmodel
 import com.matryoshka.projectx.exception.ProjectxException
 import com.matryoshka.projectx.service.AuthService
 import com.matryoshka.projectx.support.CoroutineDispatcherRule
+import com.matryoshka.projectx.support.assert
 import com.matryoshka.projectx.support.callPrivateFunction
 import com.matryoshka.projectx.ui.common.ScreenStatus
 import com.matryoshka.projectx.ui.email.EmailConfirmationViewModel
@@ -72,7 +73,7 @@ class EmailConfirmationViewModelTest {
         viewModel.onSendAgainClicked(email)
 
         with(viewModel) {
-            assertEquals(expectedError, state.error)
+            state.error.assert(expectedError)
             assertEquals(expectedStatus, state.status)
         }
     }

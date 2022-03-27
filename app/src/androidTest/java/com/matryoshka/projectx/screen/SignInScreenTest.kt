@@ -38,25 +38,14 @@ class SignInScreenTest {
     }
 
     @Test
-    fun shouldLogInButtonBeClickable() {
-        setContent()
-
-        composeRule.onNodeWithText("Log in").assertIsDisplayed().assertHasClickAction()
-    }
-
-    @Test
-    fun shouldSignUpLinkBeClickable() {
-        setContent()
-
-        composeRule.onNodeWithText("Sign up").assertIsDisplayed().assertHasClickAction()
-    }
-
-    @Test
     fun shouldCallLogInAction() {
         val logInAction = TestAction("Log In action")
         setContent(onLogInClicked = logInAction::call)
 
-        composeRule.onNodeWithText("Log in").performClick()
+        composeRule.onNodeWithText("Log in")
+            .assertIsDisplayed()
+            .assertHasClickAction()
+            .performClick()
 
         logInAction.assertIsCalled()
     }
@@ -66,7 +55,10 @@ class SignInScreenTest {
         val signUpAction = TestAction("Sign Up action")
         setContent(onSignUpClicked = signUpAction::call)
 
-        composeRule.onNodeWithText("Sign up").performClick()
+        composeRule.onNodeWithText("Sign up")
+            .assertIsDisplayed()
+            .assertHasClickAction()
+            .performClick()
 
         signUpAction.assertIsCalled()
     }

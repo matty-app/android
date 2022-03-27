@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -35,14 +36,26 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.matryoshka.projectx.R
+import com.matryoshka.projectx.data.Interest
+import com.matryoshka.projectx.ui.common.ErrorToast
 import com.matryoshka.projectx.ui.common.FlexRow
 import com.matryoshka.projectx.ui.theme.Gray
 import com.matryoshka.projectx.ui.theme.ProjectxTheme
+import com.matryoshka.projectx.data.Interest as InterestModel
 
 private const val FOOTER_HEIGHT = 130
 
 @Composable
-fun InterestsScreen() {
+fun InterestsScreen(state: InterestsScreenState, onNextClicked: () -> Unit) {
+
+    if (state.isProgressIndicatorVisible) {
+        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+    }
+
+    if (state.isErrorToastVisible) {
+        ErrorToast(error = state.error!!)
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -62,7 +75,7 @@ fun InterestsScreen() {
         Spacer(modifier = Modifier.height(12.dp))
         Column(verticalArrangement = Arrangement.spacedBy(-FOOTER_HEIGHT.dp)) {
             Box(modifier = Modifier.fillMaxSize()) {
-                Interests()
+                Interests(state.interests)
             }
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -85,7 +98,7 @@ fun InterestsScreen() {
                 Button(
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = { /*TODO*/ }
+                    onClick = onNextClicked
                 ) {
                     Text(
                         text = stringResource(id = R.string.next),
@@ -99,7 +112,7 @@ fun InterestsScreen() {
 }
 
 @Composable
-private fun Interests() {
+private fun Interests(interests: Collection<InterestState>) {
     FlexRow(
         verticalGap = 12.dp,
         horizontalGap = 12.dp,
@@ -107,18 +120,29 @@ private fun Interests() {
         alignment = Alignment.CenterHorizontally,
         modifier = Modifier.verticalScroll(state = ScrollState(0))
     ) {
-        for (interest in interests) {
-            if (!interest.isSelected) {
-                Interest(interest = interest)
-            } else {
-                SelectedInterest(interest = interest)
-            }
+        interests.forEach {
+            Interest(interestState = it)
         }
     }
 }
 
 @Composable
-private fun Interest(interest: Interest) {
+private fun Interest(interestState: InterestState) {
+    if (!interestState.isSelected) {
+        UnselectedInterest(
+            interest = interestState.interest,
+            onSelect = interestState::onChangeSelection
+        )
+    } else {
+        SelectedInterest(
+            interest = interestState.interest,
+            onDeselect = interestState::onChangeSelection
+        )
+    }
+}
+
+@Composable
+fun UnselectedInterest(interest: Interest, onSelect: () -> Unit) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -130,8 +154,9 @@ private fun Interest(interest: Interest) {
             )
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
-                indication = null
-            ) { /*TODO*/ }
+                indication = null,
+                onClick = onSelect
+            )
             .testTag("interest")
     ) {
         Text(
@@ -146,7 +171,7 @@ private fun Interest(interest: Interest) {
 }
 
 @Composable
-private fun SelectedInterest(interest: Interest) {
+fun SelectedInterest(interest: Interest, onDeselect: () -> Unit) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -157,8 +182,9 @@ private fun SelectedInterest(interest: Interest) {
             )
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
-                indication = null
-            ) { /*TODO*/ }
+                indication = null,
+                onClick = onDeselect
+            )
             .testTag("interest")
     ) {
         Text(
@@ -177,48 +203,74 @@ private fun SelectedInterest(interest: Interest) {
 @Composable
 fun InterestsScreenPreview() {
     ProjectxTheme {
-        InterestsScreen()
+        InterestsScreen(
+            state = InterestsScreenState(interests = interestsPreview),
+            onNextClicked = {}
+        )
     }
 }
 
-val interests = listOf(
-    Interest("Coding"),
-    Interest("Sport"),
-    Interest("World of Warcraft", true),
-    Interest("Football"),
-    Interest("Singing"),
-    Interest("Rock music", true),
-    Interest("Hip-hop", true),
-    Interest("Guitar"),
-    Interest("Piano"),
-    Interest("LEGO"),
-    Interest("Cars"),
-    Interest("Cycling"),
-    Interest("Metallica"),
-    Interest("Michael Jackson"),
-    Interest("The Lord of the Rings"),
-    Interest("The Lord of the Rings: The Battle for Middle-earth Part First"),
-    Interest("The Lord of the Rings: The Battle for Middle-earth Part Second", true),
-    Interest("CS:GO"),
-    Interest("Basketball"),
-    Interest("Documentary", true),
-    Interest("Dancing"),
-    Interest("The Chronicles of Narnia: The Lion, the Witch and the Wardrobe", true),
-    Interest("Russian folk songs", true),
-    Interest("Psychology", true),
-    Interest("Harry Potter and the Philosopher's Stone"),
-    Interest("Harry Potter and the Chamber of Secrets"),
-    Interest("Fishing", true),
-    Interest("Debating club"),
-    Interest("Harry Potter and the Prisoner of Azkaban"),
-    Interest("Harry Potter and the Goblet of Fire", true),
-    Interest("Boxing"),
-    Interest("Bowling"),
-    Interest("Harry Potter and the Order of the Phoenix"),
-    Interest("Harry Potter and the Half-Blood Prince"),
-    Interest("Harry Potter and the Deathly Hallows"),
-    Interest("Politics"),
-    Interest("Physics"),
+val interestsPreview = listOf(
+    InterestState(InterestModel("coding", "Coding")),
+    InterestState(InterestModel("sport", "Sport")),
+    InterestState(InterestModel("wow", "World of Warcraft")).apply { onChangeSelection() },
+    InterestState(InterestModel("football", "Football")),
+    InterestState(InterestModel("singing", "Singing")),
+    InterestState(InterestModel("rock_music", "Rock music")).apply { onChangeSelection() },
+    InterestState(InterestModel("hip_hop", "Hip-hop")).apply { onChangeSelection() },
+    InterestState(InterestModel("guitar", "Guitar")),
+    InterestState(InterestModel("piano", "Piano")),
+    InterestState(InterestModel("lego", "LEGO")),
+    InterestState(InterestModel("cars", "Cars")),
+    InterestState(InterestModel("cycling", "Cycling")),
+    InterestState(InterestModel("metallica", "Metallica")),
+    InterestState(InterestModel("michael_jackson", "Michael Jackson")),
+    InterestState(InterestModel("lotr", "The Lord of the Rings")),
+    InterestState(
+        InterestModel(
+            "lotr_p1",
+            "The Lord of the Rings: The Battle for Middle-earth Part First"
+        )
+    ),
+    InterestState(
+        InterestModel(
+            "lotr_p2",
+            "The Lord of the Rings: The Battle for Middle-earth Part Second"
+        )
+    ).apply { onChangeSelection() },
+    InterestState(InterestModel("cs_go", "CS:GO")),
+    InterestState(InterestModel("basketball", "Basketball")),
+    InterestState(InterestModel("documentary", "Documentary")).apply { onChangeSelection() },
+    InterestState(InterestModel("dancing", "Dancing")),
+    InterestState(
+        InterestModel(
+            "narnia",
+            "The Chronicles of Narnia: The Lion, the Witch and the Wardrobe"
+        )
+    ).apply { onChangeSelection() },
+    InterestState(
+        InterestModel(
+            "russian_folk_songs",
+            "Russian folk songs"
+        )
+    ).apply { onChangeSelection() },
+    InterestState(InterestModel("psychology", "Psychology")).apply { onChangeSelection() },
+    InterestState(InterestModel("hp1", "Harry Potter and the Philosopher's Stone")),
+    InterestState(InterestModel("hp2", "Harry Potter and the Chamber of Secrets")),
+    InterestState(InterestModel("fishing", "Fishing")).apply { onChangeSelection() },
+    InterestState(InterestModel("debating_club", "Debating club")),
+    InterestState(InterestModel("hp3", "Harry Potter and the Prisoner of Azkaban")),
+    InterestState(
+        InterestModel(
+            "hp4",
+            "Harry Potter and the Goblet of Fire"
+        )
+    ).apply { onChangeSelection() },
+    InterestState(InterestModel("boxing", "Boxing")),
+    InterestState(InterestModel("bowling", "Bowling")),
+    InterestState(InterestModel("hp5", "Harry Potter and the Order of the Phoenix")),
+    InterestState(InterestModel("hp6", "Harry Potter and the Half-Blood Prince")),
+    InterestState(InterestModel("hp7", "Harry Potter and the Deathly Hallows")),
+    InterestState(InterestModel("politics", "Politics")),
+    InterestState(InterestModel("physics", "Physics")),
 )
-
-data class Interest(val name: String, val isSelected: Boolean = false)

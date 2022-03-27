@@ -1,7 +1,5 @@
 package com.matryoshka.projectx.ui.launch
 
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import androidx.compose.runtime.getValue
@@ -9,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.matryoshka.projectx.data.User
+import com.matryoshka.projectx.data.repository.UsersRepository
 import com.matryoshka.projectx.exception.ProjectxException
 import com.matryoshka.projectx.service.AuthService
 import com.matryoshka.projectx.ui.common.ScreenStatus
@@ -23,6 +22,7 @@ private const val TAG = "SignInLaunchViewModel"
 @HiltViewModel
 class SignInLaunchViewModel @Inject constructor(
     private val authService: AuthService,
+    private val usersRepository: UsersRepository,
     private val sharedPrefs: SharedPreferences
 ) : ViewModel() {
 
@@ -35,9 +35,10 @@ class SignInLaunchViewModel @Inject constructor(
         return try {
             val email = sharedPrefs.userEmail!!
             val link = intent.data.toString()
-
             if (sharedPrefs.isNewUser) {
-                authService.signUpByEmailLink(email, sharedPrefs.userName!!, link)
+                val user = authService.signUpByEmailLink(email, sharedPrefs.userName!!, link)
+                usersRepository.save(user)
+                user
             } else return authService.signInByEmailLink(email, link)
         } catch (ex: ProjectxException) {
             setErrorState(ex)

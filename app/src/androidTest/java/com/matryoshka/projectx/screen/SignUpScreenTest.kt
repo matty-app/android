@@ -49,25 +49,14 @@ class SignUpScreenTest {
     }
 
     @Test
-    fun shouldRegisterButtonBeClickable() {
-        setContent()
-
-        composeRule.onNodeWithText("Register").assertIsDisplayed().assertHasClickAction()
-    }
-
-    @Test
-    fun shouldSignInLinkBeClickable() {
-        setContent()
-
-        composeRule.onNodeWithText("Sign in").assertIsDisplayed().assertHasClickAction()
-    }
-
-    @Test
     fun shouldCallRegisterAction() {
         val registerAction = TestAction("Register action")
         setContent(onRegisterClicked = registerAction::call)
 
-        composeRule.onNodeWithText("Register").performClick()
+        composeRule.onNodeWithText("Register")
+            .assertIsDisplayed()
+            .assertHasClickAction()
+            .performClick()
 
         registerAction.assertIsCalled()
     }
@@ -77,7 +66,10 @@ class SignUpScreenTest {
         val signInAction = TestAction("Sign In action")
         setContent(onSignInClicked = signInAction::call)
 
-        composeRule.onNodeWithText("Sign in").performClick()
+        composeRule.onNodeWithText("Sign in")
+            .assertIsDisplayed()
+            .assertHasClickAction()
+            .performClick()
 
         signInAction.assertIsCalled()
     }

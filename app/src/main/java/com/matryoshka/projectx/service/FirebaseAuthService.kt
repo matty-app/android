@@ -12,8 +12,8 @@ import com.matryoshka.projectx.exception.SendSignInLinkToEmailException
 import com.matryoshka.projectx.exception.SignInByEmailLinkException
 import com.matryoshka.projectx.exception.SignUpByEmailLinkException
 import com.matryoshka.projectx.exception.UpdateUserException
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
+import kotlinx.coroutines.tasks.await
 
 private const val TAG = "FirebaseAuthService"
 const val SIGN_UP_URL = "https://appprojectx.page.link/signUpFinish"
@@ -36,7 +36,7 @@ class FirebaseAuthService @Inject constructor(private val auth: FirebaseAuth) : 
             Log.i(TAG, "sendSignInLinkToEmail: sent email to $email")
         } catch (ex: Exception) {
             Log.e(TAG, "sendSignInLinkToEmail $email: ${ex.message}")
-            throw SendSignInLinkToEmailException(ex.message)
+            throw SendSignInLinkToEmailException(ex)
         }
     }
 
@@ -52,7 +52,7 @@ class FirebaseAuthService @Inject constructor(private val auth: FirebaseAuth) : 
             return user
         } catch (ex: Exception) {
             Log.e(TAG, "signInByEmailLink $email: ${ex.message}")
-            throw SignInByEmailLinkException(ex.message)
+            throw SignInByEmailLinkException(ex)
         }
     }
 
@@ -63,7 +63,7 @@ class FirebaseAuthService @Inject constructor(private val auth: FirebaseAuth) : 
             return user
         } catch (ex: Exception) {
             Log.e(TAG, "signUpByEmailLink $email: ${ex.message}")
-            throw SignUpByEmailLinkException(ex.message)
+            throw SignUpByEmailLinkException(ex)
         }
     }
 
@@ -73,7 +73,7 @@ class FirebaseAuthService @Inject constructor(private val auth: FirebaseAuth) : 
             return result.signInMethods?.isNotEmpty() ?: true
         } catch (ex: Exception) {
             Log.e(TAG, "checkEmailExists $email: ${ex.message}")
-            throw CheckEmailExistsException(ex.message)
+            throw CheckEmailExistsException(ex)
         }
     }
 
@@ -94,7 +94,7 @@ class FirebaseAuthService @Inject constructor(private val auth: FirebaseAuth) : 
             firebaseUser.updateProfile(profileUpdates).await()
         } catch (ex: Exception) {
             Log.e(TAG, "updateUser ${user.uid}: ${ex.message}")
-            throw UpdateUserException(ex.message)
+            throw UpdateUserException(ex)
         }
     }
 }

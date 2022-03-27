@@ -5,6 +5,7 @@ import com.matryoshka.projectx.exception.ProjectxException
 import com.matryoshka.projectx.navigation.NavAdapter
 import com.matryoshka.projectx.service.AuthService
 import com.matryoshka.projectx.support.CoroutineDispatcherRule
+import com.matryoshka.projectx.support.assert
 import com.matryoshka.projectx.support.callPrivateFunction
 import com.matryoshka.projectx.support.callPrivateSuspendFunction
 import com.matryoshka.projectx.ui.common.ScreenStatus
@@ -200,7 +201,7 @@ class SignInViewModelTest {
 
         viewModel.onLogInClicked()
 
-        assertEquals(expectedError, viewModel.state.error)
+        viewModel.state.error.assert(expectedError)
         assertEquals(expectedStatus, viewModel.state.status)
         verify(exactly = 0) {
             viewModel invoke "goToEmailConfirmationScreen" withArguments listOf(email)
