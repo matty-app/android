@@ -41,6 +41,12 @@ sealed interface FieldError {
 
 class RawStringError(val text: String) : FieldError {
     override fun toString(context: Context) = text
+
+    override fun equals(other: Any?): Boolean {
+        if (other == null || other !is RawStringError)
+            return false
+        return text == other.text
+    }
 }
 
 class StringResourceError(
@@ -48,4 +54,10 @@ class StringResourceError(
     val args: Array<Any>? = null
 ) : FieldError {
     override fun toString(context: Context) = context.getString(resId, args)
+
+    override fun equals(other: Any?): Boolean {
+        if (other == null || other !is StringResourceError)
+            return false
+        return resId == other.resId && args contentDeepEquals other.args
+    }
 }

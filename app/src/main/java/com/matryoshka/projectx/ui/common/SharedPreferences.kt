@@ -8,26 +8,26 @@ private const val PREF_SIGN_IN_EMAIL = "SIGN_IN_EMAIL"
 private const val PREF_USER_NAME = "USER_NAME"
 private const val PREF_IS_NEW_USER = "IS_NEW_USER"
 
-fun Context.setUserEmail(email: String) {
-    sharedPreferences.edit().putString(PREF_SIGN_IN_EMAIL, email).apply()
+fun SharedPreferences.setUserEmail(email: String) {
+    edit().putString(PREF_SIGN_IN_EMAIL, email).apply()
 }
 
-fun Context.setUserName(name: String) {
-    sharedPreferences.edit().putString(PREF_USER_NAME, name).apply()
+fun SharedPreferences.setUserName(name: String) {
+    edit().putString(PREF_USER_NAME, name).apply()
 }
 
-fun Context.setIsNewUser(value: Boolean) {
-    sharedPreferences.edit().putBoolean(PREF_IS_NEW_USER, value).apply()
+fun SharedPreferences.setIsNewUser(value: Boolean) {
+    edit().putBoolean(PREF_IS_NEW_USER, value).apply()
 }
 
 val Context.sharedPreferences: SharedPreferences
     get() = getSharedPreferences(packageName, MODE_PRIVATE)
 
-val Context.userEmail: String?
-    get() = sharedPreferences.getString(PREF_SIGN_IN_EMAIL, null)
+val SharedPreferences.userEmail: String?
+    get() = getString(PREF_SIGN_IN_EMAIL, null)
 
-val Context.userName: String?
-    get() = sharedPreferences.getString(PREF_USER_NAME, null)
+val SharedPreferences.userName: String?
+    get() = getString(PREF_USER_NAME, null)
 
-val Context.isNewUser: Boolean
-    get() = sharedPreferences.getBoolean(PREF_IS_NEW_USER, false)
+val SharedPreferences.isNewUser: Boolean
+    get() = getBoolean(PREF_IS_NEW_USER, false)

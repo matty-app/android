@@ -1,6 +1,5 @@
 package com.matryoshka.projectx.ui.signup
 
-import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,7 +23,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -34,27 +32,24 @@ import androidx.compose.ui.unit.dp
 import com.matryoshka.projectx.R
 import com.matryoshka.projectx.ui.common.ErrorToast
 import com.matryoshka.projectx.ui.common.InputField
-import com.matryoshka.projectx.ui.common.ScreenStatus
 import com.matryoshka.projectx.ui.common.TextField
 import com.matryoshka.projectx.ui.theme.ProjectxTheme
 
 @Composable
 fun SignUpScreen(
     state: SignUpScreenState,
-    onRegisterClicked: (context: Context) -> Unit,
+    onRegisterClicked: () -> Unit,
     onSignInClicked: () -> Unit
 ) {
-    val context = LocalContext.current
-    val status = state.status
     val error = state.error
-    val enabled = status != ScreenStatus.SUBMITTING
+    val enabled = state.enabled
 
-    if (status == ScreenStatus.SUBMITTING) {
+    if (state.isProgressIndicatorVisible) {
         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
     }
 
-    if (status == ScreenStatus.ERROR && error != null) {
-        ErrorToast(error = error)
+    if (state.isErrorToastVisible) {
+        ErrorToast(error = error!!)
     }
 
     Column(
@@ -110,7 +105,7 @@ fun SignUpScreen(
                 enabled = enabled,
                 modifier = Modifier
                     .fillMaxWidth(),
-                onClick = { onRegisterClicked(context) }
+                onClick = onRegisterClicked
             ) {
                 Text(
                     text = stringResource(id = R.string.register),
