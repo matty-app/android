@@ -41,25 +41,14 @@ class EmailConfirmationScreenTest {
     }
 
     @Test
-    fun shouldBackArrowBeClickable() {
-        setContent()
-
-        composeRule.onNodeWithTag("backArrow").assertIsDisplayed().assertHasClickAction()
-    }
-
-    @Test
-    fun shouldSendAgainLinkBeClickable() {
-        setContent()
-
-        composeRule.onNodeWithText("Send again").assertIsDisplayed().assertHasClickAction()
-    }
-
-    @Test
     fun shouldCallBackAction() {
         val backAction = TestAction("Back action")
         setContent(onBackClicked = backAction::call)
 
-        composeRule.onNodeWithTag("backArrow").performClick()
+        composeRule.onNodeWithTag("backArrow")
+            .assertIsDisplayed()
+            .assertHasClickAction()
+            .performClick()
 
         backAction.assertIsCalled()
     }
@@ -69,7 +58,10 @@ class EmailConfirmationScreenTest {
         val sendAgainAction = TestAction("Send again action")
         setContent(onSendAgainClicked = { sendAgainAction.call() })
 
-        composeRule.onNodeWithText("Send again").performClick()
+        composeRule.onNodeWithText("Send again")
+            .assertIsDisplayed()
+            .assertHasClickAction()
+            .performClick()
 
         sendAgainAction.assertIsCalled()
     }

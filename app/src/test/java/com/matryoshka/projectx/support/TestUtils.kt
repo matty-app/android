@@ -39,6 +39,10 @@ suspend fun Any.callPrivateSuspendFunction(
     return null
 }
 
+inline fun <T, reified R : Iterable<T>> mockIterable(iterable: Iterable<T>) = mockk<R>().apply {
+    every { iterator() } returns iterable.iterator()
+}
+
 fun <T> taskMock(resultValue: T, excep: Exception? = null): Task<T> {
     return mockk<Task<T>>().apply {
         every { isComplete } returns true

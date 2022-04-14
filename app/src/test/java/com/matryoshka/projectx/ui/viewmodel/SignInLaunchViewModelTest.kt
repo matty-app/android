@@ -3,9 +3,11 @@ package com.matryoshka.projectx.ui.viewmodel
 import android.content.Intent
 import android.content.SharedPreferences
 import com.matryoshka.projectx.data.User
+import com.matryoshka.projectx.data.repository.UsersRepository
 import com.matryoshka.projectx.exception.ProjectxException
 import com.matryoshka.projectx.service.AuthService
 import com.matryoshka.projectx.support.CoroutineDispatcherRule
+import com.matryoshka.projectx.support.assert
 import com.matryoshka.projectx.support.callPrivateFunction
 import com.matryoshka.projectx.ui.common.ScreenStatus
 import com.matryoshka.projectx.ui.common.isNewUser
@@ -13,6 +15,7 @@ import com.matryoshka.projectx.ui.common.userEmail
 import com.matryoshka.projectx.ui.common.userName
 import com.matryoshka.projectx.ui.launch.SignInLaunchViewModel
 import io.mockk.coEvery
+import io.mockk.coJustRun
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
@@ -59,14 +62,18 @@ class SignInLaunchViewModelTest {
         val authService = mockk<AuthService>().apply {
             coEvery { signUpByEmailLink(user.email!!, user.name!!, link) } returns user
         }
+        val usersRepository = mockk<UsersRepository>().apply {
+            coJustRun { save(any()) }
+        }
         val intent = mockk<Intent>().apply {
             every { data.toString() } returns link
         }
-        val viewModel = createViewModel(authService, sharedPrefs)
+        val viewModel = createViewModel(authService, usersRepository, sharedPrefs)
 
         val actualUser = viewModel.signInByEmailLink(intent)
 
         coVerify { authService.signUpByEmailLink(user.email!!, user.name!!, link) }
+        coVerify { usersRepository.save(user) }
         assertEquals(user, actualUser)
     }
 
@@ -82,7 +89,7 @@ class SignInLaunchViewModelTest {
         val intent = mockk<Intent>().apply {
             every { data.toString() } returns link
         }
-        val viewModel = createViewModel(authService, sharedPrefs)
+        val viewModel = createViewModel(authService = authService, sharedPrefs = sharedPrefs)
 
         val actualUser = viewModel.signInByEmailLink(intent)
 
@@ -102,12 +109,12 @@ class SignInLaunchViewModelTest {
         val intent = mockk<Intent>().apply {
             every { data.toString() } returns link
         }
-        val viewModel = createViewModel(authService, sharedPrefs)
+        val viewModel = createViewModel(authService = authService, sharedPrefs = sharedPrefs)
 
         val actualUser = viewModel.signInByEmailLink(intent)
 
         with(viewModel) {
-            assertEquals(ProjectxException(), error)
+            error.assert(ProjectxException())
             assertEquals(ScreenStatus.ERROR, status)
         }
         assertNull(actualUser)
@@ -115,6 +122,7 @@ class SignInLaunchViewModelTest {
 
     private fun createViewModel(
         authService: AuthService = mockk(),
+        usersRepository: UsersRepository = mockk(),
         sharedPrefs: SharedPreferences = mockk()
-    ) = SignInLaunchViewModel(authService, sharedPrefs)
+    ) = SignInLaunchViewModel(authService, usersRepository, sharedPrefs)
 }

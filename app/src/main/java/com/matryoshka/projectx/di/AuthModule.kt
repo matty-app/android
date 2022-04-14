@@ -1,4 +1,4 @@
-package com.matryoshka.projectx.di.auth
+package com.matryoshka.projectx.di
 
 import com.matryoshka.projectx.service.AuthService
 import com.matryoshka.projectx.service.FirebaseAuthService

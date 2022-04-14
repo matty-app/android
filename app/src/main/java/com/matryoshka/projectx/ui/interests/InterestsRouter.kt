@@ -7,5 +7,5 @@ import androidx.hilt.navigation.compose.hiltViewModel
 fun InterestsRouter(
     viewModel: InterestsViewModel = hiltViewModel()
 ) {
-    InterestsScreen()
+    InterestsScreen(state = viewModel.state, onNextClicked = viewModel::onNextClick)
 }

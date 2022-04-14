@@ -1,0 +1,15 @@
+<resources>
+    <string name="error_occurred">Error occurred</string>
+    <string name="error_sending_link">Error sending link to email. Check your internet connection
+        and try again.</string>
+    <string name="error_sign_in_by_link">Error signing in by email. Check your internet connection
+        and try again.</string>
+    <string name="error_sign_up_by_link">Error signing up by email. Check your internet connection
+        and try again.</string>
+    <string name="error_check_email_exists">Error checking if email exists. Check your internet
+        connection and try again.</string>
+    <string name="error_save_user_details">Error saving user details. Check your internet connection
+        and try again.</string>
+    <string name="error_get_interests">Error getting interests. Check your internet connection and
+        try again.</string>
+</resources>
