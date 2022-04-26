@@ -7,7 +7,9 @@ private val default = Typography()
 val ProjectxTypography = Typography(
     h4 = default.h4.copy(color = DarkGray),
     h5 = default.h5.copy(color = DarkGray),
+    h6 = default.h6.copy(color = DarkGray),
     body1 = default.body1.copy(color = Gray),
     subtitle1 = default.subtitle1.copy(color = Gray),
-    subtitle2 = default.subtitle2.copy(color = Gray)
+    subtitle2 = default.subtitle2.copy(color = Gray),
+    caption = default.caption.copy(color = DarkGray)
 )

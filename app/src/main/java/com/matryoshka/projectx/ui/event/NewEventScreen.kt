@@ -22,6 +22,8 @@ import androidx.navigation.compose.rememberNavController
 import com.matryoshka.projectx.R
 import com.matryoshka.projectx.ui.common.ScreenStatus
 import com.matryoshka.projectx.ui.common.scaffold.TopBar
+import com.matryoshka.projectx.ui.common.scaffold.UserProfileButton
+import com.matryoshka.projectx.ui.common.scaffold.TopBar
 import com.matryoshka.projectx.ui.event.form.EventFormActions
 import com.matryoshka.projectx.ui.event.form.EventFormView
 import com.matryoshka.projectx.ui.theme.ProjectxTheme
@@ -42,7 +44,9 @@ fun NewEventScreen(
     Scaffold(
         backgroundColor = MaterialTheme.colors.onSurface.copy(alpha = 0.03f),
         topBar = {
-            TopBar(title = "New event")
+            TopBar(title = stringResource(id = R.string.new_event)) {
+                UserProfileButton(navController)
+            }
         },
         bottomBar = {
             Box(modifier = Modifier.padding(14.dp)) {
@@ -72,7 +76,6 @@ fun NewEventScreen(
                 )
             }
         }
-
     }
 }
 

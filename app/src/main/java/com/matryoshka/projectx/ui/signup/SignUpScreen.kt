@@ -76,7 +76,7 @@ fun SignUpScreen(
             )
             Spacer(modifier = Modifier.height(24.dp))
             TextField(
-                inputField = state.nameField,
+                fieldState = state.nameField,
                 placeholder = stringResource(id = R.string.name),
                 enabled = enabled,
                 trailingIcon = {
@@ -88,7 +88,7 @@ fun SignUpScreen(
             )
             Spacer(modifier = Modifier.height(4.dp))
             TextField(
-                inputField = state.emailField,
+                fieldState = state.emailField,
                 placeholder = stringResource(id = R.string.email),
                 enabled = enabled,
                 keyBoardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),

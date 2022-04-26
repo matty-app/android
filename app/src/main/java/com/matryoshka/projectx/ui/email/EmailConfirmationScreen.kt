@@ -39,7 +39,7 @@ fun EmailConfirmationScreen(
     state: EmailConfirmationScreenState,
     email: String,
     onBackClicked: () -> Unit,
-    onSendAgainClicked: (email: String) -> Unit
+    onSendAgainClicked: () -> Unit
 ) {
     val status = state.status
     val error = state.error
@@ -119,7 +119,7 @@ fun EmailConfirmationScreen(
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colors.primaryVariant,
                     modifier = Modifier
-                        .clickable { onSendAgainClicked(email) }
+                        .clickable { onSendAgainClicked() }
                 )
             }
         }

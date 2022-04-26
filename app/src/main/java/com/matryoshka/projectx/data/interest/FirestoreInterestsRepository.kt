@@ -11,14 +11,14 @@ import javax.inject.Inject
 
 const val FIRESTORE_INTERESTS = "interests"
 
-private const val TAG = "FirestoreInterestsRepos"
+private const val TAG = "FirestoreInterestsRepo"
 
 class FirestoreInterestsRepository @Inject constructor(private val db: FirebaseFirestore) :
     InterestsRepository {
 
     override suspend fun getAll(): List<Interest> {
-        try {
-            return db.collection(FIRESTORE_INTERESTS).get().await()
+        return try {
+            db.collection(FIRESTORE_INTERESTS).get().await()
                 .map { it.toObject<FirestoreInterest>().toInterest() }
         } catch (ex: Exception) {
             Log.e(TAG, "getInterests: ${ex.message}")

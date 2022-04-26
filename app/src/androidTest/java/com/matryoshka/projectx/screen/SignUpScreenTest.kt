@@ -15,8 +15,8 @@ import org.junit.Test
 class SignUpScreenTest {
     @get:Rule
     val composeRule = createComposeRule()
-    val name = "John"
-    val email = "john@gmail.com"
+    private val name = "John"
+    private val email = "john@gmail.com"
 
     private fun setContent(
         onRegisterClicked: () -> Unit = {},

@@ -26,7 +26,8 @@ class InterestsScreenTest {
         composeRule.setContent {
             InterestsScreen(
                 state = InterestsScreenState(interests),
-                onNextClicked = onNextClicked
+                onBackClick = {},
+                onSubmit = onNextClicked
             )
         }
     }

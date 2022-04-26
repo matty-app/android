@@ -69,7 +69,7 @@ class FieldStateTest {
         val textNumber = "1"
         val fieldState = numberFieldState(null)
 
-        fieldState.onChange(textNumber);
+        fieldState.onChange(textNumber)
 
         assertEquals(1, fieldState.numValue)
     }

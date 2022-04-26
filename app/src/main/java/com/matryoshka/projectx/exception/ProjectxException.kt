@@ -28,7 +28,7 @@ open class ProjectxException : Exception {
     }
 
     constructor(
-        cause: Throwable,
+        cause: Throwable?,
         @StringRes
         resId: Int = R.string.error_occurred,
         args: Array<Any>? = null
@@ -38,7 +38,7 @@ open class ProjectxException : Exception {
 
     constructor(
         message: String?,
-        cause: Throwable,
+        cause: Throwable?,
         @StringRes
         resId: Int = R.string.error_occurred,
         args: Array<Any>? = null

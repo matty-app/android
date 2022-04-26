@@ -19,7 +19,7 @@ class LaunchViewModelTest {
     @Test
     fun `should go to sign up screen if user is not signed in`() = runTest {
         val authService = mockk<AuthService>().apply {
-            coEvery { getCurrentUser() } returns null
+            coEvery { currentUser } returns null
         }
         val viewModel = LaunchViewModel(authService)
 
@@ -31,7 +31,7 @@ class LaunchViewModelTest {
     @Test
     fun `should go to interests screen if user is signed in`() = runTest {
         val authService = mockk<AuthService>().apply {
-            coEvery { getCurrentUser() } returns User("1", "John", "john@gmail.com")
+            coEvery { currentUser } returns User("1", "John", "john@gmail.com")
         }
 //        val navAdapter = mockk<NavAdapter>().apply {
 //            justRun { navigateTo(any()) }

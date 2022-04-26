@@ -254,7 +254,7 @@ class FirebaseAuthServiceTest {
         }
         val authService = FirebaseAuthService(firebaseAuth)
 
-        val currentUser = authService.getCurrentUser()
+        val currentUser = authService.currentUser
 
         assertEquals(testUser, currentUser)
     }
@@ -266,6 +266,6 @@ class FirebaseAuthServiceTest {
         }
         val authService = FirebaseAuthService(firebaseAuth)
 
-        assertNull(authService.getCurrentUser())
+        assertNull(authService.currentUser)
     }
 }

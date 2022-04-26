@@ -77,7 +77,7 @@ fun SignInScreen(
             )
             Spacer(modifier = Modifier.height(24.dp))
             TextField(
-                inputField = state.emailField,
+                fieldState = state.emailField,
                 placeholder = stringResource(id = R.string.email),
                 enabled = enabled,
                 keyBoardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),

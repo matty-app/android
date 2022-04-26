@@ -1,6 +1,9 @@
 package com.matryoshka.projectx.data.user
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
+import com.google.firebase.firestore.Blob
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldPath
@@ -11,9 +14,12 @@ import com.matryoshka.projectx.data.interest.Interest
 import com.matryoshka.projectx.data.interest.InterestsRepository
 import com.matryoshka.projectx.exception.SaveUserException
 import kotlinx.coroutines.tasks.await
+import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 
 const val FIRESTORE_USERS = "users"
+private const val COMPRESS_JPEG_QUALITY = 100
+private const val DECODE_BYTE_ARRAY_OFFSET = 0
 
 private const val TAG = "FirestoreUsersRepo"
 
@@ -72,21 +78,33 @@ private data class FirestoreUser(
     val uid: String = "",
     val name: String? = null,
     val email: String? = null,
+    var aboutMe: String? = null,
+    val thumbnail: Blob? = null,
     val interests: List<DocumentReference> = emptyList()
+)
+
+private fun FirestoreUser.toDomain(interests: List<Interest> = emptyList()) = User(
+    id = uid,
+    name = name!!,
+    email = email,
+    aboutMe = aboutMe,
+    thumbnail = thumbnail?.let {
+        val bytes = thumbnail.toBytes()
+        BitmapFactory.decodeByteArray(bytes, DECODE_BYTE_ARRAY_OFFSET, bytes.size)
+    },
+    interests = interests,
 )
 
 private fun User.toFirestore(db: FirebaseFirestore) = FirestoreUser(
     uid = id,
     name = name,
     email = email,
+    aboutMe = aboutMe,
+    thumbnail = thumbnail?.let {
+        ByteArrayOutputStream().use {
+            thumbnail.compress(Bitmap.CompressFormat.JPEG, COMPRESS_JPEG_QUALITY, it)
+            Blob.fromBytes(it.toByteArray())
+        }
+    },
     interests = interests.map { db.collection(FIRESTORE_INTERESTS).document(it.id) }
-)
-
-private fun FirestoreUser.toDomain(
-    interests: List<Interest> = emptyList()
-) = User(
-    id = uid,
-    name = name!!,
-    email = email,
-    interests = interests
 )
