@@ -2,17 +2,17 @@ package com.matryoshka.projectx.ui.signin
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.matryoshka.projectx.navigation.NavAdapter
+import androidx.navigation.NavController
 import com.matryoshka.projectx.navigation.Screen
 
 @Composable
 fun SignInRouter(
-    viewModel: SignInViewModel = hiltViewModel(),
-    navAdapter: NavAdapter
+    navController: NavController,
+    viewModel: SignInViewModel = hiltViewModel()
 ) {
     SignInScreen(
         state = viewModel.state,
-        onLogInClicked = viewModel::onLogInClicked,
-        onSignUpClicked = { navAdapter.navigateTo(Screen.SIGN_UP) }
+        onLogInClicked = { viewModel.onLogInClicked(navController) },
+        onSignUpClicked = { navController.navigate(Screen.SIGN_UP) }
     )
 }

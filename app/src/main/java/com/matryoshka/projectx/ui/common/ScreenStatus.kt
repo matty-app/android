@@ -1,6 +1,6 @@
 package com.matryoshka.projectx.ui.common
 
-enum class ScreenStatus {
+enum class ScreenStatus{
     LOADING,
     READY,
     SUBMITTING,

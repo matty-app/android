@@ -31,7 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.matryoshka.projectx.R
 import com.matryoshka.projectx.ui.common.ErrorToast
-import com.matryoshka.projectx.ui.common.InputField
+import com.matryoshka.projectx.ui.common.FieldState
 import com.matryoshka.projectx.ui.common.TextField
 import com.matryoshka.projectx.ui.theme.ProjectxTheme
 
@@ -130,7 +130,7 @@ fun SignInScreen(
 fun SignInScreenPreview() {
     ProjectxTheme {
         SignInScreen(
-            state = SignInScreenState(emailField = InputField("vasya@gmail.com")),
+            state = SignInScreenState(emailField = FieldState("vasya@gmail.com")),
             onLogInClicked = {},
             onSignUpClicked = {}
         )

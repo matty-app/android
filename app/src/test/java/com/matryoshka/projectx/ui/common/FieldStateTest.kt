@@ -12,16 +12,16 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 @ExperimentalCoroutinesApi
-class InputFieldTest {
+class FieldStateTest {
 
     @Test
     fun `should change value`() {
         val expectedValue = "John"
-        val inputField = InputField<String>()
+        val fieldState = FieldState("")
 
-        inputField.onChange(expectedValue)
+        fieldState.onChange(expectedValue)
 
-        assertEquals(expectedValue, inputField.value)
+        assertEquals(expectedValue, fieldState.value)
     }
 
     @Test
@@ -29,11 +29,11 @@ class InputFieldTest {
         val validator = mockk<Validator<String>>().apply {
             coEvery { validate(any()) } returns null
         }
-        val inputField = InputField(validators = listOf(validator))
+        val fieldState = FieldState(initialValue = "", validators = listOf(validator))
 
-        inputField.validate()
+        fieldState.validate()
 
-        with(inputField) {
+        with(fieldState) {
             assertFalse(hasError)
             assertNull(error)
         }
@@ -45,13 +45,32 @@ class InputFieldTest {
         val validator = mockk<Validator<String>>().apply {
             coEvery { validate(any()) } returns expectedError
         }
-        val inputField = InputField(validators = listOf(validator))
+        val fieldState = FieldState(validators = listOf(validator), initialValue = "")
 
-        inputField.validate()
+        fieldState.validate()
 
-        with(inputField) {
+        with(fieldState) {
             assertTrue(hasError)
             assertEquals(expectedError, error)
         }
+    }
+
+    @Test
+    fun `numValue should return null for not a number text`() {
+        val fieldState = numberFieldState(1)
+
+        fieldState.onChange("not number")
+
+        assertNull(fieldState.numValue)
+    }
+
+    @Test
+    fun `convert text to number if it is possible`() {
+        val textNumber = "1"
+        val fieldState = numberFieldState(null)
+
+        fieldState.onChange(textNumber);
+
+        assertEquals(1, fieldState.numValue)
     }
 }

@@ -17,8 +17,6 @@ import com.matryoshka.projectx.ui.common.userName
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
-private const val TAG = "SignInLaunchViewModel"
-
 @HiltViewModel
 class SignInLaunchViewModel @Inject constructor(
     private val authService: AuthService,

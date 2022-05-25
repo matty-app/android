@@ -103,7 +103,7 @@ fun InterestsScreen(state: InterestsScreenState, onNextClicked: () -> Unit) {
                     Text(
                         text = stringResource(id = R.string.next),
                         style = MaterialTheme.typography.h6,
-                        color = Color.White
+                        color = MaterialTheme.colors.onPrimary
                     )
                 }
             }

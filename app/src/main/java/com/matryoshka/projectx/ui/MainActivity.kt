@@ -3,9 +3,7 @@ package com.matryoshka.projectx.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.navigation.compose.rememberNavController
 import com.matryoshka.projectx.navigation.AppNavHost
-import com.matryoshka.projectx.navigation.NavAdapter
 import com.matryoshka.projectx.navigation.Screen
 import com.matryoshka.projectx.service.AuthService
 import com.matryoshka.projectx.ui.theme.ProjectxTheme
@@ -14,8 +12,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    @Inject
-    lateinit var navAdapter: NavAdapter
 
     @Inject
     lateinit var authService: AuthService
@@ -28,13 +24,8 @@ class MainActivity : ComponentActivity() {
         } else Screen.LAUNCH
 
         setContent {
-            val navController = rememberNavController()
             ProjectxTheme {
-                AppNavHost(
-                    startDestination = startDestination,
-                    navController = navController,
-                    navAdapter = navAdapter
-                )
+                AppNavHost(startDestination)
             }
         }
     }

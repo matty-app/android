@@ -4,14 +4,14 @@ import android.app.Activity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.matryoshka.projectx.navigation.NavAdapter
-import com.matryoshka.projectx.navigation.Screen
+import androidx.navigation.NavController
+import com.matryoshka.projectx.navigation.navToEventsFeedScreen
 import com.matryoshka.projectx.ui.common.ScreenStatus
 
 @Composable
 fun SignInLaunchScreenRouter(
-    viewModel: SignInLaunchViewModel = hiltViewModel(),
-    navAdapter: NavAdapter
+    navController: NavController,
+    viewModel: SignInLaunchViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val activity = context as Activity
@@ -22,7 +22,7 @@ fun SignInLaunchScreenRouter(
         signIn = {
             viewModel.signInByEmailLink(activity.intent)
             if (viewModel.status != ScreenStatus.ERROR) {
-                navAdapter.navigateTo(Screen.INTERESTS)
+                navController.navToEventsFeedScreen()
             }
         }
     )

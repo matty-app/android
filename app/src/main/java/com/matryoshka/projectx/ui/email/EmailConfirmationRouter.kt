@@ -2,18 +2,18 @@ package com.matryoshka.projectx.ui.email
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.matryoshka.projectx.navigation.NavAdapter
+import androidx.navigation.NavController
 
 @Composable
 fun EmailConfirmationRouter(
-    viewModel: EmailConfirmationViewModel = hiltViewModel(),
+    navController: NavController,
     email: String,
-    navAdapter: NavAdapter
+    viewModel: EmailConfirmationViewModel = hiltViewModel()
 ) {
     EmailConfirmationScreen(
         state = viewModel.state,
         email = email,
-        onBackClicked = navAdapter::goBack,
+        onBackClicked = navController::popBackStack,
         onSendAgainClicked = viewModel::onSendAgainClicked
     )
 }

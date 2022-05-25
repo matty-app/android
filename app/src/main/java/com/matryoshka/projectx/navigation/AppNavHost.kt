@@ -1,24 +1,28 @@
 package com.matryoshka.projectx.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavHostController
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.rememberNavController
+
+val LocalNavController = compositionLocalOf<NavController> {
+    error("CompositionLocal LocalNavController is not present!")
+}
 
 @Composable
 fun AppNavHost(
-    navController: NavHostController,
-    navAdapter: NavAdapter,
-    startDestination: String = Screen.LAUNCH
+    startDestination: String
 ) {
-    NavFlowHandler(
-        navController = navController,
-        navAdapter = navAdapter
-    )
+    val navController = rememberNavController()
 
-    NavHost(
-        navController = navController,
-        startDestination = startDestination
-    ) {
-        appNavGraph(navAdapter)
+    CompositionLocalProvider(LocalNavController provides navController) {
+        NavHost(
+            navController = navController,
+            startDestination = startDestination
+        ) {
+            appNavGraph(navController)
+        }
     }
 }

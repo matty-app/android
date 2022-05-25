@@ -1,7 +1,6 @@
 package com.matryoshka.projectx.ui.interests
 
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.StableMarker
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -14,8 +13,8 @@ import com.matryoshka.projectx.exception.ProjectxException
 import com.matryoshka.projectx.service.AuthService
 import com.matryoshka.projectx.ui.common.ScreenStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class InterestsViewModel @Inject constructor(

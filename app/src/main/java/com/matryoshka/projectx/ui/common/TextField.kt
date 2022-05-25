@@ -15,7 +15,7 @@ import com.matryoshka.projectx.ui.theme.LightGray
 
 @Composable
 fun TextField(
-    inputField: InputField<String>,
+    inputField: FieldState<String>,
     placeholder: String,
     enabled: Boolean = true,
     keyBoardOptions: KeyboardOptions = KeyboardOptions.Default,

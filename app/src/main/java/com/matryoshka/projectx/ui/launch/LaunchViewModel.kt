@@ -1,23 +1,27 @@
 package com.matryoshka.projectx.ui.launch
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.matryoshka.projectx.navigation.NavAdapter
-import com.matryoshka.projectx.navigation.Screen
+import androidx.navigation.NavController
+import com.matryoshka.projectx.navigation.navToEventsFeedScreen
+import com.matryoshka.projectx.navigation.navToSignUpScreen
 import com.matryoshka.projectx.service.AuthService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
+private const val TAG = "LaunchViewModel"
+
 @HiltViewModel
 class LaunchViewModel @Inject constructor(
-    private val authService: AuthService,
-    private val navAdapter: NavAdapter
+    private val authService: AuthService
 ) : ViewModel() {
 
-    suspend fun checkUserSignedIn() {
+    fun checkUserSignedIn(navController: NavController) {
         if (authService.getCurrentUser() == null) {
-            navAdapter.navigateTo(Screen.SIGN_UP)
+            Log.d(TAG, "checkUserSignedIn: unauthenticated")
+            navController.navToSignUpScreen()
         } else {
-            navAdapter.navigateTo(Screen.INTERESTS)
+            navController.navToEventsFeedScreen()
         }
     }
 }

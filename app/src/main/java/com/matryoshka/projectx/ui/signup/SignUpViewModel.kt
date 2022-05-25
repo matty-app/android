@@ -6,10 +6,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import com.matryoshka.projectx.exception.ProjectxException
-import com.matryoshka.projectx.navigation.NavAdapter
+import com.matryoshka.projectx.navigation.navToMailConfirmScreen
 import com.matryoshka.projectx.service.AuthService
-import com.matryoshka.projectx.ui.common.InputField
+import com.matryoshka.projectx.ui.common.FieldState
 import com.matryoshka.projectx.ui.common.ScreenStatus
 import com.matryoshka.projectx.ui.common.setIsNewUser
 import com.matryoshka.projectx.ui.common.setUserEmail
@@ -25,13 +26,13 @@ import javax.inject.Inject
 class SignUpViewModel @Inject constructor(
     private val authService: AuthService,
     private val sharedPrefs: SharedPreferences,
-    private val navAdapter: NavAdapter
 ) : ViewModel() {
 
     var state by mutableStateOf(
         SignUpScreenState(
-            nameField = InputField(validators = listOf(NameValidator())),
-            emailField = InputField(
+            nameField = FieldState(initialValue = "", validators = listOf(NameValidator())),
+            emailField = FieldState(
+                initialValue = "",
                 validators = listOf(
                     EmailValidator(),
                     EmailExistsValidator(authService)
@@ -41,23 +42,23 @@ class SignUpViewModel @Inject constructor(
     )
         private set
 
-    private val nameField: InputField<String>
+    private val nameField: FieldState<String>
         get() = state.nameField
 
-    private val emailField: InputField<String>
+    private val emailField: FieldState<String>
         get() = state.emailField
 
-    fun onRegisterClicked() {
+    fun onRegisterClicked(navController: NavController) {
         viewModelScope.launch {
             changeStatus(ScreenStatus.SUBMITTING)
             try {
                 if (validate()) {
-                    val email = emailField.value!!
-                    val name = nameField.value!!
+                    val email = emailField.value
+                    val name = nameField.value
                     sendLinkToEmail(email)
                     saveSignUpPrefs(email, name)
                     changeStatus(ScreenStatus.READY)
-                    goToEmailConfirmationScreen(email)
+                    navController.navToMailConfirmScreen(email)
                 } else {
                     changeStatus(ScreenStatus.READY)
                 }
@@ -83,10 +84,6 @@ class SignUpViewModel @Inject constructor(
         sharedPrefs.setIsNewUser(true)
     }
 
-    private fun goToEmailConfirmationScreen(email: String) {
-        navAdapter.goToEmailConfirmationScreen(email)
-    }
-
     private fun changeStatus(status: ScreenStatus) {
         state = state.copy(status = status)
     }
@@ -97,8 +94,8 @@ class SignUpViewModel @Inject constructor(
 }
 
 data class SignUpScreenState(
-    val nameField: InputField<String>,
-    val emailField: InputField<String>,
+    val nameField: FieldState<String>,
+    val emailField: FieldState<String>,
     val status: ScreenStatus = ScreenStatus.READY,
     val error: ProjectxException? = null
 ) {

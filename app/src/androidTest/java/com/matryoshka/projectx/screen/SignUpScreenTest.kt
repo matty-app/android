@@ -6,7 +6,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.matryoshka.projectx.support.TestAction
-import com.matryoshka.projectx.ui.common.InputField
+import com.matryoshka.projectx.ui.common.FieldState
 import com.matryoshka.projectx.ui.signup.SignUpScreen
 import com.matryoshka.projectx.ui.signup.SignUpScreenState
 import org.junit.Rule
@@ -25,8 +25,8 @@ class SignUpScreenTest {
         composeRule.setContent {
             SignUpScreen(
                 state = SignUpScreenState(
-                    nameField = InputField(name),
-                    emailField = InputField(email)
+                    nameField = FieldState(name),
+                    emailField = FieldState(email)
                 ),
                 onRegisterClicked = onRegisterClicked,
                 onSignInClicked = onSignInClicked

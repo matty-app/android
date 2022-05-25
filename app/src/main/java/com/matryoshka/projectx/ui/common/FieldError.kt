@@ -15,7 +15,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun FieldError(inputField: InputField<*>) {
+fun FieldError(inputField: FieldState<*>) {
     val context = LocalContext.current
     Box(
         modifier = Modifier
