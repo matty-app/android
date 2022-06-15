@@ -6,17 +6,22 @@ plugins {
     id 'com.google.gms.google-services'
 }
 
-android {
-    compileSdk 31
+def apikeyPropertiesFile = rootProject.file("apikey.properties")
+def apikeyProperties = new Properties()
+apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
 
+android {
+    compileSdk 32
     defaultConfig {
         applicationId "com.matryoshka.projectx"
         minSdk 26
-        targetSdk 31
+        targetSdk 32
         versionCode 1
         versionName "0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "MAPS_API_KEY", apikeyProperties['MAPS_API_KEY'])
     }
 
     buildTypes {
@@ -65,6 +70,9 @@ dependencies {
     implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     implementation "io.coil-kt:coil-compose:1.4.0"
+
+    //map
+    implementation 'com.yandex.android:maps.mobile:4.1.0-full'
 
     //firebase
     implementation platform("com.google.firebase:firebase-bom:$firebase_version")
