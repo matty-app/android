@@ -23,6 +23,7 @@
     <string name="location">Location</string>
     <string name="privacy">privacy</string>
     <string name="arrow_forward">arrow forward</string>
+    <string name="arrow_back">arrow back</string>
     <string name="date_time"><![CDATA[Date & Time]]></string>
     <string name="event_public">Public</string>
     <string name="location_icon">Location icon</string>
@@ -39,4 +40,8 @@
     <string name="max_participants">Max participants</string>
     <string name="event_submit">Submit</string>
     <string name="approval_required">Approval required</string>
+    <string name="current_location">Current location</string>
+    <string name="clear_text">Clear text</string>
+    <string name="search_text">Search</string>
+    <string name="ok_text">OK</string>
 </resources>

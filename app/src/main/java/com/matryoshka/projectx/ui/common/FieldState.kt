@@ -7,12 +7,13 @@ import com.matryoshka.projectx.ui.validator.Validator
 
 fun textFieldState(
     initialValue: String = "",
-    validators: List<Validator<String>> = emptyList()
-) = FieldState(initialValue, validators)
+    validators: List<Validator<String>> = emptyList(),
+    onChange: ((prevValue: String, newValue: String, sourceType: SourceType) -> Boolean)? = null,
+) = FieldState(initialValue, validators, onChange)
 
 fun switchState(
     checked: Boolean,
-    onChange: ((prevValue: Boolean?, newValue: Boolean) -> Boolean)? = null
+    onChange: ((prevValue: Boolean?, newValue: Boolean, sourceType: SourceType) -> Boolean)? = null
 ) = FieldState(checked, onChange = onChange)
 
 fun numberFieldState(
@@ -26,7 +27,7 @@ val FieldState<String?>.numValue
 class FieldState<T>(
     initialValue: T,
     private val validators: List<Validator<T>> = emptyList(),
-    private val onChange: ((prevValue: T?, newValue: T) -> Boolean)? = null,
+    private val onChange: ((prevValue: T, newValue: T, sourceType: SourceType) -> Boolean)? = null,
 ) {
     var value by mutableStateOf(initialValue)
         private set
@@ -37,8 +38,8 @@ class FieldState<T>(
     val hasError: Boolean
         get() = error != null
 
-    fun onChange(newValue: T) {
-        val shouldUpdate = onChange?.invoke(value, newValue) ?: true
+    fun onChange(newValue: T, sourceType: SourceType = SourceType.USER_INPUT) {
+        val shouldUpdate = onChange?.invoke(value, newValue, sourceType) ?: true
         if (shouldUpdate) {
             error = null
             this.value = newValue
@@ -60,4 +61,9 @@ class FieldState<T>(
             } == null
         }
     }
+}
+
+enum class SourceType {
+    USER_INPUT,
+    APPLICATION
 }

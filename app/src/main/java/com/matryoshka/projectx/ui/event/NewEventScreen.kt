@@ -1,5 +1,6 @@
 package com.matryoshka.projectx.ui.event
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,6 +25,7 @@ import com.matryoshka.projectx.ui.event.form.EventFormActions
 import com.matryoshka.projectx.ui.event.form.EventFormView
 import com.matryoshka.projectx.ui.theme.ProjectxTheme
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun NewEventScreen(
     navController: NavController,

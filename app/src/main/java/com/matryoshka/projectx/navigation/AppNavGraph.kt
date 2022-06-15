@@ -1,5 +1,6 @@
 package com.matryoshka.projectx.navigation
 
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -10,14 +11,14 @@ import com.matryoshka.projectx.NavArgument.ARG_EMAIL
 import com.matryoshka.projectx.ui.email.EmailConfirmationRouter
 import com.matryoshka.projectx.ui.event.InterestSelectionScreen
 import com.matryoshka.projectx.ui.event.InterestSelectionViewModel
-import com.matryoshka.projectx.ui.event.LocationChangeScreen
-import com.matryoshka.projectx.ui.event.LocationChangeViewModel
 import com.matryoshka.projectx.ui.event.NewEventScreen
 import com.matryoshka.projectx.ui.event.NewEventScreenViewModel
 import com.matryoshka.projectx.ui.feed.EventsFeedScreen
 import com.matryoshka.projectx.ui.interests.InterestsRouter
 import com.matryoshka.projectx.ui.launch.LaunchScreenRouter
 import com.matryoshka.projectx.ui.launch.SignInLaunchScreenRouter
+import com.matryoshka.projectx.ui.map.LocationSelectionScreen
+import com.matryoshka.projectx.ui.map.LocationSelectionViewModel
 import com.matryoshka.projectx.ui.signin.SignInRouter
 import com.matryoshka.projectx.ui.signup.SignUpRouter
 
@@ -65,13 +66,14 @@ fun NavGraphBuilder.appNavGraph(navController: NavController) {
         )
     }
 
-    composable(Screen.LOCATION_CHANGE_SCREEN) {
-        val viewModel: LocationChangeViewModel = viewModel()
-        LocationChangeScreen(
+    composable(Screen.LOCATION_SELECTION_SCREEN) {
+        val viewModel: LocationSelectionViewModel = hiltViewModel()
+        LocationSelectionScreen(
             state = viewModel.state,
-            onLocationChange = viewModel::onLocationChange,
-            onSubmit = viewModel::onSubmit,
-            onCancel = viewModel::onCancel
+            onSubmit = { viewModel.onSubmit(navController) },
+            onCancel = { viewModel.onCancel(navController) },
+            onSuggestionClick = viewModel::onSuggestionClick,
+            displayUserLocation = viewModel::displayUserLocation
         )
     }
 
@@ -98,7 +100,7 @@ object Screen {
     const val SIGN_IN = "SIGN_IN"
     const val EMAIL_CONFIRM = "EMAIL_CONFIRM"
     const val INTERESTS = "INTERESTS"
-    const val LOCATION_CHANGE_SCREEN = "LOCATION_CHANGE_SCREEN"
+    const val LOCATION_SELECTION_SCREEN = "LOCATION_SELECTION_SCREEN"
     const val INTEREST_SELECTION_SCREEN = "INTEREST_SELECTION_SCREEN"
     const val NEW_EVENT_SCREEN = "NEW_EVENT_SCREEN"
     const val EVENTS_FEED_SCREEN = "EVENTS_FEED_SCREEN"

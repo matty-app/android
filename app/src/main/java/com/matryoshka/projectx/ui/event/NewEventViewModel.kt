@@ -30,7 +30,7 @@ class NewEventScreenViewModel : ViewModel() {
                 ?.observe(lifecycleOwner) { location ->
                     state.formState.location.onChange(location)
                 }
-            navController.navigate(Screen.LOCATION_CHANGE_SCREEN)
+            navController.navigate(Screen.LOCATION_SELECTION_SCREEN)
         },
         onInterestClick = { navController, lifecycleOwner ->
             navController.currentBackStackEntry

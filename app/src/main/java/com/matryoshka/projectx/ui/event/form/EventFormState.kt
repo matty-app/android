@@ -27,7 +27,7 @@ class EventFormState(
     val public = switchState(public)
     val limitMaxParticipants = switchState(
         checked = limitMaxParticipants,
-        onChange = { _, newValue ->
+        onChange = { _, newValue, _ ->
             if (!newValue) {
                 this.maxParticipants.onChange("")
             }

@@ -1,7 +1,7 @@
 package com.matryoshka.projectx.ui.event.form
 
 import com.matryoshka.projectx.ui.common.numValue
-import kotlin.test.Test
+import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
