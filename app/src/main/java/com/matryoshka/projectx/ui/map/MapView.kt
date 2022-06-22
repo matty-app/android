@@ -1,8 +1,7 @@
 package com.matryoshka.projectx.ui.map
 
+import android.graphics.Bitmap
 import android.util.Log
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -11,25 +10,31 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import com.matryoshka.projectx.R
 import com.matryoshka.projectx.data.map.BoundingArea
 import com.matryoshka.projectx.data.map.GeoPoint
 import com.matryoshka.projectx.ui.theme.ProjectxTheme
 import com.matryoshka.projectx.utils.toBoundingBox
+import com.matryoshka.projectx.utils.toGeoPoint
+import com.matryoshka.projectx.utils.toYandexPoint
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.CameraListener
 import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.CameraUpdateReason
+import com.yandex.mapkit.map.InputListener
 import com.yandex.mapkit.map.Map
+import com.yandex.mapkit.map.PlacemarkMapObject
 import com.yandex.mapkit.mapview.MapView
+import com.yandex.runtime.image.ImageProvider
 
 private const val TAG = "MapView"
 
@@ -38,7 +43,6 @@ fun MapView(
     mapState: MapState,
     onMapInitialized: () -> Unit = {}
 ) {
-
     LaunchedEffect(mapState.isInitialized) {
         if (mapState.isInitialized) {
             onMapInitialized()
@@ -56,17 +60,17 @@ private fun YandexMapView(
     val mapView = remember { MapView(context) }
 
     LaunchedEffect(Unit) {
-        mapState.setMap(mapView.map)
+        mapState.init(
+            map = mapView.map,
+            marker = ContextCompat.getDrawable(context, R.drawable.map_marker)?.toBitmap()
+        )
     }
 
     YandexMapLifecycle(mapView)
 
-    Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-        AndroidView(factory = { mapView })
-        if (mapState.isInitialized) {
-            SearchingMarker(isSearching = mapState.isMoving)
-        }
-    }
+    AndroidView(factory = {
+        mapView
+    })
 }
 
 @Composable
@@ -98,32 +102,36 @@ private fun YandexMapLifecycle(mapView: MapView) {
 
 @Stable
 class MapState(
-    initialPosition: GeoPoint = GeoPoint(0.0, 0.0),
-    initialZoom: Float = 2f,
-    onPositionChanged: (GeoPoint, Float) -> Unit = { _, _ -> }
+    private val initialPosition: GeoPoint = GeoPoint(0.0, 0.0),
+    private val initialZoom: Float = 2f,
+    onLongTap: ((GeoPoint) -> Unit)? = null,
 ) {
-    var isMoving by mutableStateOf(false)
-        private set
-
     var isInitialized by mutableStateOf(false)
+    var position by mutableStateOf(initialPosition)
+    private var zoom by mutableStateOf(initialZoom)
 
-    var zoom by mutableStateOf(initialZoom)
-
-    var geoPoint by mutableStateOf(initialPosition)
-        private set
-
+    private var markerImageProvider: ImageProvider? = null
     private val lock = Any()
 
-    private val cameraListener = CameraListener { _, position, reason, isEnd ->
+    private var marker: PlacemarkMapObject? = null
+
+    private val cameraListener = CameraListener { _, cameraPosition, reason, isEnd ->
         if (reason == CameraUpdateReason.GESTURES) {
-            isMoving = !isEnd
             if (isEnd) {
                 synchronized(lock) {
-                    zoom = position.zoom
-                    geoPoint = GeoPoint(position.target.latitude, position.target.longitude)
-                    onPositionChanged(geoPoint, zoom)
+                    position = cameraPosition.target.toGeoPoint()
+                    zoom = cameraPosition.zoom
                 }
             }
+
+        }
+    }
+
+    private val inputListener = object : InputListener {
+        override fun onMapTap(map: Map, point: Point) {}
+
+        override fun onMapLongTap(map: Map, point: Point) {
+            onLongTap?.invoke(point.toGeoPoint())
         }
     }
 
@@ -134,37 +142,52 @@ class MapState(
             "Map can't be null!"
         }
 
-    internal fun setMap(map: Map) {
+    internal fun init(map: Map, marker: Bitmap?) {
         synchronized(lock) {
             isInitialized = false
             Log.d(TAG, "setting map to state")
+            map.addInputListener(inputListener)
             map.addCameraListener(cameraListener)
             this.map = map
-            move(geoPoint, zoom)
+            marker?.let {
+                markerImageProvider = ImageProvider.fromBitmap(it)
+            }
+            move(initialPosition, initialZoom)
             isInitialized = true
         }
     }
 
-    fun move(geoPoint: GeoPoint, boundingBox: BoundingArea) {
-        val zoom = requireMap.cameraPosition(boundingBox.toBoundingBox()).zoom
-        move(geoPoint, zoom)
+    fun setMarkerPosition(
+        geoPoint: GeoPoint,
+        boundingArea: BoundingArea,
+        inCenter: Boolean = true
+    ) {
+        Log.d(TAG, "setMarkerPosition: $geoPoint. Center: $inCenter")
+        val mapObjects = requireMap.mapObjects
+        val yandexPoint = geoPoint.toYandexPoint()
+        val zoom = requireMap.cameraPosition(boundingArea.toBoundingBox()).zoom
+        synchronized(lock) {
+            marker?.let { mapObjects.remove(it) }
+            marker = markerImageProvider?.let {
+                mapObjects.addPlacemark(yandexPoint, it)
+            } ?: mapObjects.addPlacemark(yandexPoint)
+            if (inCenter) {
+                move(geoPoint, zoom)
+            }
+        }
     }
 
     private fun move(geoPoint: GeoPoint, zoom: Float = this.zoom) {
-        synchronized(lock) {
-            Log.d(TAG, "moving to position $geoPoint with zoom $zoom")
-            isMoving = true
-            val position = CameraPosition(
-                Point(geoPoint.latitude, geoPoint.longitude),
-                zoom,
-                0f, //azimuth
-                0f //tilt
-            )
-            requireMap.move(position)
-            this.geoPoint = geoPoint
-            this.zoom = zoom
-            isMoving = false
-        }
+        Log.d(TAG, "moving to position $geoPoint with zoom $zoom")
+        this.zoom = zoom
+        this.position = geoPoint
+        val position = CameraPosition(
+            Point(geoPoint.latitude, geoPoint.longitude),
+            zoom,
+            0f, //azimuth
+            0f //tilt
+        )
+        requireMap.move(position)
     }
 }
 

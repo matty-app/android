@@ -13,6 +13,7 @@ import com.matryoshka.projectx.data.map.LocationInfo
 import com.matryoshka.projectx.data.map.SuggestedLocation
 import com.matryoshka.projectx.utils.toBoundingArea
 import com.matryoshka.projectx.utils.toGeoPoint
+import com.matryoshka.projectx.utils.toYandexPoint
 import com.yandex.mapkit.GeoObject
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.BoundingBox
@@ -82,10 +83,7 @@ class YandexLocationService(
     suspend fun resolveByGeoPoint(geoPoint: GeoPoint): SearchingResult {
         val result = suspendCancellableCoroutine<SearchingResult> { continuation ->
             val session = searchManager.submit(
-                Point(
-                    geoPoint.latitude,
-                    geoPoint.longitude,
-                ),
+                geoPoint.toYandexPoint(),
                 SEARCHING_ZOOM,
                 SearchOptions().setSearchTypes(SearchType.GEO.value),
                 createSearchListener(continuation)

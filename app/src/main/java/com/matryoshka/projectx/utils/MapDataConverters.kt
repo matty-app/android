@@ -17,3 +17,7 @@ fun BoundingArea.toBoundingBox() = BoundingBox(
 )
 
 fun Location.toGeoPoint() = GeoPoint(latitude, longitude)
+
+fun Point.toGeoPoint() = GeoPoint(latitude, longitude)
+
+fun GeoPoint.toYandexPoint() = Point(latitude, longitude)

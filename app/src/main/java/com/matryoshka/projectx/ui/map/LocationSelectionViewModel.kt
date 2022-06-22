@@ -19,7 +19,7 @@ import com.matryoshka.projectx.service.YandexLocationService
 import com.matryoshka.projectx.ui.common.FieldState
 import com.matryoshka.projectx.ui.common.SourceType
 import com.matryoshka.projectx.ui.common.SourceType.APPLICATION
-import com.matryoshka.projectx.ui.common.SourceType.USER_INPUT
+import com.matryoshka.projectx.ui.common.SourceType.USER
 import com.matryoshka.projectx.ui.common.anyPermissionGranted
 import com.matryoshka.projectx.ui.common.textFieldState
 import com.matryoshka.projectx.utils.debounce
@@ -38,7 +38,7 @@ class LocationSelectionViewModel @Inject constructor(
         LocationChangeState(
             searchField = textFieldState(onChange = ::onSearchFieldChange),
             mapState = MapState(
-                onPositionChanged = ::onCameraPositionChanged
+                onLongTap = ::onMapLongTapped
             ),
         )
     )
@@ -58,9 +58,20 @@ class LocationSelectionViewModel @Inject constructor(
     fun onSuggestionClick(suggestion: SuggestedLocation) {
         viewModelScope.launch {
             val result = locationService.resolveByURI(suggestion.uri)
-            state.mapState.move(result.location.geoPoint, result.boundingArea)
-            updateLocationState(result.location)
+            state.mapState.setMarkerPosition(result.location.geoPoint, result.boundingArea)
+
+            state = state.copy(
+                location = result.location,
+                suggestions = emptyList()
+            )
+            state.searchField.onChange(result.location.displayName, APPLICATION)
         }
+    }
+
+    fun onCancelingSearch() {
+        val fieldValue = state.location?.displayName ?: ""
+        state.searchField.onChange(fieldValue, APPLICATION)
+        state = state.copy(suggestions = emptyList())
     }
 
     @SuppressLint("MissingPermission")
@@ -73,16 +84,20 @@ class LocationSelectionViewModel @Inject constructor(
         ) {
             viewModelScope.launch {
                 val result = locationService.getUserLocation(context)
-                state.mapState.move(result.location.geoPoint, result.boundingArea)
+                state.mapState.setMarkerPosition(result.location.geoPoint, result.boundingArea)
                 updateLocationState(result.location)
             }
         }
     }
 
-    private fun onCameraPositionChanged(geoPoint: GeoPoint, zoom: Float) {
-        Log.d(TAG, "onMapPositionChanged: $geoPoint. zoom - $zoom")
+    private fun onMapLongTapped(geoPoint: GeoPoint) {
         viewModelScope.launch {
             val result = locationService.resolveByGeoPoint(geoPoint)
+            state.mapState.setMarkerPosition(
+                result.location.geoPoint,
+                result.boundingArea,
+                inCenter = false
+            )
             updateLocationState(result.location)
         }
     }
@@ -98,7 +113,7 @@ class LocationSelectionViewModel @Inject constructor(
         sourceType: SourceType
     ): Boolean {
         val shouldUpdate = prevValue != newValue
-        if (shouldUpdate && sourceType == USER_INPUT) {
+        if (shouldUpdate && sourceType == USER) {
             loadSuggestions(newValue)
         }
         return shouldUpdate
@@ -113,7 +128,7 @@ class LocationSelectionViewModel @Inject constructor(
                 )
                 return@debounce
             }
-            val suggestions = locationService.getSuggestions(locationName, state.mapState.geoPoint)
+            val suggestions = locationService.getSuggestions(locationName, state.mapState.position)
             state = state.copy(suggestions = suggestions)
         }
 

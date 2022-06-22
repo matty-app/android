@@ -1,12 +1,13 @@
 package com.matryoshka.projectx.navigation
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
-import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.google.accompanist.navigation.animation.composable
 import com.matryoshka.projectx.NavArgument.ARG_EMAIL
 import com.matryoshka.projectx.ui.email.EmailConfirmationRouter
 import com.matryoshka.projectx.ui.event.InterestSelectionScreen
@@ -22,6 +23,7 @@ import com.matryoshka.projectx.ui.map.LocationSelectionViewModel
 import com.matryoshka.projectx.ui.signin.SignInRouter
 import com.matryoshka.projectx.ui.signup.SignUpRouter
 
+@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.appNavGraph(navController: NavController) {
 
     composable(Screen.LAUNCH) {
@@ -72,6 +74,7 @@ fun NavGraphBuilder.appNavGraph(navController: NavController) {
             state = viewModel.state,
             onSubmit = { viewModel.onSubmit(navController) },
             onCancel = { viewModel.onCancel(navController) },
+            onCancelingSearch = viewModel::onCancelingSearch,
             onSuggestionClick = viewModel::onSuggestionClick,
             displayUserLocation = viewModel::displayUserLocation
         )
@@ -83,8 +86,8 @@ fun NavGraphBuilder.appNavGraph(navController: NavController) {
             state = viewModel.state,
             onInit = viewModel::onInit,
             onInterestClick = viewModel::onInterestClick,
-            onSubmit = viewModel::onSubmit,
-            onCancel = viewModel::onCancel
+            onSubmit = { viewModel.onSubmit(navController) },
+            onCancel = { viewModel.onCancel(navController) }
         )
     }
 

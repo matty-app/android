@@ -11,8 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
-import com.matryoshka.projectx.navigation.LocalNavController
 import com.matryoshka.projectx.ui.common.ListItem
 import com.matryoshka.projectx.ui.common.pickers.DataPickerScreen
 import com.matryoshka.projectx.ui.theme.ProjectxTheme
@@ -22,19 +20,17 @@ fun InterestSelectionScreen(
     state: InterestSelectionState,
     onInit: () -> Unit,
     onInterestClick: (String) -> Unit,
-    onSubmit: (NavController) -> Unit,
-    onCancel: (NavController) -> Unit
+    onSubmit: () -> Unit,
+    onCancel: () -> Unit
 ) {
     LaunchedEffect(Unit) {
         onInit()
     }
 
-    val navController = LocalNavController.current
-
     DataPickerScreen(
         title = "Select interest",
-        onBackClicked = { onCancel(navController) },
-        onSubmit = { onSubmit(navController) }
+        onBackClicked = onCancel,
+        onSubmit = onSubmit
     ) {
         LazyColumn {
             items(state.interests) { interest ->

@@ -1,28 +1,30 @@
 package com.matryoshka.projectx.navigation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.compositionLocalOf
-import androidx.navigation.NavController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
-val LocalNavController = compositionLocalOf<NavController> {
-    error("CompositionLocal LocalNavController is not present!")
-}
-
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun AppNavHost(
     startDestination: String
 ) {
-    val navController = rememberNavController()
+    val navController = rememberAnimatedNavController()
 
-    CompositionLocalProvider(LocalNavController provides navController) {
-        NavHost(
-            navController = navController,
-            startDestination = startDestination
+    //use AnimatedNavHost to disable blinking in multi-scaffold app
+    //@see https://stackoverflow.com/questions/68633717/topappbar-flashing-when-navigating-with-compose-navigation
+    AnimatedNavHost(
+        navController = navController,
+        startDestination = startDestination,
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
+        popEnterTransition = { EnterTransition.None },
+        popExitTransition = { ExitTransition.None },
         ) {
-            appNavGraph(navController)
-        }
+        appNavGraph(navController)
     }
 }

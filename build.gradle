@@ -4,7 +4,7 @@ buildscript {
         kotlin_version = '1.6.21'
         coroutines_version = '1.6.0'
         hilt_version = '2.40.5'
-        compose_version = '1.2.0-beta02'
+        compose_version = '1.2.0-rc01'
         google_services_version = '4.3.10'
         firebase_version = '29.3.0'
         map_secrets_version = '2.0.1'

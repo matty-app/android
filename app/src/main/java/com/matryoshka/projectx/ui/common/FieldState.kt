@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.matryoshka.projectx.ui.validator.Validator
 
+typealias TextFieldState = FieldState<String>
+
 fun textFieldState(
     initialValue: String = "",
     validators: List<Validator<String>> = emptyList(),
@@ -38,7 +40,7 @@ class FieldState<T>(
     val hasError: Boolean
         get() = error != null
 
-    fun onChange(newValue: T, sourceType: SourceType = SourceType.USER_INPUT) {
+    fun onChange(newValue: T, sourceType: SourceType = SourceType.USER) {
         val shouldUpdate = onChange?.invoke(value, newValue, sourceType) ?: true
         if (shouldUpdate) {
             error = null
@@ -64,6 +66,6 @@ class FieldState<T>(
 }
 
 enum class SourceType {
-    USER_INPUT,
+    USER,
     APPLICATION
 }
