@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.material.FabPosition
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,11 +43,6 @@ fun LocationSelectionScreen(
         displayUserLocation(context)
     }
 
-    LaunchedEffect(state.mapState.isInitialized) {
-        if (state.mapState.isInitialized) {
-            displayUserLocationIfGranted()
-        }
-    }
     Scaffold(
         floatingActionButtonPosition = FabPosition.End,
         floatingActionButton = {
@@ -74,6 +68,7 @@ fun LocationSelectionScreen(
         }
         MapView(state.mapState, onMapInitialized = {
             isMapInitialized = true
+            displayUserLocationIfGranted()
         })
     }
 }

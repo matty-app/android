@@ -9,6 +9,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -43,34 +44,24 @@ fun MapView(
     mapState: MapState,
     onMapInitialized: () -> Unit = {}
 ) {
-    LaunchedEffect(mapState.isInitialized) {
-        if (mapState.isInitialized) {
-            onMapInitialized()
-        }
-    }
-
-    YandexMapView(mapState)
-}
-
-@Composable
-private fun YandexMapView(
-    mapState: MapState
-) {
     val context = LocalContext.current
     val mapView = remember { MapView(context) }
+    var mapInitialized = rememberSaveable { false }
 
     LaunchedEffect(Unit) {
         mapState.init(
             map = mapView.map,
-            marker = ContextCompat.getDrawable(context, R.drawable.map_marker)?.toBitmap()
+            markerIcon = ContextCompat.getDrawable(context, R.drawable.map_marker)?.toBitmap()
         )
+        if (!mapInitialized) {
+            mapInitialized = true
+            onMapInitialized()
+        }
     }
 
     YandexMapLifecycle(mapView)
 
-    AndroidView(factory = {
-        mapView
-    })
+    AndroidView(factory = { mapView })
 }
 
 @Composable
@@ -102,11 +93,10 @@ private fun YandexMapLifecycle(mapView: MapView) {
 
 @Stable
 class MapState(
-    private val initialPosition: GeoPoint = GeoPoint(0.0, 0.0),
-    private val initialZoom: Float = 2f,
+    initialPosition: GeoPoint = GeoPoint(0.0, 0.0),
+    initialZoom: Float = 2f,
     onLongTap: ((GeoPoint) -> Unit)? = null,
 ) {
-    var isInitialized by mutableStateOf(false)
     var position by mutableStateOf(initialPosition)
     private var zoom by mutableStateOf(initialZoom)
 
@@ -142,39 +132,45 @@ class MapState(
             "Map can't be null!"
         }
 
-    internal fun init(map: Map, marker: Bitmap?) {
+    internal fun init(map: Map, markerIcon: Bitmap?) {
         synchronized(lock) {
-            isInitialized = false
             Log.d(TAG, "setting map to state")
+            this.map = map
             map.addInputListener(inputListener)
             map.addCameraListener(cameraListener)
-            this.map = map
-            marker?.let {
+            markerIcon?.let {
                 markerImageProvider = ImageProvider.fromBitmap(it)
             }
-            move(initialPosition, initialZoom)
-            isInitialized = true
+            //set marker to map (when re-initialized)
+            marker?.let { prevMarker ->
+                marker = addMarkerToMap(prevMarker.geometry)
+            }
+            move(position, zoom)
         }
     }
 
-    fun setMarkerPosition(
+    fun toggleMarkerPosition(
         geoPoint: GeoPoint,
         boundingArea: BoundingArea,
         inCenter: Boolean = true
     ) {
         Log.d(TAG, "setMarkerPosition: $geoPoint. Center: $inCenter")
-        val mapObjects = requireMap.mapObjects
-        val yandexPoint = geoPoint.toYandexPoint()
-        val zoom = requireMap.cameraPosition(boundingArea.toBoundingBox()).zoom
         synchronized(lock) {
+            val mapObjects = requireMap.mapObjects
+            val zoom = requireMap.cameraPosition(boundingArea.toBoundingBox()).zoom
             marker?.let { mapObjects.remove(it) }
-            marker = markerImageProvider?.let {
-                mapObjects.addPlacemark(yandexPoint, it)
-            } ?: mapObjects.addPlacemark(yandexPoint)
+            marker = addMarkerToMap(geoPoint.toYandexPoint())
             if (inCenter) {
                 move(geoPoint, zoom)
             }
         }
+    }
+
+    private fun addMarkerToMap(point: Point): PlacemarkMapObject {
+        val mapObjects = requireMap.mapObjects
+        return markerImageProvider?.let { imageProvider ->
+            mapObjects.addPlacemark(point, imageProvider)
+        } ?: mapObjects.addPlacemark(point)
     }
 
     private fun move(geoPoint: GeoPoint, zoom: Float = this.zoom) {

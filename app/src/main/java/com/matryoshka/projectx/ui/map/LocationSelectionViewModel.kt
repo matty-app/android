@@ -58,7 +58,7 @@ class LocationSelectionViewModel @Inject constructor(
     fun onSuggestionClick(suggestion: SuggestedLocation) {
         viewModelScope.launch {
             val result = locationService.resolveByURI(suggestion.uri)
-            state.mapState.setMarkerPosition(result.location.geoPoint, result.boundingArea)
+            state.mapState.toggleMarkerPosition(result.location.geoPoint, result.boundingArea)
 
             state = state.copy(
                 location = result.location,
@@ -84,7 +84,7 @@ class LocationSelectionViewModel @Inject constructor(
         ) {
             viewModelScope.launch {
                 val result = locationService.getUserLocation(context)
-                state.mapState.setMarkerPosition(result.location.geoPoint, result.boundingArea)
+                state.mapState.toggleMarkerPosition(result.location.geoPoint, result.boundingArea)
                 updateLocationState(result.location)
             }
         }
@@ -93,7 +93,7 @@ class LocationSelectionViewModel @Inject constructor(
     private fun onMapLongTapped(geoPoint: GeoPoint) {
         viewModelScope.launch {
             val result = locationService.resolveByGeoPoint(geoPoint)
-            state.mapState.setMarkerPosition(
+            state.mapState.toggleMarkerPosition(
                 result.location.geoPoint,
                 result.boundingArea,
                 inCenter = false
