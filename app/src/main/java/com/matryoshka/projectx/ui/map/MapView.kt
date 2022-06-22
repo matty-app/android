@@ -101,17 +101,13 @@ class MapState(
     private var zoom by mutableStateOf(initialZoom)
 
     private var markerImageProvider: ImageProvider? = null
-    private val lock = Any()
-
     private var marker: PlacemarkMapObject? = null
 
     private val cameraListener = CameraListener { _, cameraPosition, reason, isEnd ->
         if (reason == CameraUpdateReason.GESTURES) {
             if (isEnd) {
-                synchronized(lock) {
-                    position = cameraPosition.target.toGeoPoint()
-                    zoom = cameraPosition.zoom
-                }
+                position = cameraPosition.target.toGeoPoint()
+                zoom = cameraPosition.zoom
             }
 
         }
@@ -133,20 +129,18 @@ class MapState(
         }
 
     internal fun init(map: Map, markerIcon: Bitmap?) {
-        synchronized(lock) {
-            Log.d(TAG, "setting map to state")
-            this.map = map
-            map.addInputListener(inputListener)
-            map.addCameraListener(cameraListener)
-            markerIcon?.let {
-                markerImageProvider = ImageProvider.fromBitmap(it)
-            }
-            //set marker to map (when re-initialized)
-            marker?.let { prevMarker ->
-                marker = addMarkerToMap(prevMarker.geometry)
-            }
-            move(position, zoom)
+        Log.d(TAG, "setting map to state")
+        this.map = map
+        map.addInputListener(inputListener)
+        map.addCameraListener(cameraListener)
+        markerIcon?.let {
+            markerImageProvider = ImageProvider.fromBitmap(it)
         }
+        //set marker to map (when re-initialized)
+        marker?.let { prevMarker ->
+            marker = addMarkerToMap(prevMarker.geometry)
+        }
+        move(position, zoom)
     }
 
     fun toggleMarkerPosition(
@@ -155,14 +149,12 @@ class MapState(
         inCenter: Boolean = true
     ) {
         Log.d(TAG, "setMarkerPosition: $geoPoint. Center: $inCenter")
-        synchronized(lock) {
-            val mapObjects = requireMap.mapObjects
-            val zoom = requireMap.cameraPosition(boundingArea.toBoundingBox()).zoom
-            marker?.let { mapObjects.remove(it) }
-            marker = addMarkerToMap(geoPoint.toYandexPoint())
-            if (inCenter) {
-                move(geoPoint, zoom)
-            }
+        val mapObjects = requireMap.mapObjects
+        val zoom = requireMap.cameraPosition(boundingArea.toBoundingBox()).zoom
+        marker?.let { mapObjects.remove(it) }
+        marker = addMarkerToMap(geoPoint.toYandexPoint())
+        if (inCenter) {
+            move(geoPoint, zoom)
         }
     }
 
