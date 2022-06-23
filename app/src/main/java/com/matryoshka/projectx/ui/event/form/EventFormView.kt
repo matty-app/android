@@ -101,7 +101,7 @@ fun EventFormView(
                 actions.onLocationClick(navController, lifecycleOwner)
             },
             text = {
-                Text(text = state.location.value ?: stringResource(R.string.location))
+                Text(text = state.location.value?.displayName ?: stringResource(R.string.location))
             },
             icon = {
                 Icon(

@@ -47,7 +47,7 @@ class LocationSelectionViewModel @Inject constructor(
     fun onSubmit(navController: NavController) {
         navController.previousBackStackEntry
             ?.savedStateHandle
-            ?.set(LOCATION_KEY, state.searchField.value)
+            ?.set(LOCATION_KEY, state.location)
         navController.popBackStack()
     }
 

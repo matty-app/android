@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.matryoshka.projectx.SavedStateKey.INTEREST_KEY
 import com.matryoshka.projectx.SavedStateKey.LOCATION_KEY
+import com.matryoshka.projectx.data.map.LocationInfo
 import com.matryoshka.projectx.navigation.Screen
 import com.matryoshka.projectx.ui.common.ScreenStatus
 import com.matryoshka.projectx.ui.common.ScreenStatus.LOADING
@@ -15,6 +16,7 @@ import com.matryoshka.projectx.ui.common.ScreenStatus.READY
 import com.matryoshka.projectx.ui.common.ScreenStatus.SUBMITTING
 import com.matryoshka.projectx.ui.event.form.EventFormActions
 import com.matryoshka.projectx.ui.event.form.EventFormState
+import com.matryoshka.projectx.utils.observeOnce
 
 private const val TAG = "NewEventViewModel"
 
@@ -26,19 +28,21 @@ class NewEventScreenViewModel : ViewModel() {
         onLocationClick = { navController, lifecycleOwner ->
             navController.currentBackStackEntry
                 ?.savedStateHandle
-                ?.getLiveData<String>(LOCATION_KEY)
-                ?.observe(lifecycleOwner) { location ->
-                    state.formState.location.onChange(location)
-                }
+                ?.observeOnce<LocationInfo>(
+                    lifecycleOwner,
+                    LOCATION_KEY,
+                    state.formState.location::onChange
+                )
             navController.navigate(Screen.LOCATION_SELECTION_SCREEN)
         },
         onInterestClick = { navController, lifecycleOwner ->
             navController.currentBackStackEntry
                 ?.savedStateHandle
-                ?.getLiveData<String>(INTEREST_KEY)
-                ?.observe(lifecycleOwner) { interest ->
-                    state.formState.interest.onChange(interest)
-                }
+                ?.observeOnce<String>(
+                    lifecycleOwner,
+                    INTEREST_KEY,
+                    state.formState.interest::onChange
+                )
             navController.navigate(Screen.INTEREST_SELECTION_SCREEN)
         }
     )
