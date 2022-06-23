@@ -7,7 +7,7 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
-import com.matryoshka.projectx.data.map.BoundingArea
+import com.matryoshka.projectx.data.map.GeoData
 import com.matryoshka.projectx.data.map.GeoPoint
 import com.matryoshka.projectx.data.map.LocationInfo
 import com.matryoshka.projectx.data.map.SuggestedLocation
@@ -67,7 +67,7 @@ class YandexLocationService(
         searchManager.createSuggestSession()
     }
 
-    suspend fun resolveByURI(uri: String): SearchingResult {
+    suspend fun resolveByURI(uri: String): LocationInfo {
         return suspendCancellableCoroutine { continuation ->
             val session = searchManager.resolveURI(
                 uri,
@@ -80,8 +80,8 @@ class YandexLocationService(
         }
     }
 
-    suspend fun resolveByGeoPoint(geoPoint: GeoPoint): SearchingResult {
-        val result = suspendCancellableCoroutine<SearchingResult> { continuation ->
+    suspend fun resolveByGeoPoint(geoPoint: GeoPoint): LocationInfo {
+        val result = suspendCancellableCoroutine<LocationInfo> { continuation ->
             val session = searchManager.submit(
                 geoPoint.toYandexPoint(),
                 SEARCHING_ZOOM,
@@ -94,11 +94,11 @@ class YandexLocationService(
             }
         }
 
-        return result.copy(location = result.location.copy(geoPoint = geoPoint))
+        return result
     }
 
     @SuppressLint("MissingPermission")
-    suspend fun getUserLocation(context: Context): SearchingResult {
+    suspend fun getUserLocation(context: Context): LocationInfo {
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
         val lastKnownLocation = fusedLocationClient.lastLocation.await()
         val userGeoPoint = (lastKnownLocation ?: suspendCancellableCoroutine { continuation ->
@@ -178,7 +178,7 @@ class YandexLocationService(
     }
 
     private fun createSearchListener(
-        continuation: CancellableContinuation<SearchingResult>
+        continuation: CancellableContinuation<LocationInfo>
     ): Session.SearchListener {
         return object : Session.SearchListener {
             override fun onSearchResponse(response: Response) {
@@ -187,13 +187,16 @@ class YandexLocationService(
                 val point = geoObject.geometry.first().point!!
                 val (name, address) = resolveNameAndAddress(geoObject)
                 val locationInfo = LocationInfo(
+                    name = name,
                     address = address,
-                    geoPoint = GeoPoint(point.latitude, point.longitude),
-                    name = name
+                    geoData = GeoData(
+                        point = GeoPoint(point.latitude, point.longitude),
+                        boundingArea = boundingArea
+                    )
                 )
                 continuation.resumeWith(
                     Result.success(
-                        SearchingResult(locationInfo, boundingArea)
+                        locationInfo
                     )
                 )
             }
@@ -220,10 +223,5 @@ class YandexLocationService(
     }
 
 }
-
-data class SearchingResult(
-    val location: LocationInfo,
-    val boundingArea: BoundingArea
-)
 
 class LocationServiceException : RuntimeException()

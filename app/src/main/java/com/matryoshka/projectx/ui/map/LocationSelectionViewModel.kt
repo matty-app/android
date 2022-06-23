@@ -17,6 +17,7 @@ import com.matryoshka.projectx.data.map.LocationInfo
 import com.matryoshka.projectx.data.map.SuggestedLocation
 import com.matryoshka.projectx.service.YandexLocationService
 import com.matryoshka.projectx.ui.common.FieldState
+import com.matryoshka.projectx.ui.common.ScreenStatus
 import com.matryoshka.projectx.ui.common.SourceType
 import com.matryoshka.projectx.ui.common.SourceType.APPLICATION
 import com.matryoshka.projectx.ui.common.SourceType.USER
@@ -36,6 +37,7 @@ class LocationSelectionViewModel @Inject constructor(
 ) : ViewModel() {
     var state by mutableStateOf(
         LocationChangeState(
+            status = ScreenStatus.LOADING,
             searchField = textFieldState(onChange = ::onSearchFieldChange),
             mapState = MapState(
                 onLongTap = ::onMapLongTapped
@@ -43,6 +45,16 @@ class LocationSelectionViewModel @Inject constructor(
         )
     )
         private set
+
+    fun init(location: LocationInfo?) {
+        state = state.copy(
+            status = ScreenStatus.READY,
+            location = location
+        )
+        location?.let {
+            state.searchField.onChange(it.displayName, APPLICATION)
+        }
+    }
 
     fun onSubmit(navController: NavController) {
         navController.previousBackStackEntry
@@ -57,14 +69,14 @@ class LocationSelectionViewModel @Inject constructor(
 
     fun onSuggestionClick(suggestion: SuggestedLocation) {
         viewModelScope.launch {
-            val result = locationService.resolveByURI(suggestion.uri)
-            state.mapState.toggleMarkerPosition(result.location.geoPoint, result.boundingArea)
+            val location = locationService.resolveByURI(suggestion.uri)
+            state.mapState.setMarker(location.geoData, inCenter = true)
 
             state = state.copy(
-                location = result.location,
+                location = location,
                 suggestions = emptyList()
             )
-            state.searchField.onChange(result.location.displayName, APPLICATION)
+            state.searchField.onChange(location.displayName, APPLICATION)
         }
     }
 
@@ -83,22 +95,19 @@ class LocationSelectionViewModel @Inject constructor(
             )
         ) {
             viewModelScope.launch {
-                val result = locationService.getUserLocation(context)
-                state.mapState.toggleMarkerPosition(result.location.geoPoint, result.boundingArea)
-                updateLocationState(result.location)
+                val location = locationService.getUserLocation(context)
+                state.mapState.setMarker(location.geoData)
+                updateLocationState(location)
             }
         }
     }
 
     private fun onMapLongTapped(geoPoint: GeoPoint) {
         viewModelScope.launch {
-            val result = locationService.resolveByGeoPoint(geoPoint)
-            state.mapState.toggleMarkerPosition(
-                result.location.geoPoint,
-                result.boundingArea,
-                inCenter = false
-            )
-            updateLocationState(result.location)
+            val location = locationService.resolveByGeoPoint(geoPoint)
+            val geoData = location.geoData.copy(point = geoPoint) //keep users selection
+            state.mapState.setMarker(geoData, inCenter = false)
+            updateLocationState(location.copy(geoData = geoData))
         }
     }
 
@@ -131,11 +140,11 @@ class LocationSelectionViewModel @Inject constructor(
             val suggestions = locationService.getSuggestions(locationName, state.mapState.position)
             state = state.copy(suggestions = suggestions)
         }
-
 }
 
 @Stable
 data class LocationChangeState(
+    val status: ScreenStatus,
     val mapState: MapState,
     val searchField: FieldState<String>,
     val suggestions: List<SuggestedLocation> = emptyList(),

@@ -1,5 +1,9 @@
 package com.matryoshka.projectx.ui.event.form
 
+import com.matryoshka.projectx.data.map.BoundingArea
+import com.matryoshka.projectx.data.map.GeoData
+import com.matryoshka.projectx.data.map.GeoPoint
+import com.matryoshka.projectx.data.map.LocationInfo
 import com.matryoshka.projectx.ui.common.numValue
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -20,6 +24,16 @@ class EventFormStateTest {
 
     @Test
     fun `should apply initial values to fields`() {
+        val location = LocationInfo(
+            name = "Moscow",
+            address = "Moscow, Russia",
+            geoData = GeoData(
+                point = GeoPoint(0.0, 0.0),
+                BoundingArea(
+                    GeoPoint(0.0, 0.0), GeoPoint(0.0, 0.0)
+                )
+            )
+        )
         val formState = EventFormState(
             name = "title",
             summary = "summary",
@@ -27,7 +41,7 @@ class EventFormStateTest {
             public = false,
             limitMaxParticipants = true,
             maxParticipants = 12,
-            location = "moon",
+            location = location,
             interest = "astronomy"
         )
 
@@ -37,7 +51,7 @@ class EventFormStateTest {
         assertEquals(false, formState.public.value, "Public field")
         assertEquals(true, formState.limitMaxParticipants.value, "LimitMaxParticipants field")
         assertEquals(12, formState.maxParticipants.numValue, "MaxParticipants field")
-        assertEquals("moon", formState.location.value, "Location fields")
+        assertEquals(location, formState.location.value, "Location field")
         assertEquals("astronomy", formState.interest.value, "Interest field")
     }
 }

@@ -6,10 +6,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.google.gson.Gson
+import com.matryoshka.projectx.NavArgument.ARG_LOCATION
 import com.matryoshka.projectx.SavedStateKey.INTEREST_KEY
 import com.matryoshka.projectx.SavedStateKey.LOCATION_KEY
 import com.matryoshka.projectx.data.map.LocationInfo
 import com.matryoshka.projectx.navigation.Screen
+import com.matryoshka.projectx.navigation.Screen.LOCATION_SELECTION_SCREEN
 import com.matryoshka.projectx.ui.common.ScreenStatus
 import com.matryoshka.projectx.ui.common.ScreenStatus.LOADING
 import com.matryoshka.projectx.ui.common.ScreenStatus.READY
@@ -33,7 +36,8 @@ class NewEventScreenViewModel : ViewModel() {
                     LOCATION_KEY,
                     state.formState.location::onChange
                 )
-            navController.navigate(Screen.LOCATION_SELECTION_SCREEN)
+            val locationArg = Gson().toJson(state.formState.location.value)
+            navController.navigate("$LOCATION_SELECTION_SCREEN?$ARG_LOCATION=$locationArg")
         },
         onInterestClick = { navController, lifecycleOwner ->
             navController.currentBackStackEntry

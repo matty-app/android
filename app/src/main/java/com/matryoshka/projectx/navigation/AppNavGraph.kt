@@ -8,7 +8,10 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.composable
+import com.google.gson.Gson
 import com.matryoshka.projectx.NavArgument.ARG_EMAIL
+import com.matryoshka.projectx.NavArgument.ARG_LOCATION
+import com.matryoshka.projectx.data.map.LocationInfo
 import com.matryoshka.projectx.ui.email.EmailConfirmationRouter
 import com.matryoshka.projectx.ui.event.InterestSelectionScreen
 import com.matryoshka.projectx.ui.event.InterestSelectionViewModel
@@ -18,8 +21,7 @@ import com.matryoshka.projectx.ui.feed.EventsFeedScreen
 import com.matryoshka.projectx.ui.interests.InterestsRouter
 import com.matryoshka.projectx.ui.launch.LaunchScreenRouter
 import com.matryoshka.projectx.ui.launch.SignInLaunchScreenRouter
-import com.matryoshka.projectx.ui.map.LocationSelectionScreen
-import com.matryoshka.projectx.ui.map.LocationSelectionViewModel
+import com.matryoshka.projectx.ui.map.LocationSelectionRouter
 import com.matryoshka.projectx.ui.signin.SignInRouter
 import com.matryoshka.projectx.ui.signup.SignUpRouter
 
@@ -68,15 +70,19 @@ fun NavGraphBuilder.appNavGraph(navController: NavController) {
         )
     }
 
-    composable(Screen.LOCATION_SELECTION_SCREEN) {
-        val viewModel: LocationSelectionViewModel = hiltViewModel()
-        LocationSelectionScreen(
-            state = viewModel.state,
-            onSubmit = { viewModel.onSubmit(navController) },
-            onCancel = { viewModel.onCancel(navController) },
-            onCancelingSearch = viewModel::onCancelingSearch,
-            onSuggestionClick = viewModel::onSuggestionClick,
-            displayUserLocation = viewModel::displayUserLocation
+    composable(
+        route = "${Screen.LOCATION_SELECTION_SCREEN}?$ARG_LOCATION={$ARG_LOCATION}",
+        arguments = listOf(navArgument(ARG_LOCATION) {
+            type = NavType.StringType
+        })
+    ) { backStackEntry ->
+        val location = backStackEntry.arguments?.getString(ARG_LOCATION)?.let { json ->
+            Gson().fromJson(json, LocationInfo::class.java)
+        }
+        LocationSelectionRouter(
+            navController = navController,
+            viewModel = hiltViewModel(),
+            location = location
         )
     }
 

@@ -20,7 +20,7 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.matryoshka.projectx.R
-import com.matryoshka.projectx.data.map.BoundingArea
+import com.matryoshka.projectx.data.map.GeoData
 import com.matryoshka.projectx.data.map.GeoPoint
 import com.matryoshka.projectx.ui.theme.ProjectxTheme
 import com.matryoshka.projectx.utils.toBoundingBox
@@ -42,20 +42,20 @@ private const val TAG = "MapView"
 @Composable
 fun MapView(
     mapState: MapState,
-    onMapInitialized: () -> Unit = {}
+    onInit: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val mapView = remember { MapView(context) }
-    var mapInitialized = rememberSaveable { false }
+    var mapInitialized by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        mapState.init(
+        mapState.setMap(
             map = mapView.map,
             markerIcon = ContextCompat.getDrawable(context, R.drawable.map_marker)?.toBitmap()
         )
         if (!mapInitialized) {
             mapInitialized = true
-            onMapInitialized()
+            onInit()
         }
     }
 
@@ -101,11 +101,12 @@ class MapState(
     private var zoom by mutableStateOf(initialZoom)
 
     private var markerImageProvider: ImageProvider? = null
-    private var marker: PlacemarkMapObject? = null
+    private var markerMapObject: PlacemarkMapObject? = null
 
     private val cameraListener = CameraListener { _, cameraPosition, reason, isEnd ->
         if (reason == CameraUpdateReason.GESTURES) {
             if (isEnd) {
+                Log.d(TAG, "camera listener. position: $position, zoom: $zoom")
                 position = cameraPosition.target.toGeoPoint()
                 zoom = cameraPosition.zoom
             }
@@ -128,7 +129,7 @@ class MapState(
             "Map can't be null!"
         }
 
-    internal fun init(map: Map, markerIcon: Bitmap?) {
+    internal fun setMap(map: Map, markerIcon: Bitmap?) {
         Log.d(TAG, "setting map to state")
         this.map = map
         map.addInputListener(inputListener)
@@ -137,22 +138,26 @@ class MapState(
             markerImageProvider = ImageProvider.fromBitmap(it)
         }
         //set marker to map (when re-initialized)
-        marker?.let { prevMarker ->
-            marker = addMarkerToMap(prevMarker.geometry)
+        markerMapObject?.let { prevMarker ->
+            markerMapObject = addMarkerToMap(prevMarker.geometry)
         }
         move(position, zoom)
     }
 
-    fun toggleMarkerPosition(
+    fun setMarker(geoData: GeoData, inCenter: Boolean = true) {
+        val zoom = requireMap.cameraPosition(geoData.boundingArea.toBoundingBox()).zoom
+        setMarker(geoData.point, zoom, inCenter)
+    }
+
+    private fun setMarker(
         geoPoint: GeoPoint,
-        boundingArea: BoundingArea,
+        zoom: Float,
         inCenter: Boolean = true
     ) {
-        Log.d(TAG, "setMarkerPosition: $geoPoint. Center: $inCenter")
+        Log.d(TAG, "setMarker: $geoPoint. Center: $inCenter")
         val mapObjects = requireMap.mapObjects
-        val zoom = requireMap.cameraPosition(boundingArea.toBoundingBox()).zoom
-        marker?.let { mapObjects.remove(it) }
-        marker = addMarkerToMap(geoPoint.toYandexPoint())
+        markerMapObject?.let { mapObjects.remove(it) }
+        markerMapObject = addMarkerToMap(geoPoint.toYandexPoint())
         if (inCenter) {
             move(geoPoint, zoom)
         }

@@ -7,4 +7,5 @@ object SavedStateKey {
 
 object NavArgument {
     const val ARG_EMAIL = "email"
+    const val ARG_LOCATION = "location"
 }

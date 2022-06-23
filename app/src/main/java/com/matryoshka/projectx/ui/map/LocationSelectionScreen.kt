@@ -7,15 +7,12 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.material.FabPosition
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.matryoshka.projectx.data.map.SuggestedLocation
+import com.matryoshka.projectx.ui.common.ScreenStatus.READY
 import com.matryoshka.projectx.ui.common.textFieldState
 import com.matryoshka.projectx.ui.common.withAnyPermissionsGranted
 import com.matryoshka.projectx.ui.theme.ProjectxTheme
@@ -31,9 +28,6 @@ fun LocationSelectionScreen(
     displayUserLocation: (Context) -> Unit
 ) {
     val context = LocalContext.current
-    var isMapInitialized by remember {
-        mutableStateOf(false)
-    }
     val displayUserLocationIfGranted = withAnyPermissionsGranted(
         permissions = arrayOf(
             android.Manifest.permission.ACCESS_FINE_LOCATION,
@@ -58,21 +52,24 @@ fun LocationSelectionScreen(
             )
         }
     ) {
-        if (isMapInitialized) {
+        if (state.status == READY) {
             MapSearch(
                 searchField = state.searchField,
                 suggestions = state.suggestions,
                 onSuggestionClick = onSuggestionClick,
                 onCancelingSearch = onCancelingSearch
             )
+            MapView(state.mapState, onInit = {
+                val location = state.location
+                if (location == null) {
+                    displayUserLocationIfGranted()
+                } else {
+                    state.mapState.setMarker(location.geoData)
+                }
+            })
         }
-        MapView(state.mapState, onMapInitialized = {
-            isMapInitialized = true
-            displayUserLocationIfGranted()
-        })
     }
 }
-
 
 @Preview(showSystemUi = true)
 @Composable
@@ -80,6 +77,7 @@ fun LocationSelectionScreenPreview() {
     ProjectxTheme {
         LocationSelectionScreen(
             state = LocationChangeState(
+                status = READY,
                 searchField = textFieldState(""),
                 mapState = MapState(),
                 suggestions = listOf(
