@@ -95,7 +95,7 @@ private fun YandexMapLifecycle(mapView: MapView) {
 class MapState(
     initialPosition: GeoPoint = GeoPoint(0.0, 0.0),
     initialZoom: Float = 2f,
-    onLongTap: ((GeoPoint) -> Unit)? = null,
+    onTap: ((GeoPoint) -> Unit)? = null,
 ) {
     var position by mutableStateOf(initialPosition)
     private var zoom by mutableStateOf(initialZoom)
@@ -115,10 +115,11 @@ class MapState(
     }
 
     private val inputListener = object : InputListener {
-        override fun onMapTap(map: Map, point: Point) {}
+        override fun onMapTap(map: Map, point: Point) {
+            onTap?.invoke(point.toGeoPoint())
+        }
 
         override fun onMapLongTap(map: Map, point: Point) {
-            onLongTap?.invoke(point.toGeoPoint())
         }
     }
 
@@ -149,15 +150,17 @@ class MapState(
         setMarker(geoData.point, zoom, inCenter)
     }
 
-    private fun setMarker(
+    fun setMarker(
         geoPoint: GeoPoint,
-        zoom: Float,
+        zoom: Float = this.zoom,
         inCenter: Boolean = true
     ) {
         Log.d(TAG, "setMarker: $geoPoint. Center: $inCenter")
-        val mapObjects = requireMap.mapObjects
-        markerMapObject?.let { mapObjects.remove(it) }
-        markerMapObject = addMarkerToMap(geoPoint.toYandexPoint())
+        if (markerMapObject == null) {
+            markerMapObject = addMarkerToMap(geoPoint.toYandexPoint())
+        } else {
+            markerMapObject?.geometry = geoPoint.toYandexPoint()
+        }
         if (inCenter) {
             move(geoPoint, zoom)
         }

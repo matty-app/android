@@ -25,6 +25,7 @@ import com.matryoshka.projectx.ui.common.anyPermissionGranted
 import com.matryoshka.projectx.ui.common.textFieldState
 import com.matryoshka.projectx.utils.debounce
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
@@ -40,7 +41,7 @@ class LocationSelectionViewModel @Inject constructor(
             status = ScreenStatus.LOADING,
             searchField = textFieldState(onChange = ::onSearchFieldChange),
             mapState = MapState(
-                onLongTap = ::onMapLongTapped
+                onTap = ::onMapTapped
             ),
         )
     )
@@ -71,7 +72,6 @@ class LocationSelectionViewModel @Inject constructor(
         viewModelScope.launch {
             val location = locationService.resolveByURI(suggestion.uri)
             state.mapState.setMarker(location.geoData, inCenter = true)
-
             state = state.copy(
                 location = location,
                 suggestions = emptyList()
@@ -102,11 +102,12 @@ class LocationSelectionViewModel @Inject constructor(
         }
     }
 
-    private fun onMapLongTapped(geoPoint: GeoPoint) {
+    private fun onMapTapped(geoPoint: GeoPoint) {
+        state.mapState.setMarker(geoPoint, inCenter = false)
         viewModelScope.launch {
+            delay(2000L)
             val location = locationService.resolveByGeoPoint(geoPoint)
             val geoData = location.geoData.copy(point = geoPoint) //keep users selection
-            state.mapState.setMarker(geoData, inCenter = false)
             updateLocationState(location.copy(geoData = geoData))
         }
     }
