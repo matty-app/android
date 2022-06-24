@@ -6,15 +6,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
+import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.google.accompanist.navigation.animation.composable
 import com.google.gson.Gson
 import com.matryoshka.projectx.NavArgument.ARG_EMAIL
+import com.matryoshka.projectx.NavArgument.ARG_INTEREST_ID
 import com.matryoshka.projectx.NavArgument.ARG_LOCATION
 import com.matryoshka.projectx.data.map.LocationInfo
 import com.matryoshka.projectx.ui.email.EmailConfirmationRouter
-import com.matryoshka.projectx.ui.event.InterestSelectionScreen
-import com.matryoshka.projectx.ui.event.InterestSelectionViewModel
+import com.matryoshka.projectx.ui.event.InterestSelectionRouter
 import com.matryoshka.projectx.ui.event.NewEventScreen
 import com.matryoshka.projectx.ui.event.NewEventScreenViewModel
 import com.matryoshka.projectx.ui.feed.EventsFeedScreen
@@ -25,7 +25,6 @@ import com.matryoshka.projectx.ui.map.LocationSelectionRouter
 import com.matryoshka.projectx.ui.signin.SignInRouter
 import com.matryoshka.projectx.ui.signup.SignUpRouter
 
-@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.appNavGraph(navController: NavController) {
 
     composable(Screen.LAUNCH) {
@@ -86,14 +85,17 @@ fun NavGraphBuilder.appNavGraph(navController: NavController) {
         )
     }
 
-    composable(Screen.INTEREST_SELECTION_SCREEN) {
-        val viewModel: InterestSelectionViewModel = viewModel()
-        InterestSelectionScreen(
-            state = viewModel.state,
-            onInit = viewModel::onInit,
-            onInterestClick = viewModel::onInterestClick,
-            onSubmit = { viewModel.onSubmit(navController) },
-            onCancel = { viewModel.onCancel(navController) }
+    composable(
+        route = "${Screen.INTEREST_SELECTION_SCREEN}?$ARG_INTEREST_ID={$ARG_INTEREST_ID}",
+        arguments = listOf(navArgument(ARG_INTEREST_ID) {
+            type = NavType.StringType
+        })
+    ) { backStackEntry ->
+        val selectedInterestId = backStackEntry.arguments?.getString(ARG_INTEREST_ID)
+        InterestSelectionRouter(
+            navController = navController,
+            interestId = selectedInterestId,
+            viewModel = hiltViewModel()
         )
     }
 

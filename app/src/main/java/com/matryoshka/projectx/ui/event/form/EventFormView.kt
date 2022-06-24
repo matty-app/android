@@ -83,7 +83,7 @@ fun EventFormView(
                 actions.onInterestClick(navController, lifecycleOwner)
             },
             text = {
-                Text(text = state.interest.value ?: stringResource(R.string.select_interest))
+                Text(text = state.interest.value?.name ?: stringResource(R.string.select_interest))
             },
             icon = {
                 Icon(

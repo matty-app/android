@@ -1,5 +1,6 @@
 package com.matryoshka.projectx.ui.event.form
 
+import com.matryoshka.projectx.data.Interest
 import com.matryoshka.projectx.data.map.BoundingArea
 import com.matryoshka.projectx.data.map.GeoData
 import com.matryoshka.projectx.data.map.GeoPoint
@@ -34,6 +35,7 @@ class EventFormStateTest {
                 )
             )
         )
+        val interest = Interest(id = "astronomy", name = "astronomy")
         val formState = EventFormState(
             name = "title",
             summary = "summary",
@@ -42,7 +44,7 @@ class EventFormStateTest {
             limitMaxParticipants = true,
             maxParticipants = 12,
             location = location,
-            interest = "astronomy"
+            interest = Interest(id = "astronomy", name = "astronomy")
         )
 
         assertEquals("title", formState.name.value, "Title field")
@@ -52,6 +54,6 @@ class EventFormStateTest {
         assertEquals(true, formState.limitMaxParticipants.value, "LimitMaxParticipants field")
         assertEquals(12, formState.maxParticipants.numValue, "MaxParticipants field")
         assertEquals(location, formState.location.value, "Location field")
-        assertEquals("astronomy", formState.interest.value, "Interest field")
+        assertEquals(interest, formState.interest.value, "Interest field")
     }
 }

@@ -1,55 +1,61 @@
 package com.matryoshka.projectx.ui.event
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
+import androidx.compose.material.LinearProgressIndicator
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.matryoshka.projectx.data.Interest
 import com.matryoshka.projectx.ui.common.ListItem
-import com.matryoshka.projectx.ui.common.pickers.DataPickerScreen
+import com.matryoshka.projectx.ui.common.ScreenStatus.LOADING
+import com.matryoshka.projectx.ui.common.ScreenStatus.READY
+import com.matryoshka.projectx.ui.common.scaffold.TopBar
 import com.matryoshka.projectx.ui.theme.ProjectxTheme
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun InterestSelectionScreen(
     state: InterestSelectionState,
-    onInit: () -> Unit,
-    onInterestClick: (String) -> Unit,
-    onSubmit: () -> Unit,
+    onInterestClick: (Interest) -> Unit,
     onCancel: () -> Unit
 ) {
-    LaunchedEffect(Unit) {
-        onInit()
-    }
-
-    DataPickerScreen(
-        title = "Select interest",
-        onBackClicked = onCancel,
-        onSubmit = onSubmit
+    Scaffold(
+        topBar = {
+            TopBar(title = "Select interest", onBackClicked = onCancel)
+        }
     ) {
-        LazyColumn {
-            items(state.interests) { interest ->
-                InterestRow(
-                    name = interest,
-                    onClick = onInterestClick,
-                    checked = interest == state.selectedInterest
-                )
+        if (state.status == LOADING) {
+            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+        }
+        if (state.status == READY) {
+            LazyColumn {
+                items(state.interests) { interest ->
+                    InterestRow(
+                        interest = interest,
+                        onClick = onInterestClick,
+                        checked = interest.id == state.selectedInterestId
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-private fun InterestRow(name: String, onClick: (String) -> Unit, checked: Boolean) {
+private fun InterestRow(interest: Interest, onClick: (Interest) -> Unit, checked: Boolean) {
     ListItem(
-        modifier = Modifier.clickable { onClick(name) },
+        modifier = Modifier.clickable { onClick(interest) },
         text = {
-            Text(text = name)
+            Text(text = interest.name)
         },
         trailing = if (checked) {
             {
@@ -67,13 +73,15 @@ fun InterestSelectionScreenPreview() {
     ProjectxTheme {
         InterestSelectionScreen(
             state = InterestSelectionState(
-                loading = false,
-                interests = listOf("football", "piano", "books"),
-                selectedInterest = "piano"
+                status = READY,
+                interests = listOf(
+                    Interest(id = "football", name = "football"),
+                    Interest(id = "piano", name = "piano"),
+                    Interest(id = "books", name = "books"),
+                ),
+                selectedInterestId = "piano"
             ),
-            onInit = {},
             onInterestClick = {},
-            onSubmit = {},
             onCancel = {}
         )
     }

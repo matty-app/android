@@ -1,6 +1,7 @@
 package com.matryoshka.projectx.ui.event.form
 
 import androidx.compose.runtime.Stable
+import com.matryoshka.projectx.data.Interest
 import com.matryoshka.projectx.data.map.LocationInfo
 import com.matryoshka.projectx.ui.common.FieldState
 import com.matryoshka.projectx.ui.common.numberFieldState
@@ -18,7 +19,7 @@ class EventFormState(
     limitMaxParticipants: Boolean = false,
     maxParticipants: Int? = null,
     location: LocationInfo? = null,
-    interest: String? = null,
+    interest: Interest? = null,
     time: LocalTime = LocalTime.now(),
     date: LocalDate = LocalDate.now()
 ) {

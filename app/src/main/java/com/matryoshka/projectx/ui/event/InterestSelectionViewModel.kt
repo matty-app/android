@@ -1,32 +1,46 @@
 package com.matryoshka.projectx.ui.event
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.matryoshka.projectx.SavedStateKey.INTEREST_KEY
+import com.matryoshka.projectx.data.Interest
+import com.matryoshka.projectx.data.repository.InterestsRepository
+import com.matryoshka.projectx.ui.common.ScreenStatus
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class InterestSelectionViewModel : ViewModel() {
-    var state by mutableStateOf(InterestSelectionState(loading = true))
+private const val TAG = "InterestSelectionVM"
+
+@HiltViewModel
+class InterestSelectionViewModel @Inject constructor(
+    private val interestsRepository: InterestsRepository
+) : ViewModel() {
+    var state by mutableStateOf(InterestSelectionState(status = ScreenStatus.LOADING))
         private set
 
-    fun onInit() {
-        state = state.copy(loading = false, interests = interestsMock)
-    }
-
-    fun onInterestClick(name: String) {
-        state = if (state.selectedInterest == name) {
-            state.copy(selectedInterest = null)
-        } else {
-            state.copy(selectedInterest = name)
+    init {
+        viewModelScope.launch {
+            val interests = interestsRepository.getAll()
+            state = state.copy(interests = interests)
         }
+
     }
 
-    fun onSubmit(navController: NavController) {
+    fun init(selectedInterestId: String?) {
+        Log.d(TAG, "init: selectedInterestId: $selectedInterestId")
+        state = state.copy(status = ScreenStatus.READY, selectedInterestId = selectedInterestId)
+    }
+
+    fun onInterestClick(navController: NavController, interest: Interest) {
         navController.previousBackStackEntry
             ?.savedStateHandle
-            ?.set(INTEREST_KEY, state.selectedInterest)
+            ?.set(INTEREST_KEY, interest)
         navController.popBackStack()
     }
 
@@ -36,13 +50,7 @@ class InterestSelectionViewModel : ViewModel() {
 }
 
 data class InterestSelectionState(
-    val loading: Boolean,
-    val interests: List<String> = emptyList(),
-    val selectedInterest: String? = null
-)
-
-private val interestsMock = listOf(
-    "Football",
-    "Chess",
-    "Traveling"
+    val status: ScreenStatus,
+    val interests: List<Interest> = emptyList(),
+    val selectedInterestId: String? = null
 )

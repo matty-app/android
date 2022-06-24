@@ -7,6 +7,10 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.material.FabPosition
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,6 +40,9 @@ fun LocationSelectionScreen(
     ) {
         displayUserLocation(context)
     }
+    var exitFromScreen by remember { // fix map blinking on navigation
+        mutableStateOf(false)
+    }
 
     Scaffold(
         floatingActionButtonPosition = FabPosition.End,
@@ -46,13 +53,19 @@ fun LocationSelectionScreen(
         },
         topBar = {
             MapScreenTopBar(
-                onBackClick = onCancel,
-                onDoneClick = onSubmit,
+                onBackClick = {
+                    exitFromScreen = true
+                    onCancel()
+                },
+                onDoneClick = {
+                    exitFromScreen = true
+                    onSubmit()
+                },
                 isDoneButtonVisible = state.location != null
             )
         }
     ) {
-        if (state.status == READY) {
+        if (state.status == READY && !exitFromScreen) {
             MapSearch(
                 searchField = state.searchField,
                 suggestions = state.suggestions,

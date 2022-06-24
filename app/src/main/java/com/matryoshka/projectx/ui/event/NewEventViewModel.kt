@@ -7,11 +7,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.google.gson.Gson
+import com.matryoshka.projectx.NavArgument.ARG_INTEREST_ID
 import com.matryoshka.projectx.NavArgument.ARG_LOCATION
 import com.matryoshka.projectx.SavedStateKey.INTEREST_KEY
 import com.matryoshka.projectx.SavedStateKey.LOCATION_KEY
+import com.matryoshka.projectx.data.Interest
 import com.matryoshka.projectx.data.map.LocationInfo
-import com.matryoshka.projectx.navigation.Screen
+import com.matryoshka.projectx.navigation.Screen.INTEREST_SELECTION_SCREEN
 import com.matryoshka.projectx.navigation.Screen.LOCATION_SELECTION_SCREEN
 import com.matryoshka.projectx.ui.common.ScreenStatus
 import com.matryoshka.projectx.ui.common.ScreenStatus.LOADING
@@ -36,18 +38,18 @@ class NewEventScreenViewModel : ViewModel() {
                     LOCATION_KEY,
                     state.formState.location::onChange
                 )
-            val locationArg = Gson().toJson(state.formState.location.value)
-            navController.navigate("$LOCATION_SELECTION_SCREEN?$ARG_LOCATION=$locationArg")
+            val locationJson = Gson().toJson(state.formState.location.value)
+            navController.navigate("$LOCATION_SELECTION_SCREEN?$ARG_LOCATION=$locationJson")
         },
         onInterestClick = { navController, lifecycleOwner ->
             navController.currentBackStackEntry
                 ?.savedStateHandle
-                ?.observeOnce<String>(
+                ?.observeOnce<Interest>(
                     lifecycleOwner,
                     INTEREST_KEY,
                     state.formState.interest::onChange
                 )
-            navController.navigate(Screen.INTEREST_SELECTION_SCREEN)
+            navController.navigate("$INTEREST_SELECTION_SCREEN?$ARG_INTEREST_ID=${state.formState.interest.value?.id ?: ""}")
         }
     )
 
