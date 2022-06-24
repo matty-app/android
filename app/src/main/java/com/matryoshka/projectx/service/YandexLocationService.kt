@@ -53,7 +53,7 @@ class YandexLocationService(
     constructor(@ApplicationContext context: Context) : this(
         context,
         searchManagerProvider = {
-            SearchFactory.getInstance().createSearchManager(COMBINED)
+            SearchFactory.getInstance().createSearchManager(COMBINED) //must be called in UI thread
         }
     )
 
@@ -81,7 +81,7 @@ class YandexLocationService(
     }
 
     suspend fun resolveByGeoPoint(geoPoint: GeoPoint): LocationInfo {
-        val result = suspendCancellableCoroutine<LocationInfo> { continuation ->
+        return suspendCancellableCoroutine { continuation ->
             val session = searchManager.submit(
                 geoPoint.toYandexPoint(),
                 SEARCHING_ZOOM,
@@ -93,8 +93,6 @@ class YandexLocationService(
                 session.cancel()
             }
         }
-
-        return result
     }
 
     @SuppressLint("MissingPermission")

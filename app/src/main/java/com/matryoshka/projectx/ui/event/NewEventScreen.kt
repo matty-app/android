@@ -2,6 +2,7 @@ package com.matryoshka.projectx.ui.event
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
@@ -19,8 +20,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.matryoshka.projectx.R
-import com.matryoshka.projectx.ui.common.scaffold.TopBar
 import com.matryoshka.projectx.ui.common.ScreenStatus
+import com.matryoshka.projectx.ui.common.scaffold.TopBar
 import com.matryoshka.projectx.ui.event.form.EventFormActions
 import com.matryoshka.projectx.ui.event.form.EventFormView
 import com.matryoshka.projectx.ui.theme.ProjectxTheme
@@ -57,17 +58,19 @@ fun NewEventScreen(
             }
         }
     ) {
-        if (state.showProgress) {
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+        Column(Modifier.padding(top = 16.dp)) {
+            if (state.showProgress) {
+                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            }
+            if (state.displayForm) {
+                EventFormView(
+                    state = state.formState,
+                    actions = eventFormActions,
+                    navController = navController
+                )
+            }
         }
 
-        if (state.displayForm) {
-            EventFormView(
-                state = state.formState,
-                actions = eventFormActions,
-                navController = navController
-            )
-        }
     }
 }
 
