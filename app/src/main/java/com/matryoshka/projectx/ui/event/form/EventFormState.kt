@@ -9,6 +9,9 @@ import com.matryoshka.projectx.ui.common.switchState
 import com.matryoshka.projectx.ui.common.textFieldState
 import java.time.LocalDateTime
 
+private const val STARTING_DELAY_MIN = 5L
+private const val DEFAULT_DURATION_HR = 3L
+
 @Stable
 class EventFormState(
     name: String = "",
@@ -20,8 +23,8 @@ class EventFormState(
     maxParticipants: Int? = null,
     location: LocationInfo? = null,
     interest: Interest? = null,
-    startDate: LocalDateTime = LocalDateTime.now().plusMinutes(5),
-    endDate: LocalDateTime = startDate.plusHours(3),
+    startDate: LocalDateTime = LocalDateTime.now().plusMinutes(STARTING_DELAY_MIN),
+    endDate: LocalDateTime = startDate.plusHours(DEFAULT_DURATION_HR),
 ) {
     val nameField = textFieldState(name)
     val summaryField = textFieldState(summary)

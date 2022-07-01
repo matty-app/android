@@ -2,7 +2,10 @@ package com.matryoshka.projectx.ui.event
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
@@ -14,6 +17,7 @@ import androidx.compose.material.icons.outlined.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.matryoshka.projectx.data.interest.Interest
 import com.matryoshka.projectx.ui.common.ListItem
 import com.matryoshka.projectx.ui.common.ScreenStatus.LOADING
@@ -55,7 +59,13 @@ private fun InterestRow(interest: Interest, onClick: (Interest) -> Unit, checked
     ListItem(
         modifier = Modifier.clickable { onClick(interest) },
         text = {
-            Text(text = interest.name)
+            Row {
+                Text(text = interest.name)
+                interest.emoji?.let { emoji ->
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(text = emoji)
+                }
+            }
         },
         trailing = if (checked) {
             {
