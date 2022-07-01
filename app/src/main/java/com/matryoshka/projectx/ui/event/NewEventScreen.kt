@@ -32,7 +32,8 @@ fun NewEventScreen(
     navController: NavController,
     state: NewEventState,
     eventFormActions: EventFormActions,
-    onInit: () -> Unit
+    onInit: () -> Unit,
+    onSubmit: (NavController) -> Unit
 ) {
     LaunchedEffect(Unit) {
         onInit()
@@ -47,6 +48,7 @@ fun NewEventScreen(
             Box(modifier = Modifier.padding(14.dp)) {
                 Button(
                     onClick = {
+                        onSubmit(navController)
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -82,7 +84,8 @@ fun NewEventScreenPreview() {
             state = NewEventState(status = ScreenStatus.READY),
             onInit = {},
             eventFormActions = EventFormActions(),
-            navController = rememberNavController()
+            navController = rememberNavController(),
+            onSubmit = {}
         )
     }
 }

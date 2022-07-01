@@ -5,15 +5,15 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.actionCodeSettings
 import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.matryoshka.projectx.BuildConfig
-import com.matryoshka.projectx.data.User
-import com.matryoshka.projectx.data.toProjectxUser
+import com.matryoshka.projectx.data.user.User
+import com.matryoshka.projectx.data.user.toProjectxUser
 import com.matryoshka.projectx.exception.CheckEmailExistsException
 import com.matryoshka.projectx.exception.SendSignInLinkToEmailException
 import com.matryoshka.projectx.exception.SignInByEmailLinkException
 import com.matryoshka.projectx.exception.SignUpByEmailLinkException
 import com.matryoshka.projectx.exception.UpdateUserException
-import javax.inject.Inject
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
 private const val TAG = "FirebaseAuthService"
 const val SIGN_UP_URL = "https://appprojectx.page.link/signUpFinish"
@@ -48,7 +48,7 @@ class FirebaseAuthService @Inject constructor(private val auth: FirebaseAuth) : 
             val user = result.user?.toProjectxUser()
                 ?: throw NullPointerException("auth.signInWithEmailLink result.user == null")
 
-            Log.i(TAG, "user ${user.uid} signed in")
+            Log.i(TAG, "user ${user.id} signed in")
             return user
         } catch (ex: Exception) {
             Log.e(TAG, "signInByEmailLink $email: ${ex.message}")
@@ -85,7 +85,7 @@ class FirebaseAuthService @Inject constructor(private val auth: FirebaseAuth) : 
         try {
             val firebaseUser = auth.currentUser
             if (firebaseUser == null) {
-                val message = "User ${user.uid} is signed out"
+                val message = "User ${user.id} is signed out"
                 Log.e(TAG, "updateUser: $message")
                 throw NullPointerException(message)
             }
@@ -93,7 +93,7 @@ class FirebaseAuthService @Inject constructor(private val auth: FirebaseAuth) : 
             val profileUpdates = userProfileChangeRequest { displayName = user.name }
             firebaseUser.updateProfile(profileUpdates).await()
         } catch (ex: Exception) {
-            Log.e(TAG, "updateUser ${user.uid}: ${ex.message}")
+            Log.e(TAG, "updateUser ${user.id}: ${ex.message}")
             throw UpdateUserException(ex)
         }
     }

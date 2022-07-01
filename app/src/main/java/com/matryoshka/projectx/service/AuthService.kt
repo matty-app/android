@@ -1,6 +1,7 @@
 package com.matryoshka.projectx.service
 
-import com.matryoshka.projectx.data.User
+import com.matryoshka.projectx.data.user.User
+import com.matryoshka.projectx.exception.ProjectxException
 
 interface AuthService {
 
@@ -18,3 +19,8 @@ interface AuthService {
 
     suspend fun updateUser(user: User)
 }
+
+val AuthService.requireUser: User
+    get() = requireNotNull(getCurrentUser()) {
+        ProjectxException("User can't be null!")
+    }

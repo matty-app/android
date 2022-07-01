@@ -2,8 +2,8 @@ package com.matryoshka.projectx.ui.viewmodel
 
 import android.content.Intent
 import android.content.SharedPreferences
-import com.matryoshka.projectx.data.User
-import com.matryoshka.projectx.data.repository.UsersRepository
+import com.matryoshka.projectx.data.user.User
+import com.matryoshka.projectx.data.user.UsersRepository
 import com.matryoshka.projectx.exception.ProjectxException
 import com.matryoshka.projectx.service.AuthService
 import com.matryoshka.projectx.support.CoroutineDispatcherRule
@@ -32,7 +32,7 @@ class SignInLaunchViewModelTest {
     val coroutineDispatcherRule = CoroutineDispatcherRule()
 
     private val user = User(
-        uid = "1",
+        id = "1",
         name = "John",
         email = "john@gmail.com"
     )
@@ -60,7 +60,7 @@ class SignInLaunchViewModelTest {
             every { isNewUser } returns true
         }
         val authService = mockk<AuthService>().apply {
-            coEvery { signUpByEmailLink(user.email!!, user.name!!, link) } returns user
+            coEvery { signUpByEmailLink(user.email!!, user.name, link) } returns user
         }
         val usersRepository = mockk<UsersRepository>().apply {
             coJustRun { save(any()) }

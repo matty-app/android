@@ -8,8 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.matryoshka.projectx.SavedStateKey.INTEREST_KEY
-import com.matryoshka.projectx.data.Interest
-import com.matryoshka.projectx.data.repository.InterestsRepository
+import com.matryoshka.projectx.data.interest.Interest
+import com.matryoshka.projectx.data.interest.InterestsRepository
 import com.matryoshka.projectx.ui.common.ScreenStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

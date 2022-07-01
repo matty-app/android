@@ -20,8 +20,8 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.matryoshka.projectx.R
+import com.matryoshka.projectx.data.map.Coordinates
 import com.matryoshka.projectx.data.map.GeoData
-import com.matryoshka.projectx.data.map.GeoPoint
 import com.matryoshka.projectx.ui.theme.ProjectxTheme
 import com.matryoshka.projectx.utils.toBoundingBox
 import com.matryoshka.projectx.utils.toGeoPoint
@@ -93,9 +93,9 @@ private fun YandexMapLifecycle(mapView: MapView) {
 
 @Stable
 class MapState(
-    initialPosition: GeoPoint = GeoPoint(0.0, 0.0),
+    initialPosition: Coordinates = Coordinates(0.0, 0.0),
     initialZoom: Float = 2f,
-    onTap: ((GeoPoint) -> Unit)? = null,
+    onTap: ((Coordinates) -> Unit)? = null,
 ) {
     var position by mutableStateOf(initialPosition)
     private var zoom by mutableStateOf(initialZoom)
@@ -146,23 +146,25 @@ class MapState(
     }
 
     fun setMarker(geoData: GeoData, inCenter: Boolean = true) {
-        val zoom = requireMap.cameraPosition(geoData.boundingArea.toBoundingBox()).zoom
-        setMarker(geoData.point, zoom, inCenter)
+        val zoom = geoData.boundingArea?.let {
+            requireMap.cameraPosition(it.toBoundingBox()).zoom
+        } ?: this.zoom
+        setMarker(geoData.coordinates, zoom, inCenter)
     }
 
     fun setMarker(
-        geoPoint: GeoPoint,
+        coordinates: Coordinates,
         zoom: Float = this.zoom,
         inCenter: Boolean = true
     ) {
-        Log.d(TAG, "setMarker: $geoPoint. Center: $inCenter")
+        Log.d(TAG, "setMarker: $coordinates. Center: $inCenter")
         if (markerMapObject == null) {
-            markerMapObject = addMarkerToMap(geoPoint.toYandexPoint())
+            markerMapObject = addMarkerToMap(coordinates.toYandexPoint())
         } else {
-            markerMapObject?.geometry = geoPoint.toYandexPoint()
+            markerMapObject?.geometry = coordinates.toYandexPoint()
         }
         if (inCenter) {
-            move(geoPoint, zoom)
+            move(coordinates, zoom)
         }
     }
 
@@ -173,12 +175,12 @@ class MapState(
         } ?: mapObjects.addPlacemark(point)
     }
 
-    private fun move(geoPoint: GeoPoint, zoom: Float = this.zoom) {
-        Log.d(TAG, "moving to position $geoPoint with zoom $zoom")
+    private fun move(coordinates: Coordinates, zoom: Float = this.zoom) {
+        Log.d(TAG, "moving to position $coordinates with zoom $zoom")
         this.zoom = zoom
-        this.position = geoPoint
+        this.position = coordinates
         val position = CameraPosition(
-            Point(geoPoint.latitude, geoPoint.longitude),
+            Point(coordinates.latitude, coordinates.longitude),
             zoom,
             0f, //azimuth
             0f //tilt
@@ -193,7 +195,7 @@ fun MapPreview() {
     ProjectxTheme {
         MapView(
             mapState = MapState(
-                initialPosition = GeoPoint(59.945933, 30.320045),
+                initialPosition = Coordinates(59.945933, 30.320045),
                 initialZoom = 2f
             )
         )

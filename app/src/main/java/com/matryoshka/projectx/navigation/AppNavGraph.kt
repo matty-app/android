@@ -1,8 +1,6 @@
 package com.matryoshka.projectx.navigation
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
@@ -60,12 +58,13 @@ fun NavGraphBuilder.appNavGraph(navController: NavController) {
     }
 
     composable(Screen.NEW_EVENT_SCREEN) {
-        val viewModel: NewEventScreenViewModel = viewModel()
+        val viewModel: NewEventScreenViewModel = hiltViewModel()
         NewEventScreen(
             navController = navController,
             state = viewModel.state,
-            eventFormActions = viewModel.eventFormActions,
-            onInit = viewModel::init
+            eventFormActions = viewModel.formActions,
+            onInit = viewModel::init,
+            onSubmit = viewModel::onSubmit
         )
     }
 

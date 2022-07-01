@@ -8,7 +8,7 @@ import com.matryoshka.projectx.data.map.LocationInfo
 
 private const val TAG = "SavedStateHandleUtils"
 
-fun <T> SavedStateHandle.observeOnce(
+fun <T> SavedStateHandle.observeAlone(
     lifecycleOwner: LifecycleOwner,
     key: String,
     consumer: (T) -> Unit

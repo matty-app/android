@@ -4,9 +4,9 @@ import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import com.matryoshka.projectx.data.User
-import com.matryoshka.projectx.data.repository.firestore.FIRESTORE_USERS
-import com.matryoshka.projectx.data.repository.firestore.FirestoreUsersRepository
+import com.matryoshka.projectx.data.user.FIRESTORE_USERS
+import com.matryoshka.projectx.data.user.FirestoreUsersRepository
+import com.matryoshka.projectx.data.user.User
 import com.matryoshka.projectx.exception.SaveUserException
 import com.matryoshka.projectx.support.taskMock
 import com.matryoshka.projectx.support.voidObject
@@ -21,7 +21,7 @@ import kotlin.test.assertFailsWith
 
 @ExperimentalCoroutinesApi
 class FirestoreUsersRepositoryTest {
-    val user = User(uid = "1", name = "John", email = "john@gmail.com")
+    private val user = User(id = "1", name = "John", email = "john@gmail.com")
 
     @Test
     fun `should save user`() = runTest {
@@ -34,12 +34,12 @@ class FirestoreUsersRepositoryTest {
         val firestore = mockk<FirebaseFirestore>().apply {
             every { collection(any()) } returns collectionReference
         }
-        val repository = FirestoreUsersRepository(firestore)
+        val repository = FirestoreUsersRepository(firestore, mockk(relaxed = true))
 
         repository.save(user)
 
         verify { firestore.collection(FIRESTORE_USERS) }
-        verify { collectionReference.document(user.uid) }
+        verify { collectionReference.document(user.id) }
         verify { document.set(any(), SetOptions.merge()) }
     }
 
@@ -48,7 +48,7 @@ class FirestoreUsersRepositoryTest {
         val firestore = mockk<FirebaseFirestore>().apply {
             coEvery { collection(any()) } throws Exception()
         }
-        val repository = FirestoreUsersRepository(firestore)
+        val repository = FirestoreUsersRepository(firestore, mockk(relaxed = true))
 
         assertFailsWith<SaveUserException> { repository.save(user) }
     }

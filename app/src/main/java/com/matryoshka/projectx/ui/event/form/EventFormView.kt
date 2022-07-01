@@ -45,8 +45,8 @@ fun EventFormView(
         modifier = Modifier.padding(horizontal = 16.dp)
     ) {
         OutlinedTextFieldSm(
-            value = state.name.value,
-            onValueChange = state.name::onChange,
+            value = state.nameField.value,
+            onValueChange = state.nameField::onChange,
             modifier = Modifier.fillMaxWidth(),
             trailingIcon = {
                 Icon(Icons.Outlined.Info, stringResource(R.string.info))
@@ -56,8 +56,8 @@ fun EventFormView(
             }
         )
         OutlinedTextFieldSm(
-            value = state.summary.value,
-            onValueChange = state.summary::onChange,
+            value = state.summaryField.value,
+            onValueChange = state.summaryField::onChange,
             modifier = Modifier.fillMaxWidth(),
             trailingIcon = {
                 Icon(Icons.Outlined.Info, stringResource(R.string.info))
@@ -67,8 +67,8 @@ fun EventFormView(
             }
         )
         OutlinedTextFieldSm(
-            value = state.details.value,
-            onValueChange = state.details::onChange,
+            value = state.detailsField.value,
+            onValueChange = state.detailsField::onChange,
             modifier = Modifier.fillMaxWidth(),
             trailingIcon = {
                 Icon(Icons.Outlined.Info, stringResource(id = R.string.info))
@@ -83,7 +83,10 @@ fun EventFormView(
                 actions.onInterestClick(navController, lifecycleOwner)
             },
             text = {
-                Text(text = state.interest.value?.name ?: stringResource(R.string.select_interest))
+                Text(
+                    text = state.interestField.value?.name
+                        ?: stringResource(R.string.select_interest)
+                )
             },
             icon = {
                 Icon(
@@ -104,7 +107,10 @@ fun EventFormView(
                 actions.onLocationClick(navController, lifecycleOwner)
             },
             text = {
-                Text(text = state.location.value?.displayName ?: stringResource(R.string.location))
+                Text(
+                    text = state.locationField.value?.displayName
+                        ?: stringResource(R.string.location)
+                )
             },
             icon = {
                 Icon(
@@ -120,9 +126,9 @@ fun EventFormView(
                 )
             }
         )
-        EventDateTimeField(
-            dateField = state.date,
-            timeField = state.time
+        EventDuration(
+            startDateField = state.startDateField,
+            endDateField = state.endDateField
         )
         ListItem(
             text = {
@@ -130,8 +136,19 @@ fun EventFormView(
             },
             trailing = {
                 Switch(
-                    checked = state.public.value,
-                    onCheckedChange = state.public::onChange
+                    checked = state.isPublicField.value,
+                    onCheckedChange = state.isPublicField::onChange
+                )
+            }
+        )
+        ListItem(
+            text = {
+                Text(text = stringResource(R.string.event_with_approval))
+            },
+            trailing = {
+                Switch(
+                    checked = state.withApprovalField.value,
+                    onCheckedChange = state.withApprovalField::onChange
                 )
             }
         )
@@ -141,15 +158,15 @@ fun EventFormView(
             },
             trailing = {
                 Switch(
-                    checked = state.limitMaxParticipants.value,
-                    onCheckedChange = state.limitMaxParticipants::onChange
+                    checked = state.limitMaxParticipantsField.value,
+                    onCheckedChange = state.limitMaxParticipantsField::onChange
                 )
             }
         )
-        if (state.limitMaxParticipants.value) {
+        if (state.limitMaxParticipantsField.value) {
             TextField(
-                value = state.maxParticipants.value ?: "",
-                onValueChange = state.maxParticipants::onChange,
+                value = state.maxParticipantsField.value ?: "",
+                onValueChange = state.maxParticipantsField::onChange,
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number

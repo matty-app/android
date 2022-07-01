@@ -1,6 +1,6 @@
 package com.matryoshka.projectx.ui.viewmodel
 
-import com.matryoshka.projectx.data.User
+import com.matryoshka.projectx.data.user.User
 import com.matryoshka.projectx.service.AuthService
 import com.matryoshka.projectx.support.CoroutineDispatcherRule
 import com.matryoshka.projectx.ui.launch.LaunchViewModel

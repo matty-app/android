@@ -1,7 +1,7 @@
 
 package com.matryoshka.projectx.data.map
 
-data class GeoPoint(
+data class Coordinates(
     val latitude: Double,
     val longitude: Double
 )

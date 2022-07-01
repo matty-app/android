@@ -3,15 +3,15 @@ package com.matryoshka.projectx.data.map
 import java.io.Serializable
 
 data class LocationInfo(
-    val name: String?,
     val address: String,
-    val geoData: GeoData
+    val geoData: GeoData,
+    val name: String?
 ) : Serializable {
     val displayName: String
         get() = name ?: address
 }
 
 data class GeoData(
-    val point: GeoPoint,
-    val boundingArea: BoundingArea
+    val coordinates: Coordinates,
+    val boundingArea: BoundingArea? = null
 )

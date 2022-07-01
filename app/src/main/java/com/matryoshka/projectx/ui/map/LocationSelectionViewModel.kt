@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.matryoshka.projectx.SavedStateKey.LOCATION_KEY
-import com.matryoshka.projectx.data.map.GeoPoint
+import com.matryoshka.projectx.data.map.Coordinates
 import com.matryoshka.projectx.data.map.LocationInfo
 import com.matryoshka.projectx.data.map.SuggestedLocation
 import com.matryoshka.projectx.service.YandexLocationService
@@ -25,7 +25,6 @@ import com.matryoshka.projectx.ui.common.anyPermissionGranted
 import com.matryoshka.projectx.ui.common.textFieldState
 import com.matryoshka.projectx.utils.debounce
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
@@ -41,7 +40,7 @@ class LocationSelectionViewModel @Inject constructor(
             status = ScreenStatus.LOADING,
             searchField = textFieldState(onChange = ::onSearchFieldChange),
             mapState = MapState(
-                onTap = ::onMapTapped
+                onTap = createOnMapTapHandler()
             ),
         )
     )
@@ -102,13 +101,18 @@ class LocationSelectionViewModel @Inject constructor(
         }
     }
 
-    private fun onMapTapped(geoPoint: GeoPoint) {
-        state.mapState.setMarker(geoPoint, inCenter = false)
-        viewModelScope.launch {
-            delay(2000L)
-            val location = locationService.resolveByGeoPoint(geoPoint)
-            val geoData = location.geoData.copy(point = geoPoint) //keep users selection
-            updateLocationState(location.copy(geoData = geoData))
+    private fun createOnMapTapHandler(): (Coordinates) -> Unit {
+        val resolveLocation =
+            viewModelScope.debounce<Coordinates>(800.milliseconds) { coordinates ->
+                val location = locationService.resolveByCoordinates(coordinates)
+                val geoData =
+                    location.geoData.copy(coordinates = coordinates) //keep users selection
+                updateLocationState(location.copy(geoData = geoData))
+
+            }
+        return { coordinates ->
+            state.mapState.setMarker(coordinates, inCenter = false)
+            resolveLocation(coordinates)
         }
     }
 

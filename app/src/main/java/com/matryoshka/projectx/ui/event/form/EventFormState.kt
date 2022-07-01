@@ -1,14 +1,13 @@
 package com.matryoshka.projectx.ui.event.form
 
 import androidx.compose.runtime.Stable
-import com.matryoshka.projectx.data.Interest
+import com.matryoshka.projectx.data.interest.Interest
 import com.matryoshka.projectx.data.map.LocationInfo
 import com.matryoshka.projectx.ui.common.FieldState
 import com.matryoshka.projectx.ui.common.numberFieldState
 import com.matryoshka.projectx.ui.common.switchState
 import com.matryoshka.projectx.ui.common.textFieldState
-import java.time.LocalDate
-import java.time.LocalTime
+import java.time.LocalDateTime
 
 @Stable
 class EventFormState(
@@ -16,30 +15,32 @@ class EventFormState(
     summary: String = "",
     details: String = "",
     public: Boolean = true,
+    withApproval: Boolean = false,
     limitMaxParticipants: Boolean = false,
     maxParticipants: Int? = null,
     location: LocationInfo? = null,
     interest: Interest? = null,
-    time: LocalTime = LocalTime.now(),
-    date: LocalDate = LocalDate.now()
+    startDate: LocalDateTime = LocalDateTime.now().plusMinutes(5),
+    endDate: LocalDateTime = startDate.plusHours(3),
 ) {
-    val name = textFieldState(name)
-    val summary = textFieldState(summary)
-    val details = textFieldState(details)
-    val public = switchState(public)
-    val limitMaxParticipants = switchState(
+    val nameField = textFieldState(name)
+    val summaryField = textFieldState(summary)
+    val detailsField = textFieldState(details)
+    val isPublicField = switchState(public)
+    val withApprovalField = switchState(withApproval)
+    val limitMaxParticipantsField = switchState(
         checked = limitMaxParticipants,
         onChange = { _, newValue, _ ->
             if (!newValue) {
-                this.maxParticipants.onChange("")
+                this.maxParticipantsField.onChange("")
             }
             true
         }
     )
-    val maxParticipants = numberFieldState(maxParticipants)
-    val date = FieldState(date)
-    val time = FieldState(time)
-    val interest = FieldState(interest)
-    val location = FieldState(location)
+    val maxParticipantsField = numberFieldState(maxParticipants)
+    val startDateField = FieldState(startDate)
+    val endDateField = FieldState(endDate)
+    val interestField = FieldState(interest)
+    val locationField = FieldState(location)
 
 }

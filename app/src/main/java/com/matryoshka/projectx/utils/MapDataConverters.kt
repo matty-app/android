@@ -2,13 +2,13 @@ package com.matryoshka.projectx.utils
 
 import android.location.Location
 import com.matryoshka.projectx.data.map.BoundingArea
-import com.matryoshka.projectx.data.map.GeoPoint
+import com.matryoshka.projectx.data.map.Coordinates
 import com.yandex.mapkit.geometry.BoundingBox
 import com.yandex.mapkit.geometry.Point
 
 fun BoundingBox.toBoundingArea() = BoundingArea(
-    southWest = GeoPoint(southWest.latitude, southWest.longitude),
-    northEast = GeoPoint(northEast.latitude, northEast.longitude)
+    southWest = Coordinates(southWest.latitude, southWest.longitude),
+    northEast = Coordinates(northEast.latitude, northEast.longitude)
 )
 
 fun BoundingArea.toBoundingBox() = BoundingBox(
@@ -16,8 +16,8 @@ fun BoundingArea.toBoundingBox() = BoundingBox(
     Point(northEast.latitude, northEast.longitude)
 )
 
-fun Location.toGeoPoint() = GeoPoint(latitude, longitude)
+fun Location.toGeoPoint() = Coordinates(latitude, longitude)
 
-fun Point.toGeoPoint() = GeoPoint(latitude, longitude)
+fun Point.toGeoPoint() = Coordinates(latitude, longitude)
 
-fun GeoPoint.toYandexPoint() = Point(latitude, longitude)
+fun Coordinates.toYandexPoint() = Point(latitude, longitude)

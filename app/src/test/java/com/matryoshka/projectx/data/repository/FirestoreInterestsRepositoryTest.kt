@@ -4,10 +4,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.toObject
-import com.matryoshka.projectx.data.Interest
-import com.matryoshka.projectx.data.repository.firestore.FIRESTORE_INTERESTS
-import com.matryoshka.projectx.data.repository.firestore.FirestoreInterest
-import com.matryoshka.projectx.data.repository.firestore.FirestoreInterestsRepository
+import com.matryoshka.projectx.data.interest.Interest
+import com.matryoshka.projectx.data.interest.FIRESTORE_INTERESTS
+import com.matryoshka.projectx.data.interest.FirestoreInterest
+import com.matryoshka.projectx.data.interest.FirestoreInterestsRepository
 import com.matryoshka.projectx.exception.GetInterestsException
 import com.matryoshka.projectx.support.mockIterable
 import com.matryoshka.projectx.support.taskMock

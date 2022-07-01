@@ -6,9 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.matryoshka.projectx.data.Interest
-import com.matryoshka.projectx.data.repository.InterestsRepository
-import com.matryoshka.projectx.data.repository.UsersRepository
+import com.matryoshka.projectx.data.interest.Interest
+import com.matryoshka.projectx.data.interest.InterestsRepository
+import com.matryoshka.projectx.data.user.UsersRepository
 import com.matryoshka.projectx.exception.ProjectxException
 import com.matryoshka.projectx.service.AuthService
 import com.matryoshka.projectx.ui.common.ScreenStatus

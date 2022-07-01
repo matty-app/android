@@ -5,7 +5,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import com.matryoshka.projectx.data.Interest
+import com.matryoshka.projectx.data.interest.Interest
 import com.matryoshka.projectx.support.TestAction
 import com.matryoshka.projectx.ui.interests.InterestState
 import com.matryoshka.projectx.ui.interests.InterestsScreen

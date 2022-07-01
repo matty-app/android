@@ -1,9 +1,9 @@
 package com.matryoshka.projectx.ui.viewmodel
 
-import com.matryoshka.projectx.data.Interest
-import com.matryoshka.projectx.data.User
-import com.matryoshka.projectx.data.repository.InterestsRepository
-import com.matryoshka.projectx.data.repository.UsersRepository
+import com.matryoshka.projectx.data.interest.Interest
+import com.matryoshka.projectx.data.interest.InterestsRepository
+import com.matryoshka.projectx.data.user.User
+import com.matryoshka.projectx.data.user.UsersRepository
 import com.matryoshka.projectx.exception.ProjectxException
 import com.matryoshka.projectx.service.AuthService
 import com.matryoshka.projectx.support.CoroutineDispatcherRule
@@ -30,7 +30,7 @@ class InterestsViewModelTests {
     val coroutineDispatcherRule = CoroutineDispatcherRule()
 
     private val user = User(
-        uid = "1",
+        id = "1",
         name = "John",
         email = "john@gmail.com"
     )

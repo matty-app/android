@@ -36,12 +36,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.matryoshka.projectx.R
-import com.matryoshka.projectx.data.Interest
+import com.matryoshka.projectx.data.interest.Interest
 import com.matryoshka.projectx.ui.common.ErrorToast
 import com.matryoshka.projectx.ui.common.FlexRow
 import com.matryoshka.projectx.ui.theme.Gray
 import com.matryoshka.projectx.ui.theme.ProjectxTheme
-import com.matryoshka.projectx.data.Interest as InterestModel
+import com.matryoshka.projectx.data.interest.Interest as InterestModel
 
 private const val FOOTER_HEIGHT = 130
 

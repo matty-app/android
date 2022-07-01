@@ -14,7 +14,7 @@ import androidx.compose.material.icons.outlined.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.matryoshka.projectx.data.Interest
+import com.matryoshka.projectx.data.interest.Interest
 import com.matryoshka.projectx.ui.common.ListItem
 import com.matryoshka.projectx.ui.common.ScreenStatus.LOADING
 import com.matryoshka.projectx.ui.common.ScreenStatus.READY

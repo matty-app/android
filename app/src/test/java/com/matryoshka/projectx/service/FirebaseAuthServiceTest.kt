@@ -4,7 +4,7 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.SignInMethodQueryResult
-import com.matryoshka.projectx.data.User
+import com.matryoshka.projectx.data.user.User
 import com.matryoshka.projectx.exception.CheckEmailExistsException
 import com.matryoshka.projectx.exception.SendSignInLinkToEmailException
 import com.matryoshka.projectx.exception.SignInByEmailLinkException
@@ -170,7 +170,7 @@ class FirebaseAuthServiceTest {
     @Test
     fun `updateUser should throw UpdateUserException if user is signed out`() =
         runTest {
-            val expectedMessage = "User ${testUser.uid} is signed out"
+            val expectedMessage = "User ${testUser.id} is signed out"
             val firebaseAuth = mockk<FirebaseAuth>().apply {
                 every { currentUser } returns null
             }

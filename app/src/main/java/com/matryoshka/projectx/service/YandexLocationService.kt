@@ -8,7 +8,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.matryoshka.projectx.data.map.GeoData
-import com.matryoshka.projectx.data.map.GeoPoint
+import com.matryoshka.projectx.data.map.Coordinates
 import com.matryoshka.projectx.data.map.LocationInfo
 import com.matryoshka.projectx.data.map.SuggestedLocation
 import com.matryoshka.projectx.utils.toBoundingArea
@@ -80,10 +80,10 @@ class YandexLocationService(
         }
     }
 
-    suspend fun resolveByGeoPoint(geoPoint: GeoPoint): LocationInfo {
+    suspend fun resolveByCoordinates(coordinates: Coordinates): LocationInfo {
         return suspendCancellableCoroutine { continuation ->
             val session = searchManager.submit(
-                geoPoint.toYandexPoint(),
+                coordinates.toYandexPoint(),
                 SEARCHING_ZOOM,
                 SearchOptions().setSearchTypes(SearchType.GEO.value),
                 createSearchListener(continuation)
@@ -122,21 +122,21 @@ class YandexLocationService(
                 fusedLocationClient.removeLocationUpdates(locationCallback)
             }
         }).toGeoPoint()
-        return resolveByGeoPoint(userGeoPoint)
+        return resolveByCoordinates(userGeoPoint)
     }
 
-    suspend fun getSuggestions(locationName: String, geoPoint: GeoPoint): List<SuggestedLocation> {
+    suspend fun getSuggestions(locationName: String, coordinates: Coordinates): List<SuggestedLocation> {
         return suspendCancellableCoroutine { continuation ->
             suggestSession.suggest(
                 locationName,
                 BoundingBox(
                     Point(
-                        geoPoint.latitude - 0.2,
-                        geoPoint.longitude - 0.2
+                        coordinates.latitude - 0.2,
+                        coordinates.longitude - 0.2
                     ),
                     Point(
-                        geoPoint.latitude + 0.2,
-                        geoPoint.longitude + 0.2
+                        coordinates.latitude + 0.2,
+                        coordinates.longitude + 0.2
                     ),
                 ),
                 SuggestOptions().setSuggestTypes(
@@ -188,7 +188,7 @@ class YandexLocationService(
                     name = name,
                     address = address,
                     geoData = GeoData(
-                        point = GeoPoint(point.latitude, point.longitude),
+                        coordinates = Coordinates(point.latitude, point.longitude),
                         boundingArea = boundingArea
                     )
                 )

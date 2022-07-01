@@ -1,9 +1,9 @@
 package com.matryoshka.projectx.ui.event.form
 
-import com.matryoshka.projectx.data.Interest
+import com.matryoshka.projectx.data.interest.Interest
 import com.matryoshka.projectx.data.map.BoundingArea
 import com.matryoshka.projectx.data.map.GeoData
-import com.matryoshka.projectx.data.map.GeoPoint
+import com.matryoshka.projectx.data.map.Coordinates
 import com.matryoshka.projectx.data.map.LocationInfo
 import com.matryoshka.projectx.ui.common.numValue
 import org.junit.Test
@@ -18,9 +18,9 @@ class EventFormStateTest {
             limitMaxParticipants = true
         )
 
-        formState.limitMaxParticipants.onChange(false)
+        formState.limitMaxParticipantsField.onChange(false)
 
-        assertNull(formState.maxParticipants.numValue)
+        assertNull(formState.maxParticipantsField.numValue)
     }
 
     @Test
@@ -29,9 +29,9 @@ class EventFormStateTest {
             name = "Moscow",
             address = "Moscow, Russia",
             geoData = GeoData(
-                point = GeoPoint(0.0, 0.0),
+                coordinates = Coordinates(0.0, 0.0),
                 BoundingArea(
-                    GeoPoint(0.0, 0.0), GeoPoint(0.0, 0.0)
+                    Coordinates(0.0, 0.0), Coordinates(0.0, 0.0)
                 )
             )
         )
@@ -47,13 +47,13 @@ class EventFormStateTest {
             interest = Interest(id = "astronomy", name = "astronomy")
         )
 
-        assertEquals("title", formState.name.value, "Title field")
-        assertEquals("summary", formState.summary.value, "Summary field")
-        assertEquals("details", formState.details.value, "Details field")
-        assertEquals(false, formState.public.value, "Public field")
-        assertEquals(true, formState.limitMaxParticipants.value, "LimitMaxParticipants field")
-        assertEquals(12, formState.maxParticipants.numValue, "MaxParticipants field")
-        assertEquals(location, formState.location.value, "Location field")
-        assertEquals(interest, formState.interest.value, "Interest field")
+        assertEquals("title", formState.nameField.value, "Title field")
+        assertEquals("summary", formState.summaryField.value, "Summary field")
+        assertEquals("details", formState.detailsField.value, "Details field")
+        assertEquals(false, formState.isPublicField.value, "Public field")
+        assertEquals(true, formState.limitMaxParticipantsField.value, "LimitMaxParticipants field")
+        assertEquals(12, formState.maxParticipantsField.numValue, "MaxParticipants field")
+        assertEquals(location, formState.locationField.value, "Location field")
+        assertEquals(interest, formState.interestField.value, "Interest field")
     }
 }
