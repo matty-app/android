@@ -26,7 +26,7 @@ import com.matryoshka.projectx.ui.common.ScreenStatus.READY
 import com.matryoshka.projectx.ui.common.ScreenStatus.SUBMITTING
 import com.matryoshka.projectx.ui.event.form.EventFormActions
 import com.matryoshka.projectx.ui.event.form.EventFormState
-import com.matryoshka.projectx.utils.observeAlone
+import com.matryoshka.projectx.utils.observeOnce
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -44,7 +44,7 @@ class NewEventScreenViewModel @Inject constructor(
         onLocationClick = { navController, lifecycleOwner ->
             navController.currentBackStackEntry
                 ?.savedStateHandle
-                ?.observeAlone<LocationInfo>(
+                ?.observeOnce<LocationInfo>(
                     lifecycleOwner,
                     LOCATION_KEY,
                     state.formState.locationField::onChange
@@ -55,7 +55,7 @@ class NewEventScreenViewModel @Inject constructor(
         onInterestClick = { navController, lifecycleOwner ->
             navController.currentBackStackEntry
                 ?.savedStateHandle
-                ?.observeAlone<Interest>(
+                ?.observeOnce<Interest>(
                     lifecycleOwner,
                     INTEREST_KEY,
                     state.formState.interestField::onChange
