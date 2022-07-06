@@ -14,6 +14,6 @@ fun EmailConfirmationRouter(
         state = viewModel.state,
         email = email,
         onBackClicked = navController::popBackStack,
-        onSendAgainClicked = viewModel::onSendAgainClicked
+        onSendAgainClicked = { viewModel.onSendAgainClicked(email) }
     )
 }

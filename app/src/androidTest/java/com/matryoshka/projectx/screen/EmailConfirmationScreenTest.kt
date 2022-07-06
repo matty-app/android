@@ -18,7 +18,7 @@ class EmailConfirmationScreenTest {
 
     private fun setContent(
         onBackClicked: () -> Unit = {},
-        onSendAgainClicked: (email: String) -> Unit = {},
+        onSendAgainClicked: () -> Unit = {},
     ) {
         composeRule.setContent {
             EmailConfirmationScreen(

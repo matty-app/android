@@ -9,8 +9,8 @@ import com.matryoshka.projectx.exception.ProjectxException
 import com.matryoshka.projectx.service.AuthService
 import com.matryoshka.projectx.ui.common.ScreenStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class EmailConfirmationViewModel @Inject constructor(private val authService: AuthService) :

@@ -17,7 +17,7 @@ class LaunchViewModel @Inject constructor(
 ) : ViewModel() {
 
     fun checkUserSignedIn(navController: NavController) {
-        if (authService.getCurrentUser() == null) {
+        if (authService.currentUser == null) {
             Log.d(TAG, "checkUserSignedIn: unauthenticated")
             navController.navToSignUpScreen()
         } else {

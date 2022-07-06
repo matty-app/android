@@ -5,56 +5,60 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
+import com.matryoshka.projectx.SavedStateKey.INTERESTS_KEY
+import com.matryoshka.projectx.SavedStateKey.SELECTED_INTERESTS_KEY
 import com.matryoshka.projectx.data.interest.Interest
 import com.matryoshka.projectx.data.interest.InterestsRepository
-import com.matryoshka.projectx.data.user.UsersRepository
 import com.matryoshka.projectx.exception.ProjectxException
-import com.matryoshka.projectx.service.AuthService
 import com.matryoshka.projectx.ui.common.ScreenStatus
+import com.matryoshka.projectx.utils.exists
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class InterestsViewModel @Inject constructor(
-    authService: AuthService,
-    interestsRepository: InterestsRepository,
-    private val usersRepository: UsersRepository
+    private val interestsRepository: InterestsRepository,
 ) : ViewModel() {
 
-    private val currentUser = authService.getCurrentUser()!!
-
+    private var _isInitialized = false
     var state by mutableStateOf(InterestsScreenState(status = ScreenStatus.LOADING))
         private set
 
-    init {
-        viewModelScope.launch {
+    suspend fun init(navController: NavController) {
+        if (!_isInitialized) {
             try {
-                val interests = interestsRepository.getAll().map { InterestState(it) }
+                val selectedInterests = navController.previousBackStackEntry
+                    ?.savedStateHandle
+                    ?.get<List<Interest>>(INTERESTS_KEY) ?: emptyList()
+                val interests = interestsRepository.getAll()
+                    .map {
+                        InterestState(
+                            interest = it,
+                            isSelected = selectedInterests.exists(it)
+                        )
+                    }
                 state = state.copy(interests = interests, status = ScreenStatus.READY)
+                _isInitialized = true
             } catch (ex: ProjectxException) {
                 setErrorState(ex)
             }
         }
     }
 
-    fun onNextClick() {
-        viewModelScope.launch {
-            state = state.copy(status = ScreenStatus.LOADING)
-            try {
-                usersRepository.save(
-                    currentUser.copy(
-                        interests = state.interests.asSequence()
-                            .filter { it.isSelected }
-                            .map { it.interest }
-                            .toList()
-                    )
-                )
-                state = state.copy(status = ScreenStatus.READY)
-            } catch (ex: ProjectxException) {
-                setErrorState(ex)
-            }
+    fun onSubmit(navController: NavController) {
+        state = state.copy(status = ScreenStatus.LOADING)
+        try {
+            val selectedInterests = state.interests.asSequence()
+                .filter { it.isSelected }
+                .map { it.interest }
+                .toList()
+            navController.previousBackStackEntry
+                ?.savedStateHandle
+                ?.set(SELECTED_INTERESTS_KEY, selectedInterests)
+            navController.popBackStack()
+        } catch (ex: ProjectxException) {
+            setErrorState(ex)
         }
     }
 
@@ -63,7 +67,6 @@ class InterestsViewModel @Inject constructor(
     }
 }
 
-@Stable
 data class InterestsScreenState(
     val interests: List<InterestState> = emptyList(),
     val status: ScreenStatus = ScreenStatus.READY,
@@ -76,9 +79,10 @@ data class InterestsScreenState(
         get() = status == ScreenStatus.ERROR && error != null
 }
 
-class InterestState(val interest: Interest) {
+@Stable
+class InterestState(val interest: Interest, isSelected: Boolean) {
 
-    var isSelected by mutableStateOf(false)
+    var isSelected by mutableStateOf(isSelected)
         private set
 
     fun onChangeSelection() {

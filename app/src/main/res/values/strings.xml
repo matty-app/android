@@ -20,6 +20,16 @@
     <string name="valid_email_required">Enter valid email</string>
     <string name="email_exists">Email already exists</string>
     <string name="email_not_exists">Email doesn\'t exist</string>
+    <string name="interests">Interests</string>
+    <string name="about_me">About me</string>
+    <string name="change_photo">Change photo</string>
+    <string name="remove_photo">Remove photo</string>
+    <string name="take_photo">Take photo</string>
+    <string name="select_photo">Select photo</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="change_name">Change name</string>
+    <string name="email_link_will_be_sent">Confirmation link will be sent to your old email</string>
     <string name="location">Location</string>
     <string name="privacy">privacy</string>
     <string name="arrow_forward">arrow forward</string>
@@ -40,6 +50,10 @@
     <string name="max_participants">Max participants</string>
     <string name="event_submit">Submit</string>
     <string name="approval_required">Approval required</string>
+    <string name="user_profile">User profile</string>
+    <string name="user_avatar">User avatar</string>
+    <string name="events_feed">Events feed</string>
+    <string name="new_event">New event</string>
     <string name="current_location">Current location</string>
     <string name="clear_text">Clear text</string>
     <string name="search_text">Search</string>

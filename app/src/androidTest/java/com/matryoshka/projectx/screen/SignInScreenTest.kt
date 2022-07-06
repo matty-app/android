@@ -15,7 +15,7 @@ import org.junit.Test
 class SignInScreenTest {
     @get:Rule
     val composeRule = createComposeRule()
-    val email = "john@gmail.com"
+    private val email = "john@gmail.com"
 
     private fun setContent(
         onLogInClicked: () -> Unit = {},

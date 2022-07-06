@@ -22,6 +22,7 @@ import com.matryoshka.projectx.ui.launch.SignInLaunchScreenRouter
 import com.matryoshka.projectx.ui.map.LocationSelectionRouter
 import com.matryoshka.projectx.ui.signin.SignInRouter
 import com.matryoshka.projectx.ui.signup.SignUpRouter
+import com.matryoshka.projectx.ui.userprofile.UserProfileRouter
 
 fun NavGraphBuilder.appNavGraph(navController: NavController) {
 
@@ -43,9 +44,11 @@ fun NavGraphBuilder.appNavGraph(navController: NavController) {
 
     composable(
         route = "${Screen.EMAIL_CONFIRM}?$ARG_EMAIL={email}",
-        arguments = listOf(navArgument(ARG_EMAIL) {
-            type = NavType.StringType
-        })
+        arguments = listOf(
+            navArgument(ARG_EMAIL) {
+                type = NavType.StringType
+            }
+        )
     ) { backStackEntry ->
         EmailConfirmationRouter(
             navController = navController,
@@ -54,7 +57,7 @@ fun NavGraphBuilder.appNavGraph(navController: NavController) {
     }
 
     composable(Screen.INTERESTS) {
-        InterestsRouter()
+        InterestsRouter(navController)
     }
 
     composable(Screen.NEW_EVENT_SCREEN) {
@@ -101,6 +104,9 @@ fun NavGraphBuilder.appNavGraph(navController: NavController) {
     composable(Screen.EVENTS_FEED_SCREEN) {
         EventsFeedScreen(navController)
     }
+    composable(Screen.USER_PROFILE) {
+        UserProfileRouter(navController = navController)
+    }
 }
 
 object Screen {
@@ -110,6 +116,7 @@ object Screen {
     const val SIGN_IN = "SIGN_IN"
     const val EMAIL_CONFIRM = "EMAIL_CONFIRM"
     const val INTERESTS = "INTERESTS"
+    const val USER_PROFILE = "USER_PROFILE"
     const val LOCATION_SELECTION_SCREEN = "LOCATION_SELECTION_SCREEN"
     const val INTEREST_SELECTION_SCREEN = "INTEREST_SELECTION_SCREEN"
     const val NEW_EVENT_SCREEN = "NEW_EVENT_SCREEN"

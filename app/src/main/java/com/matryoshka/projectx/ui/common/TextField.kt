@@ -15,25 +15,32 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.matryoshka.projectx.ui.theme.LightGray
 
 @Composable
 fun TextField(
-    inputField: FieldState<String>,
-    placeholder: String,
+    fieldState: FieldState<String>,
+    modifier: Modifier = Modifier,
+    placeholder: String? = null,
     enabled: Boolean = true,
     keyBoardOptions: KeyboardOptions = KeyboardOptions.Default,
     trailingIcon: @Composable (() -> Unit)? = null,
+    maxLines: Int = Int.MAX_VALUE
 ) {
     TextField(
-        value = inputField.value ?: "",
-        placeholder = { Text(text = placeholder) },
-        singleLine = true,
+        value = TextFieldValue(
+            text = fieldState.value,
+            selection = TextRange(fieldState.value.length)
+        ),
+        placeholder = { Text(text = placeholder ?: "") },
+        singleLine = maxLines == 1,
         enabled = enabled,
         keyboardOptions = keyBoardOptions,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .shadow(
                 elevation = 4.dp,
@@ -45,9 +52,10 @@ fun TextField(
             unfocusedIndicatorColor = Color.Transparent
         ),
         trailingIcon = trailingIcon,
-        onValueChange = inputField::onChange
+        maxLines = maxLines,
+        onValueChange = { textFieldValue -> fieldState.onChange(textFieldValue.text) },
     )
-    FieldError(inputField = inputField)
+    FieldError(inputField = fieldState)
 }
 
 @OptIn(ExperimentalMaterialApi::class)

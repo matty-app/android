@@ -1,5 +1,8 @@
 package com.matryoshka.projectx.data.interest
 
+import javax.inject.Singleton
+
+@Singleton
 interface InterestsRepository {
     suspend fun getAll(): List<Interest>
 
