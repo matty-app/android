@@ -5,15 +5,12 @@ import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.matryoshka.projectx.SavedStateKey.INTERESTS_KEY
-import com.matryoshka.projectx.SavedStateKey.SELECTED_INTERESTS_KEY
 import com.matryoshka.projectx.data.image.ImagesRepository
 import com.matryoshka.projectx.data.image.LocalImagesRepository
-import com.matryoshka.projectx.data.interest.Interest
 import com.matryoshka.projectx.data.interest.InterestsRepository
 import com.matryoshka.projectx.data.user.User
 import com.matryoshka.projectx.data.user.UsersRepository
@@ -21,8 +18,8 @@ import com.matryoshka.projectx.navigation.Screen
 import com.matryoshka.projectx.navigation.navToMailConfirmScreen
 import com.matryoshka.projectx.service.AuthService
 import com.matryoshka.projectx.ui.common.ScreenStatus
+import com.matryoshka.projectx.utils.collectOnce
 import com.matryoshka.projectx.utils.compressImage
-import com.matryoshka.projectx.utils.observeOnce
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -203,26 +200,23 @@ class UserProfileViewModel @Inject constructor(
         }
     }
 
-    private fun onInterestsClick(navController: NavController, lifecycleOwner: LifecycleOwner) {
+    private fun onInterestsClick(navController: NavController) {
         val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
-        savedStateHandle?.set(INTERESTS_KEY, state.interests)
-        savedStateHandle?.observeOnce<List<Interest>>(
-            lifecycleOwner = lifecycleOwner,
-            key = SELECTED_INTERESTS_KEY,
-            consumer = { interests ->
+        viewModelScope.launch {
+            savedStateHandle?.collectOnce(
+                key = INTERESTS_KEY,
+                initialValue = state.interests
+            ) { interests ->
                 state = state.copy(interests = interests, status = ScreenStatus.LOADING)
                 user = user.copy(interests = interests)
-                viewModelScope.launch {
-                    try {
-                        userRepository.save(user)
-                        savedStateHandle.remove<List<Interest>>(INTERESTS_KEY)
-                        setReadyStatus()
-                    } catch (ex: Exception) {
-                        //TODO("Set error status")
-                    }
+                try {
+                    userRepository.save(user)
+                    setReadyStatus()
+                } catch (ex: Exception) {
+                    //TODO("Set error status")
                 }
             }
-        )
+        }
         navController.navigate(Screen.INTERESTS)
     }
 

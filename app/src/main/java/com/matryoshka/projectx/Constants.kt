@@ -4,7 +4,6 @@ object SavedStateKey {
     const val LOCATION_KEY = "location"
     const val INTEREST_KEY = "interest"
     const val INTERESTS_KEY = "interests"
-    const val SELECTED_INTERESTS_KEY = "selectedInterests"
 }
 
 object NavArgument {

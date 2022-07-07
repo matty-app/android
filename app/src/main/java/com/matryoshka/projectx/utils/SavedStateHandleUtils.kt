@@ -18,3 +18,21 @@ fun <T> SavedStateHandle.observeOnce(
         remove<T>(key)
     }
 }
+
+suspend fun <T> SavedStateHandle.collectOnce(
+    key: String,
+    initialValue: T,
+    consumer: suspend (T) -> Unit
+) {
+    var isInitialValue = true
+    remove<T>(key)
+    getStateFlow(key, initialValue).collect { value ->
+        if (isInitialValue) {
+            isInitialValue = false
+        } else {
+            Log.d(TAG, "collectOnce: $value")
+            consumer(value)
+            remove<T>(key)
+        }
+    }
+}

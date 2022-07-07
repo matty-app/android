@@ -1,5 +1,6 @@
 package com.matryoshka.projectx.ui.interests
 
+import android.util.Log
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -7,7 +8,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.matryoshka.projectx.SavedStateKey.INTERESTS_KEY
-import com.matryoshka.projectx.SavedStateKey.SELECTED_INTERESTS_KEY
 import com.matryoshka.projectx.data.interest.Interest
 import com.matryoshka.projectx.data.interest.InterestsRepository
 import com.matryoshka.projectx.exception.ProjectxException
@@ -15,6 +15,8 @@ import com.matryoshka.projectx.ui.common.ScreenStatus
 import com.matryoshka.projectx.utils.exists
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+
+private const val TAG = "InterestsViewModel"
 
 @HiltViewModel
 class InterestsViewModel @Inject constructor(
@@ -55,7 +57,8 @@ class InterestsViewModel @Inject constructor(
                 .toList()
             navController.previousBackStackEntry
                 ?.savedStateHandle
-                ?.set(SELECTED_INTERESTS_KEY, selectedInterests)
+                ?.set(INTERESTS_KEY, selectedInterests)
+            Log.d(TAG, "onSubmit: selectedInterests: $selectedInterests")
             navController.popBackStack()
         } catch (ex: ProjectxException) {
             setErrorState(ex)

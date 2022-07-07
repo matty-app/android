@@ -23,7 +23,6 @@ import com.matryoshka.projectx.R
 import com.matryoshka.projectx.ui.common.ScreenStatus
 import com.matryoshka.projectx.ui.common.scaffold.TopBar
 import com.matryoshka.projectx.ui.common.scaffold.UserProfileButton
-import com.matryoshka.projectx.ui.common.scaffold.TopBar
 import com.matryoshka.projectx.ui.event.form.EventFormActions
 import com.matryoshka.projectx.ui.event.form.EventFormView
 import com.matryoshka.projectx.ui.theme.ProjectxTheme
@@ -35,7 +34,7 @@ fun NewEventScreen(
     state: NewEventState,
     eventFormActions: EventFormActions,
     onInit: () -> Unit,
-    onSubmit: (NavController) -> Unit
+    onSubmit: () -> Unit
 ) {
     LaunchedEffect(Unit) {
         onInit()
@@ -51,9 +50,7 @@ fun NewEventScreen(
         bottomBar = {
             Box(modifier = Modifier.padding(14.dp)) {
                 Button(
-                    onClick = {
-                        onSubmit(navController)
-                    },
+                    onClick = onSubmit,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(

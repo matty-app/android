@@ -36,7 +36,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -100,8 +99,6 @@ private fun UserProfileBody(
             .padding(horizontal = 12.dp, vertical = 28.dp)
             .verticalScroll(state = rememberScrollState())
     ) {
-        val lifecycleOwner = LocalLifecycleOwner.current
-
         ChangeValueDialog(
             display = state.displayNameDialog,
             state = state.formState.nameField,
@@ -167,7 +164,7 @@ private fun UserProfileBody(
         Spacer(modifier = Modifier.height(ITEM_GAP.dp))
         UserProfileItem(
             labelText = stringResource(id = R.string.interests),
-            onClick = { actions.onInterestsClick(navController, lifecycleOwner) }
+            onClick = { actions.onInterestsClick(navController) }
         ) {
             FlexRow(
                 modifier = Modifier
