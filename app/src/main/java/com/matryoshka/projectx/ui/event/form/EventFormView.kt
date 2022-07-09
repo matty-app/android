@@ -21,7 +21,6 @@ import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,8 +38,6 @@ fun EventFormView(
     state: EventFormState = EventFormState(),
     navController: NavController
 ) {
-    val lifecycleOwner = LocalLifecycleOwner.current
-
     Column(
         modifier = Modifier.padding(horizontal = 16.dp)
     ) {
@@ -80,7 +77,7 @@ fun EventFormView(
         Spacer(modifier = Modifier.height(6.dp))
         ListItem(
             modifier = Modifier.clickable {
-                actions.onInterestClick(navController, lifecycleOwner)
+                actions.onInterestClick(navController)
             },
             text = {
                 Text(
@@ -104,7 +101,7 @@ fun EventFormView(
         )
         ListItem(
             modifier = Modifier.clickable {
-                actions.onLocationClick(navController, lifecycleOwner)
+                actions.onLocationClick(navController)
             },
             text = {
                 Text(
