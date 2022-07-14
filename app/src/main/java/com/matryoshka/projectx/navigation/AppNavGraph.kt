@@ -15,7 +15,7 @@ import com.matryoshka.projectx.ui.email.EmailConfirmationRouter
 import com.matryoshka.projectx.ui.event.InterestSelectionRouter
 import com.matryoshka.projectx.ui.event.NewEventScreen
 import com.matryoshka.projectx.ui.event.NewEventScreenViewModel
-import com.matryoshka.projectx.ui.feed.EventsFeedScreen
+import com.matryoshka.projectx.ui.feed.EventsFeedRouter
 import com.matryoshka.projectx.ui.interests.InterestsRouter
 import com.matryoshka.projectx.ui.launch.LaunchScreenRouter
 import com.matryoshka.projectx.ui.launch.SignInLaunchScreenRouter
@@ -102,12 +102,15 @@ fun NavGraphBuilder.appNavGraph(navController: NavController) {
     }
 
     composable(Screen.EVENTS_FEED_SCREEN) {
-        EventsFeedScreen(navController)
+        EventsFeedRouter(navController = navController)
     }
     composable(Screen.USER_PROFILE) {
         UserProfileRouter(navController = navController)
     }
 }
+
+fun NavController.currentScreenIs(screen: String) =
+    currentDestination?.route == screen
 
 object Screen {
     const val LAUNCH = "LAUNCH"

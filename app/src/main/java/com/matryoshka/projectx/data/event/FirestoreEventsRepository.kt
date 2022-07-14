@@ -14,10 +14,10 @@ import com.matryoshka.projectx.data.user.FIRESTORE_USERS
 import com.matryoshka.projectx.data.user.UsersRepository
 import com.matryoshka.projectx.service.AuthService
 import com.matryoshka.projectx.service.requireUser
-import kotlinx.coroutines.tasks.await
 import java.time.LocalDateTime
 import java.time.ZoneId
 import javax.inject.Inject
+import kotlinx.coroutines.tasks.await
 
 const val FIRESTORE_EVENTS = "events"
 
@@ -38,13 +38,16 @@ class FirestoreEventsRepository @Inject constructor(
         return eventToSave
     }
 
-    override suspend fun getAll(): List<Event> {
-        val result = mutableListOf<Event>()
-        db.collection(FIRESTORE_EVENTS)
+    override suspend fun getAll(futureOnly: Boolean): List<Event> {
+        return db.collection(FIRESTORE_EVENTS).run {
+            if (futureOnly) {
+                whereGreaterThanOrEqualTo("startDate", Timestamp.now())
+            } else this
+        }
+            .orderBy("startDate")
             .get()
             .await()
-            .mapTo(result) { it.toObject<EventFs>().toDomain() }
-        return result
+            .map { it.toObject<EventFs>().toDomain() }
     }
 
     private fun Event.prepareNewEvent(uid: String): Event {
@@ -78,8 +81,8 @@ class FirestoreEventsRepository @Inject constructor(
     )
 
     private suspend fun EventFs.toDomain(): Event {
-        val interest = interestsRepository.getById(interestRef.id)!!
-        val creatorRef = usersRepository.getById(creatorRef.id, flat = true)!!.let {
+        val interest = interestsRepository.getById(interestRef?.id ?: "")!!
+        val creatorRef = usersRepository.getById(creatorRef?.id ?: "", flat = true)!!.let {
             UserRef(it.id, it.name)
         }
         val participantIds = participants.map { it.id }
@@ -103,28 +106,28 @@ class FirestoreEventsRepository @Inject constructor(
     }
 }
 
-
+//firebase requires default values
 private data class EventFs(
-    val name: String,
-    val summary: String,
-    val details: String,
-    val public: Boolean,
-    val maxParticipants: Int?,
-    val location: LocationFs,
-    val startDate: Timestamp,
-    val endDate: Timestamp,
-    val withApproval: Boolean,
-    val interestRef: DocumentReference,
-    val participants: List<DocumentReference>,
-    val creatorRef: DocumentReference,
+    val name: String = "",
+    val summary: String= "",
+    val details: String= "",
+    val public: Boolean = false,
+    val maxParticipants: Int? = null,
+    val location: LocationFs = LocationFs(null, null, null),
+    val startDate: Timestamp = Timestamp.now(),
+    val endDate: Timestamp = Timestamp.now(),
+    val withApproval: Boolean = false,
+    val interestRef: DocumentReference? = null,
+    val participants: List<DocumentReference> = emptyList(),
+    val creatorRef: DocumentReference? = null,
     @DocumentId
-    val uid: String
+    val uid: String = ""
 )
 
 private class LocationFs(
-    val name: String?,
-    val address: String?,
-    val coordinates: GeoPoint?
+    val name: String? = null,
+    val address: String? = null,
+    val coordinates: GeoPoint? = null
 )
 
 private fun LocationFs.toDomain() = Location(

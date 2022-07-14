@@ -13,7 +13,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -22,7 +21,6 @@ import androidx.navigation.compose.rememberNavController
 import com.matryoshka.projectx.R
 import com.matryoshka.projectx.ui.common.ScreenStatus
 import com.matryoshka.projectx.ui.common.scaffold.TopBar
-import com.matryoshka.projectx.ui.common.scaffold.UserProfileButton
 import com.matryoshka.projectx.ui.event.form.EventFormActions
 import com.matryoshka.projectx.ui.event.form.EventFormView
 import com.matryoshka.projectx.ui.theme.ProjectxTheme
@@ -43,9 +41,10 @@ fun NewEventScreen(
     Scaffold(
         backgroundColor = MaterialTheme.colors.onSurface.copy(alpha = 0.03f),
         topBar = {
-            TopBar(title = stringResource(id = R.string.new_event)) {
-                UserProfileButton(navController)
-            }
+            TopBar(
+                title = stringResource(id = R.string.new_event),
+                onBackClicked = { navController.popBackStack() }
+            )
         },
         bottomBar = {
             Box(modifier = Modifier.padding(14.dp)) {
@@ -55,7 +54,7 @@ fun NewEventScreen(
                 ) {
                     Text(
                         text = stringResource(R.string.event_submit),
-                        color = Color.White
+                        color = MaterialTheme.colors.onPrimary
                     )
                 }
             }
