@@ -4,5 +4,5 @@ interface EventsRepository {
 
     suspend fun save(event: Event): Event
 
-    suspend fun getAll(): List<Event>
+    suspend fun getAll(futureOnly: Boolean = true): List<Event>
 }

@@ -50,6 +50,7 @@ import com.matryoshka.projectx.ui.common.FieldState
 import com.matryoshka.projectx.ui.common.FlexRow
 import com.matryoshka.projectx.ui.common.ScreenStatus
 import com.matryoshka.projectx.ui.common.TextField
+import com.matryoshka.projectx.ui.common.scaffold.NavigationBottomBar
 import com.matryoshka.projectx.ui.common.scaffold.TopBar
 import com.matryoshka.projectx.ui.theme.ProjectxTheme
 import kotlinx.coroutines.delay
@@ -70,6 +71,9 @@ fun UserProfileScreen(
                 title = stringResource(id = R.string.user_profile),
                 onBackClicked = { actions.onBackClick(navController) }
             )
+        },
+        bottomBar = {
+            NavigationBottomBar(navController = navController)
         }
     ) {
         if (state.isProgressIndicatorVisible) {
