@@ -1,4 +1,4 @@
-package com.matryoshka.projectx.ui.event
+package com.matryoshka.projectx.ui.event.editing
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
@@ -21,15 +21,15 @@ import androidx.navigation.compose.rememberNavController
 import com.matryoshka.projectx.R
 import com.matryoshka.projectx.ui.common.ScreenStatus
 import com.matryoshka.projectx.ui.common.scaffold.TopBar
-import com.matryoshka.projectx.ui.event.form.EventFormActions
-import com.matryoshka.projectx.ui.event.form.EventFormView
+import com.matryoshka.projectx.ui.event.editing.form.EventFormActions
+import com.matryoshka.projectx.ui.event.editing.form.EventFormView
 import com.matryoshka.projectx.ui.theme.ProjectxTheme
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun NewEventScreen(
+fun EventEditingScreen(
     navController: NavController,
-    state: NewEventState,
+    state: EventEditingState,
     eventFormActions: EventFormActions,
     onInit: () -> Unit,
     onSubmit: () -> Unit
@@ -77,10 +77,10 @@ fun NewEventScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun NewEventScreenPreview() {
+fun EventEditingScreenPreview() {
     ProjectxTheme {
-        NewEventScreen(
-            state = NewEventState(status = ScreenStatus.READY),
+        EventEditingScreen(
+            state = EventEditingState(status = ScreenStatus.READY),
             onInit = {},
             eventFormActions = EventFormActions(),
             navController = rememberNavController(),

@@ -1,4 +1,4 @@
-package com.matryoshka.projectx.ui.event
+package com.matryoshka.projectx.ui.event.editing
 
 import android.util.Log
 import androidx.compose.runtime.Stable
@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import com.google.gson.Gson
 import com.matryoshka.projectx.NavArgument.ARG_INTEREST_ID
 import com.matryoshka.projectx.NavArgument.ARG_LOCATION
@@ -21,20 +22,20 @@ import com.matryoshka.projectx.ui.common.ScreenStatus
 import com.matryoshka.projectx.ui.common.ScreenStatus.LOADING
 import com.matryoshka.projectx.ui.common.ScreenStatus.READY
 import com.matryoshka.projectx.ui.common.ScreenStatus.SUBMITTING
-import com.matryoshka.projectx.ui.event.form.EventFormActions
-import com.matryoshka.projectx.ui.event.form.EventFormState
+import com.matryoshka.projectx.ui.event.editing.form.EventFormActions
+import com.matryoshka.projectx.ui.event.editing.form.EventFormState
 import com.matryoshka.projectx.utils.collectOnce
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 private const val TAG = "NewEventViewModel"
 
 @HiltViewModel
-class NewEventScreenViewModel @Inject constructor(
+class EventEditingViewModel @Inject constructor(
     private val eventsRepository: EventsRepository
 ) : ViewModel() {
-    var state by mutableStateOf(NewEventState())
+    var state by mutableStateOf(EventEditingState())
         private set
 
     val formActions = EventFormActions(
@@ -65,7 +66,7 @@ class NewEventScreenViewModel @Inject constructor(
         }
     )
 
-    fun onSubmit() {
+    fun onSubmit(navController: NavController) {
         val form = state.formState
         val event = with(state.formState) {
             Event(
@@ -88,6 +89,7 @@ class NewEventScreenViewModel @Inject constructor(
         viewModelScope.launch {
             val result = eventsRepository.save(event)
             Log.d(TAG, "onSubmit: $result")
+            navController.popBackStack()
         }
     }
 
@@ -98,7 +100,7 @@ class NewEventScreenViewModel @Inject constructor(
 }
 
 @Stable
-data class NewEventState(
+data class EventEditingState(
     val status: ScreenStatus = LOADING,
     val formState: EventFormState = EventFormState()
 ) {

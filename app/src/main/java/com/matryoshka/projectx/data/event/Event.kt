@@ -18,7 +18,12 @@ data class Event(
     val participants: List<UserRef> = emptyList(),
     val creator: UserRef? = null,
     val id: String? = null,
-)
+) {
+    val requireId: String
+        get() = requireNotNull(id) {
+            "Event ID can't be null!"
+        }
+}
 
 data class Location(
     val name: String?,

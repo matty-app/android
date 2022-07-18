@@ -1,7 +1,7 @@
 package com.matryoshka.projectx.di
 
 import android.content.Context
-import com.matryoshka.projectx.ui.common.sharedPreferences
+import com.matryoshka.projectx.utils.sharedPreferences
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -36,6 +36,7 @@
     <string name="arrow_back">arrow back</string>
     <string name="date_time"><![CDATA[Date & Time]]></string>
     <string name="event_public">Public</string>
+    <string name="event_private">Private</string>
     <string name="location_icon">Location icon</string>
     <string name="select_interest">Select interest</string>
     <string name="interest_icon">Interest icon</string>

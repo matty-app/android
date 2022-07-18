@@ -1,4 +1,4 @@
-package com.matryoshka.projectx.ui.feed
+package com.matryoshka.projectx.ui.event
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

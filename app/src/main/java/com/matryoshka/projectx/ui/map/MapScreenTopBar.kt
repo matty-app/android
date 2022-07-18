@@ -28,8 +28,7 @@ import com.matryoshka.projectx.ui.theme.ProjectxTheme
 @Composable
 fun MapScreenTopBar(
     onBackClick: () -> Unit,
-    onDoneClick: () -> Unit,
-    isDoneButtonVisible: Boolean = true
+    onDoneClick: (() -> Unit)? = null,
 ) {
     Row(
         modifier = Modifier
@@ -54,7 +53,7 @@ fun MapScreenTopBar(
             Modifier
                 .weight(1f), contentAlignment = Alignment.CenterEnd
         ) {
-            if (isDoneButtonVisible) {
+            onDoneClick?.let {
                 Icon(
                     Icons.Rounded.Done,
                     contentDescription = stringResource(R.string.ok_text),
@@ -62,10 +61,10 @@ fun MapScreenTopBar(
                         .clip(CircleShape)
                         .padding(4.dp)
                         .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = rememberRipple(bounded = false),
-                        onClick = onDoneClick
-                    ),
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = rememberRipple(bounded = false),
+                            onClick = onDoneClick
+                        ),
                     tint = MaterialTheme.colors.onPrimary
                 )
             }

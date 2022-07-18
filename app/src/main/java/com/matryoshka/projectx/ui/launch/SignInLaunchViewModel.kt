@@ -6,14 +6,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.matryoshka.projectx.data.user.UsersRepository
 import com.matryoshka.projectx.data.user.User
+import com.matryoshka.projectx.data.user.UsersRepository
 import com.matryoshka.projectx.exception.ProjectxException
 import com.matryoshka.projectx.service.AuthService
 import com.matryoshka.projectx.ui.common.ScreenStatus
-import com.matryoshka.projectx.ui.common.isNewUser
-import com.matryoshka.projectx.ui.common.userEmail
-import com.matryoshka.projectx.ui.common.userName
+import com.matryoshka.projectx.utils.isNewUser
+import com.matryoshka.projectx.utils.userEmail
+import com.matryoshka.projectx.utils.userName
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

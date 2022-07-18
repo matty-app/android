@@ -10,4 +10,5 @@ object NavArgument {
     const val ARG_EMAIL = "email"
     const val ARG_LOCATION = "location"
     const val ARG_INTEREST_ID = "interest_id"
+    const val ARG_EVENT_ID = "event_id"
 }

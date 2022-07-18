@@ -1,4 +1,4 @@
-package com.matryoshka.projectx.ui.event
+package com.matryoshka.projectx.ui.event.editing
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable

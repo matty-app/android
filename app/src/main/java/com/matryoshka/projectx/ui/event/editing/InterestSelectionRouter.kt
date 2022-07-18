@@ -1,4 +1,4 @@
-package com.matryoshka.projectx.ui.event
+package com.matryoshka.projectx.ui.event.editing
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect

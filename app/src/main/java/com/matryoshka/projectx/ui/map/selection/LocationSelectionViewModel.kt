@@ -25,8 +25,8 @@ import com.matryoshka.projectx.ui.common.anyPermissionGranted
 import com.matryoshka.projectx.ui.common.textFieldState
 import com.matryoshka.projectx.utils.debounce
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
 private const val TAG = "LocationSelectionVM"

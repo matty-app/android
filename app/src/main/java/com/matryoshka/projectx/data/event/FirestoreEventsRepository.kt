@@ -38,6 +38,15 @@ class FirestoreEventsRepository @Inject constructor(
         return eventToSave
     }
 
+    override suspend fun getById(id: String): Event? {
+        return db.collection(FIRESTORE_EVENTS)
+            .document(id)
+            .get()
+            .await()
+            .toObject<EventFs>()
+            ?.toDomain()
+    }
+
     override suspend fun getAll(futureOnly: Boolean): List<Event> {
         return db.collection(FIRESTORE_EVENTS).run {
             if (futureOnly) {
@@ -90,6 +99,7 @@ class FirestoreEventsRepository @Inject constructor(
             UserRef(it.id, it.name)
         }
         return Event(
+            id = uid,
             name = name,
             summary = summary,
             details = details,
@@ -109,8 +119,8 @@ class FirestoreEventsRepository @Inject constructor(
 //firebase requires default values
 private data class EventFs(
     val name: String = "",
-    val summary: String= "",
-    val details: String= "",
+    val summary: String = "",
+    val details: String = "",
     val public: Boolean = false,
     val maxParticipants: Int? = null,
     val location: LocationFs = LocationFs(null, null, null),

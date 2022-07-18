@@ -57,11 +57,13 @@ fun LocationSelectionScreen(
                     exitFromScreen = true
                     onCancel()
                 },
-                onDoneClick = {
-                    exitFromScreen = true
-                    onSubmit()
-                },
-                isDoneButtonVisible = state.location != null
+                onDoneClick = state.location?.let {
+                    val onDoneClick = {
+                        exitFromScreen = true
+                        onSubmit()
+                    }
+                    onDoneClick
+                }
             )
         }
     ) {
