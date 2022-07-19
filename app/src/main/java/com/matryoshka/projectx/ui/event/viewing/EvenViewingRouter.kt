@@ -19,6 +19,7 @@ fun EventViewingRouter(
     EventViewingScreen(
         state = viewModel.state,
         onBackClick = { navController.popBackStack() },
+        onEditClick = { viewModel.onEditClick(navController) },
         onLocationClick = { location -> navController.navToLocationViewingScreen(location) }
     )
 }

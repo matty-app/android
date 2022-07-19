@@ -8,12 +8,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.outlined.ChevronRight
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.LocationOn
@@ -43,10 +46,24 @@ import java.time.format.FormatStyle
 fun EventViewingScreen(
     state: EventViewingState,
     onBackClick: () -> Unit,
+    onEditClick: () -> Unit,
     onLocationClick: (Location) -> Unit
 ) {
     Scaffold(
-        topBar = { TopBar(title = "", onBackClicked = onBackClick) }
+        topBar = {
+            TopBar(title = "", onBackClicked = onBackClick) {
+                if (state.isMine) {
+                    IconButton(onClick = onEditClick) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "", //TODO
+                            modifier = Modifier.size(32.dp),
+                            tint = MaterialTheme.colors.primary
+                        )
+                    }
+                }
+            }
+        }
     ) {
         if (state.isProgressIndicatorVisible) {
             LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
@@ -71,7 +88,7 @@ fun EventViewingScreen(
                         Text(
                             text = stringResource(id = R.string.summary),
                             modifier = Modifier.padding(start = 4.dp),
-                            style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Bold)
+                            style = MaterialTheme.typography.subtitle2.copy(fontWeight = FontWeight.Bold)
                         )
                         Spacer(modifier = Modifier.height(6.dp))
                         Text(text = event.summary)
@@ -83,7 +100,7 @@ fun EventViewingScreen(
                         Text(
                             text = stringResource(id = R.string.private_details),
                             modifier = Modifier.padding(start = 4.dp),
-                            style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Bold)
+                            style = MaterialTheme.typography.subtitle2.copy(fontWeight = FontWeight.Bold)
                         )
                         Spacer(modifier = Modifier.height(6.dp))
                         Text(text = event.details)
@@ -181,6 +198,7 @@ fun EventViewingScreenPreview() {
                 isMine = true
             ),
             onBackClick = {},
+            onEditClick = {},
             onLocationClick = {}
         )
     }

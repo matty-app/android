@@ -11,6 +11,7 @@ import androidx.navigation.NavController
 import com.google.gson.Gson
 import com.matryoshka.projectx.NavArgument.ARG_INTEREST_ID
 import com.matryoshka.projectx.NavArgument.ARG_LOCATION
+import com.matryoshka.projectx.SavedStateKey
 import com.matryoshka.projectx.SavedStateKey.INTEREST_KEY
 import com.matryoshka.projectx.SavedStateKey.LOCATION_KEY
 import com.matryoshka.projectx.data.event.Event
@@ -24,6 +25,7 @@ import com.matryoshka.projectx.ui.common.ScreenStatus.READY
 import com.matryoshka.projectx.ui.common.ScreenStatus.SUBMITTING
 import com.matryoshka.projectx.ui.event.editing.form.EventFormActions
 import com.matryoshka.projectx.ui.event.editing.form.EventFormState
+import com.matryoshka.projectx.ui.event.editing.form.toEventFormState
 import com.matryoshka.projectx.utils.collectOnce
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -35,6 +37,8 @@ private const val TAG = "NewEventViewModel"
 class EventEditingViewModel @Inject constructor(
     private val eventsRepository: EventsRepository
 ) : ViewModel() {
+    private var isInitialized = false
+    private var existingEvent: Event? = null
     var state by mutableStateOf(EventEditingState())
         private set
 
@@ -67,35 +71,73 @@ class EventEditingViewModel @Inject constructor(
     )
 
     fun onSubmit(navController: NavController) {
-        val form = state.formState
-        val event = with(state.formState) {
-            Event(
-                name = nameField.value,
-                summary = summaryField.value,
-                details = detailsField.value,
-                interest = state.formState.interestField.value!!,
-                public = isPublicField.value,
-                maxParticipants = maxParticipantsField.value?.toIntOrNull(),
-                location = Location(
-                    name = locationField.value?.name,
-                    address = locationField.value?.address,
-                    coordinates = locationField.value?.geoData?.coordinates
-                ),
-                startDate = form.startDateField.value,
-                endDate = form.endDateField.value,
-                withApproval = form.withApprovalField.value
-            )
-        }
+        val event = existingEvent?.let {
+            updateEvent()
+        } ?: createNewEvent()
         viewModelScope.launch {
             val result = eventsRepository.save(event)
             Log.d(TAG, "onSubmit: $result")
+            if (existingEvent != null) {
+                navController.previousBackStackEntry
+                    ?.savedStateHandle
+                    ?.set(SavedStateKey.EVENT_KEY, event)
+            }
             navController.popBackStack()
         }
     }
 
-    fun init() {
-        state = state.copy(status = READY)
-        Log.d(TAG, "init: $state")
+    fun init(event: Event?) {
+        if (!isInitialized) {
+            if (event == null) {
+                state = state.copy(status = READY)
+            } else {
+                state = state.copy(
+                    status = READY,
+                    formState = event.toEventFormState()
+                )
+                existingEvent = event
+            }
+            isInitialized = true
+            Log.d(TAG, "init: $state")
+        }
+    }
+
+    private fun createNewEvent() = with(state.formState) {
+        Event(
+            name = nameField.value,
+            summary = summaryField.value,
+            details = detailsField.value,
+            interest = state.formState.interestField.value!!,
+            public = isPublicField.value,
+            maxParticipants = maxParticipantsField.value?.toIntOrNull(),
+            location = Location(
+                name = locationField.value?.name,
+                address = locationField.value?.address,
+                coordinates = locationField.value?.geoData?.coordinates
+            ),
+            startDate = startDateField.value,
+            endDate = endDateField.value,
+            withApproval = withApprovalField.value
+        )
+    }
+
+    private fun updateEvent() = with(state.formState) {
+        existingEvent!!.copy(
+            name = nameField.value,
+            summary = summaryField.value,
+            details = detailsField.value,
+            interest = state.formState.interestField.value!!,
+            public = isPublicField.value,
+            maxParticipants = maxParticipantsField.value?.toIntOrNull(),
+            location = Location(
+                name = locationField.value?.name,
+                address = locationField.value?.address,
+                coordinates = locationField.value?.geoData?.coordinates
+            ),
+            startDate = startDateField.value,
+            endDate = endDateField.value,
+            withApproval = withApprovalField.value
+        )
     }
 }
 

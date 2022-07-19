@@ -2,6 +2,7 @@ package com.matryoshka.projectx.data.event
 
 import com.matryoshka.projectx.data.interest.Interest
 import com.matryoshka.projectx.data.map.Coordinates
+import java.io.Serializable
 import java.time.LocalDateTime
 
 data class Event(
@@ -18,7 +19,7 @@ data class Event(
     val participants: List<UserRef> = emptyList(),
     val creator: UserRef? = null,
     val id: String? = null,
-) {
+) : Serializable {
     val requireId: String
         get() = requireNotNull(id) {
             "Event ID can't be null!"

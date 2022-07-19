@@ -29,10 +29,17 @@ class FirestoreEventsRepository @Inject constructor(
 ) : EventsRepository {
 
     override suspend fun save(event: Event): Event {
-        val document = db.collection(FIRESTORE_EVENTS).document()
-        val eventToSave = if (event.isNew) event.prepareNewEvent(document.id) else event.copy()
+        val collection = db.collection(FIRESTORE_EVENTS)
+        val (documentId, eventToSave) = if (event.isNew) {
+            val id = collection.document().id
+            val newEvent = event.prepareNewEvent(id)
+            id to newEvent
+        } else {
+            event.id!! to event.copy()
+        }
         val eventFs = eventToSave.toFirestore()
-        document
+        collection
+            .document(documentId)
             .set(eventFs, SetOptions.merge())
             .await()
         return eventToSave

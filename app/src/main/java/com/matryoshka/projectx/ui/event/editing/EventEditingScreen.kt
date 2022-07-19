@@ -11,7 +11,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,13 +30,8 @@ fun EventEditingScreen(
     navController: NavController,
     state: EventEditingState,
     eventFormActions: EventFormActions,
-    onInit: () -> Unit,
     onSubmit: () -> Unit
 ) {
-    LaunchedEffect(Unit) {
-        onInit()
-    }
-
     Scaffold(
         backgroundColor = MaterialTheme.colors.onSurface.copy(alpha = 0.03f),
         topBar = {
@@ -81,7 +75,6 @@ fun EventEditingScreenPreview() {
     ProjectxTheme {
         EventEditingScreen(
             state = EventEditingState(status = ScreenStatus.READY),
-            onInit = {},
             eventFormActions = EventFormActions(),
             navController = rememberNavController(),
             onSubmit = {}
