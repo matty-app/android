@@ -29,13 +29,29 @@ class FirestoreEventsRepository @Inject constructor(
 ) : EventsRepository {
 
     override suspend fun save(event: Event): Event {
-        val document = db.collection(FIRESTORE_EVENTS).document()
-        val eventToSave = if (event.isNew) event.prepareNewEvent(document.id) else event.copy()
+        val collection = db.collection(FIRESTORE_EVENTS)
+        val (documentId, eventToSave) = if (event.isNew) {
+            val id = collection.document().id
+            val newEvent = event.prepareNewEvent(id)
+            id to newEvent
+        } else {
+            event.id!! to event.copy()
+        }
         val eventFs = eventToSave.toFirestore()
-        document
+        collection
+            .document(documentId)
             .set(eventFs, SetOptions.merge())
             .await()
         return eventToSave
+    }
+
+    override suspend fun getById(id: String): Event? {
+        return db.collection(FIRESTORE_EVENTS)
+            .document(id)
+            .get()
+            .await()
+            .toObject<EventFs>()
+            ?.toDomain()
     }
 
     override suspend fun getAll(futureOnly: Boolean): List<Event> {
@@ -90,6 +106,7 @@ class FirestoreEventsRepository @Inject constructor(
             UserRef(it.id, it.name)
         }
         return Event(
+            id = uid,
             name = name,
             summary = summary,
             details = details,
@@ -109,8 +126,8 @@ class FirestoreEventsRepository @Inject constructor(
 //firebase requires default values
 private data class EventFs(
     val name: String = "",
-    val summary: String= "",
-    val details: String= "",
+    val summary: String = "",
+    val details: String = "",
     val public: Boolean = false,
     val maxParticipants: Int? = null,
     val location: LocationFs = LocationFs(null, null, null),

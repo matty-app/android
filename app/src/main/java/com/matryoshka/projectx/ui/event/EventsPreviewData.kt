@@ -1,4 +1,4 @@
-package com.matryoshka.projectx.ui.feed
+package com.matryoshka.projectx.ui.event
 
 import com.matryoshka.projectx.data.event.Event
 import com.matryoshka.projectx.data.event.Location

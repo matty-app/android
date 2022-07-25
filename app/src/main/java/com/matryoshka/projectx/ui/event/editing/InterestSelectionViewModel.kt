@@ -1,4 +1,4 @@
-package com.matryoshka.projectx.ui.event
+package com.matryoshka.projectx.ui.event.editing
 
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -12,8 +12,8 @@ import com.matryoshka.projectx.data.interest.Interest
 import com.matryoshka.projectx.data.interest.InterestsRepository
 import com.matryoshka.projectx.ui.common.ScreenStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 private const val TAG = "InterestSelectionVM"
 

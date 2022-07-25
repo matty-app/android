@@ -1,4 +1,4 @@
-package com.matryoshka.projectx.ui.common
+package com.matryoshka.projectx.utils
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE

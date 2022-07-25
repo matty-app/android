@@ -1,4 +1,4 @@
-package com.matryoshka.projectx.ui.event.form
+package com.matryoshka.projectx.ui.event.editing.form
 
 import androidx.navigation.NavController
 

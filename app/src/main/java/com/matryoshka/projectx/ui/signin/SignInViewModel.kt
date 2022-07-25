@@ -12,13 +12,13 @@ import com.matryoshka.projectx.navigation.navToMailConfirmScreen
 import com.matryoshka.projectx.service.AuthService
 import com.matryoshka.projectx.ui.common.FieldState
 import com.matryoshka.projectx.ui.common.ScreenStatus
-import com.matryoshka.projectx.ui.common.setIsNewUser
-import com.matryoshka.projectx.ui.common.setUserEmail
 import com.matryoshka.projectx.ui.validator.EmailNotExistsValidator
 import com.matryoshka.projectx.ui.validator.EmailValidator
+import com.matryoshka.projectx.utils.setIsNewUser
+import com.matryoshka.projectx.utils.setUserEmail
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(

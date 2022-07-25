@@ -55,8 +55,6 @@ import com.matryoshka.projectx.ui.common.scaffold.TopBar
 import com.matryoshka.projectx.ui.theme.ProjectxTheme
 import kotlinx.coroutines.delay
 
-private const val ITEM_GAP = 18
-
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun UserProfileScreen(
@@ -98,6 +96,7 @@ private fun UserProfileBody(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(18.dp),
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 12.dp, vertical = 28.dp)
@@ -144,28 +143,24 @@ private fun UserProfileBody(
                 selectPhoto = actions.selectPhoto,
             )
         }
-        Spacer(modifier = Modifier.height(ITEM_GAP.dp))
         UserProfileItem(
             labelText = stringResource(id = R.string.name),
             onClick = { actions.setDisplayNameDialog(true) }
         ) {
             Text(text = state.name)
         }
-        Spacer(modifier = Modifier.height(ITEM_GAP.dp))
         UserProfileItem(
             labelText = stringResource(id = R.string.email),
             onClick = { actions.setDisplayEmailDialog(true) }
         ) {
             Text(text = state.email)
         }
-        Spacer(modifier = Modifier.height(ITEM_GAP.dp))
         UserProfileItem(
             labelText = stringResource(id = R.string.about_me),
             onClick = { actions.setDisplayAboutMeDialog(true) }
         ) {
             Text(text = state.aboutMe)
         }
-        Spacer(modifier = Modifier.height(ITEM_GAP.dp))
         UserProfileItem(
             labelText = stringResource(id = R.string.interests),
             onClick = { actions.onInterestsClick(navController) }
@@ -203,8 +198,7 @@ private fun UserProfileItem(
         ) {
             Text(
                 text = labelText,
-                style = MaterialTheme.typography.h6,
-                fontWeight = FontWeight.Bold
+                style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Bold),
             )
             Spacer(
                 modifier = Modifier

@@ -1,4 +1,4 @@
-package com.matryoshka.projectx.ui.feed
+package com.matryoshka.projectx.ui.event.feed
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

@@ -7,22 +7,29 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.matryoshka.projectx.NavArgument.ARG_EMAIL
+import com.matryoshka.projectx.NavArgument.ARG_EVENT
+import com.matryoshka.projectx.NavArgument.ARG_EVENT_ID
 import com.matryoshka.projectx.NavArgument.ARG_INTEREST_ID
 import com.matryoshka.projectx.NavArgument.ARG_LOCATION
+import com.matryoshka.projectx.data.event.Event
+import com.matryoshka.projectx.data.event.Location
 import com.matryoshka.projectx.data.map.LocationInfo
 import com.matryoshka.projectx.ui.email.EmailConfirmationRouter
-import com.matryoshka.projectx.ui.event.InterestSelectionRouter
-import com.matryoshka.projectx.ui.event.NewEventScreen
-import com.matryoshka.projectx.ui.event.NewEventScreenViewModel
-import com.matryoshka.projectx.ui.feed.EventsFeedRouter
+import com.matryoshka.projectx.ui.event.editing.EventEditingRouter
+import com.matryoshka.projectx.ui.event.editing.InterestSelectionRouter
+import com.matryoshka.projectx.ui.event.feed.EventsFeedRouter
+import com.matryoshka.projectx.ui.event.viewing.EventViewingRouter
 import com.matryoshka.projectx.ui.interests.InterestsRouter
 import com.matryoshka.projectx.ui.launch.LaunchScreenRouter
 import com.matryoshka.projectx.ui.launch.SignInLaunchScreenRouter
 import com.matryoshka.projectx.ui.map.LocationSelectionRouter
+import com.matryoshka.projectx.ui.map.viewing.LocationViewingRouter
 import com.matryoshka.projectx.ui.signin.SignInRouter
 import com.matryoshka.projectx.ui.signup.SignUpRouter
 import com.matryoshka.projectx.ui.userprofile.UserProfileRouter
+import com.matryoshka.projectx.utils.registerLocalDateTimeAdapter
 
 fun NavGraphBuilder.appNavGraph(navController: NavController) {
 
@@ -43,7 +50,7 @@ fun NavGraphBuilder.appNavGraph(navController: NavController) {
     }
 
     composable(
-        route = "${Screen.EMAIL_CONFIRM}?$ARG_EMAIL={email}",
+        route = "${Screen.EMAIL_CONFIRM}?$ARG_EMAIL={$ARG_EMAIL}",
         arguments = listOf(
             navArgument(ARG_EMAIL) {
                 type = NavType.StringType
@@ -60,14 +67,36 @@ fun NavGraphBuilder.appNavGraph(navController: NavController) {
         InterestsRouter(navController)
     }
 
-    composable(Screen.NEW_EVENT_SCREEN) {
-        val viewModel: NewEventScreenViewModel = hiltViewModel()
-        NewEventScreen(
+    composable(
+        route = "${Screen.EVENT_EDITING_SCREEN}?$ARG_EVENT={$ARG_EVENT}",
+        arguments = listOf(
+            navArgument(ARG_EVENT) {
+                type = NavType.StringType
+                nullable = true
+            }
+        )
+    ) { backStackEntry ->
+        val event = backStackEntry.arguments?.getString(ARG_EVENT)?.let { json ->
+            val gson = GsonBuilder().registerLocalDateTimeAdapter().create()
+            gson.fromJson(json, Event::class.java)
+        }
+        EventEditingRouter(
             navController = navController,
-            state = viewModel.state,
-            eventFormActions = viewModel.formActions,
-            onInit = viewModel::init,
-            onSubmit = viewModel::onSubmit
+            event = event
+        )
+    }
+
+    composable(
+        route = "${Screen.EVENT_VIEWING_SCREEN}?$ARG_EVENT_ID={$ARG_EVENT_ID}",
+        arguments = listOf(
+            navArgument(ARG_EVENT_ID) {
+                type = NavType.StringType
+            }
+        )
+    ) { backStackEntry ->
+        EventViewingRouter(
+            navController = navController,
+            eventId = backStackEntry.arguments?.getString(ARG_EVENT_ID) ?: ""
         )
     }
 
@@ -84,6 +113,22 @@ fun NavGraphBuilder.appNavGraph(navController: NavController) {
             navController = navController,
             viewModel = hiltViewModel(),
             location = location
+        )
+    }
+
+    composable(
+        route = "${Screen.LOCATION_VIEWING_SCREEN}?$ARG_LOCATION={$ARG_LOCATION}",
+        arguments = listOf(navArgument(ARG_LOCATION) {
+            type = NavType.StringType
+        })
+    ) { backStackEntry ->
+        val location = backStackEntry.arguments?.getString(ARG_LOCATION)?.let { json ->
+            Gson().fromJson(json, Location::class.java)
+        }
+        LocationViewingRouter(
+            navController = navController,
+            viewModel = hiltViewModel(),
+            location = location!!
         )
     }
 
@@ -121,7 +166,9 @@ object Screen {
     const val INTERESTS = "INTERESTS"
     const val USER_PROFILE = "USER_PROFILE"
     const val LOCATION_SELECTION_SCREEN = "LOCATION_SELECTION_SCREEN"
+    const val LOCATION_VIEWING_SCREEN = "LOCATION_VIEWING_SCREEN"
     const val INTEREST_SELECTION_SCREEN = "INTEREST_SELECTION_SCREEN"
-    const val NEW_EVENT_SCREEN = "NEW_EVENT_SCREEN"
+    const val EVENT_EDITING_SCREEN = "EVENT_EDITING_SCREEN"
+    const val EVENT_VIEWING_SCREEN = "EVENT_VIEWING_SCREEN"
     const val EVENTS_FEED_SCREEN = "EVENTS_FEED_SCREEN"
 }

@@ -1,4 +1,4 @@
-package com.matryoshka.projectx.ui.feed
+package com.matryoshka.projectx.ui.event.feed
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.matryoshka.projectx.R
 import com.matryoshka.projectx.ui.common.ErrorToast
 import com.matryoshka.projectx.ui.common.scaffold.TopBar
+import com.matryoshka.projectx.ui.event.eventListPreview
 import com.matryoshka.projectx.ui.theme.ProjectxTheme
 
 private const val BOTTOM_BLUR_HEIGHT = 50
@@ -38,7 +39,8 @@ private const val BOTTOM_BLUR_HEIGHT = 50
 fun EventsFeedScreen(
     state: EventsFeedState,
     bottomBar: @Composable () -> Unit,
-    onAddEventClick: () -> Unit
+    onAddEventClick: () -> Unit,
+    onEventClick: (eventId: String) -> Unit
 ) {
     Scaffold(
         topBar = { TopBar(onAddEventClick) },
@@ -64,7 +66,10 @@ fun EventsFeedScreen(
                     verticalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
                     items(state.events) {
-                        EventsFeedItem(event = it)
+                        EventsFeedItem(
+                            event = it,
+                            onClick = { onEventClick(it.requireId) }
+                        )
                     }
                     item {
                         Spacer(modifier = Modifier.height((BOTTOM_BLUR_HEIGHT * 2).dp))
@@ -116,7 +121,8 @@ private fun EventsFeedScreenPreview() {
         EventsFeedScreen(
             state = EventsFeedState(events = eventListPreview),
             bottomBar = {},
-            onAddEventClick = {}
+            onAddEventClick = {},
+            onEventClick = {}
         )
     }
 }

@@ -1,12 +1,14 @@
-package com.matryoshka.projectx.ui.event.form
+package com.matryoshka.projectx.ui.event.editing.form
 
 import androidx.compose.runtime.Stable
+import com.matryoshka.projectx.data.event.Event
 import com.matryoshka.projectx.data.interest.Interest
 import com.matryoshka.projectx.data.map.LocationInfo
 import com.matryoshka.projectx.ui.common.FieldState
 import com.matryoshka.projectx.ui.common.numberFieldState
 import com.matryoshka.projectx.ui.common.switchState
 import com.matryoshka.projectx.ui.common.textFieldState
+import com.matryoshka.projectx.utils.toLocationInfo
 import java.time.LocalDateTime
 
 private const val STARTING_DELAY_MIN = 5L
@@ -45,5 +47,18 @@ class EventFormState(
     val endDateField = FieldState(endDate)
     val interestField = FieldState(interest)
     val locationField = FieldState(location)
-
 }
+
+fun Event.toEventFormState() = EventFormState(
+    name = name,
+    summary = summary,
+    details = details,
+    public = public,
+    withApproval = withApproval,
+    limitMaxParticipants = maxParticipants != null,
+    maxParticipants = maxParticipants,
+    location = location.toLocationInfo(),
+    interest = interest,
+    startDate = startDate,
+    endDate = endDate
+)

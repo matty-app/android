@@ -1,9 +1,9 @@
-package com.matryoshka.projectx.ui.event.form
+package com.matryoshka.projectx.ui.event.editing.form
 
 import com.matryoshka.projectx.data.interest.Interest
 import com.matryoshka.projectx.data.map.BoundingArea
-import com.matryoshka.projectx.data.map.GeoData
 import com.matryoshka.projectx.data.map.Coordinates
+import com.matryoshka.projectx.data.map.GeoData
 import com.matryoshka.projectx.data.map.LocationInfo
 import com.matryoshka.projectx.ui.common.numValue
 import org.junit.Test
