@@ -1,29 +1,5 @@
 package com.matryoshka.projectx.ui.viewmodel
 
-import com.matryoshka.projectx.data.interest.Interest
-import com.matryoshka.projectx.data.interest.InterestsRepository
-import com.matryoshka.projectx.data.user.User
-import com.matryoshka.projectx.data.user.UsersRepository
-import com.matryoshka.projectx.exception.ProjectxException
-import com.matryoshka.projectx.service.AuthService
-import com.matryoshka.projectx.support.CoroutineDispatcherRule
-import com.matryoshka.projectx.support.assert
-import com.matryoshka.projectx.support.callPrivateFunction
-import com.matryoshka.projectx.ui.common.ScreenStatus
-import com.matryoshka.projectx.ui.interests.InterestState
-import com.matryoshka.projectx.ui.interests.InterestsViewModel
-import io.mockk.coEvery
-import io.mockk.coJustRun
-import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
-import org.junit.Rule
-import org.junit.Test
-import kotlin.test.assertTrue
-
 //@ExperimentalCoroutinesApi
 //class InterestsViewModelTests {
 //    @get:Rule

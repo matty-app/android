@@ -2,10 +2,11 @@ package com.matryoshka.projectx.exception
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import androidx.annotation.StringRes
 import com.matryoshka.projectx.R
 
-open class ProjectxException : Exception {
+open class AppException : Exception {
     @StringRes
     private var resId: Int = R.string.error_occurred
     private var args: Array<Any>? = null
@@ -53,4 +54,10 @@ open class ProjectxException : Exception {
 
     @SuppressLint("StringFormatInvalid")
     fun toLocalString(context: Context) = context.getString(resId, args)
+}
+
+fun throwException(ex: Exception, logTag: String, methodName: String): Nothing {
+    val logMessage = "$methodName: ${ex.message}"
+    Log.d(logTag, logMessage)
+    throw ex
 }

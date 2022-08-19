@@ -9,7 +9,7 @@ import androidx.navigation.NavController
 import com.matryoshka.projectx.SavedStateKey
 import com.matryoshka.projectx.data.event.Event
 import com.matryoshka.projectx.data.event.EventsRepository
-import com.matryoshka.projectx.exception.ProjectxException
+import com.matryoshka.projectx.exception.AppException
 import com.matryoshka.projectx.navigation.navToEventEditingScreen
 import com.matryoshka.projectx.service.AuthService
 import com.matryoshka.projectx.service.requireUser
@@ -63,7 +63,7 @@ data class EventViewingState(
     val event: Event? = null,
     val isMine: Boolean = false,
     val status: ScreenStatus = ScreenStatus.READY,
-    val error: ProjectxException? = null
+    val error: AppException? = null
 ) {
     val requireEvent: Event
         get() = requireNotNull(event) {

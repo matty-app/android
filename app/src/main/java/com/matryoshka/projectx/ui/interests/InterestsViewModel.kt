@@ -10,7 +10,7 @@ import androidx.navigation.NavController
 import com.matryoshka.projectx.SavedStateKey.INTERESTS_KEY
 import com.matryoshka.projectx.data.interest.Interest
 import com.matryoshka.projectx.data.interest.InterestsRepository
-import com.matryoshka.projectx.exception.ProjectxException
+import com.matryoshka.projectx.exception.AppException
 import com.matryoshka.projectx.ui.common.ScreenStatus
 import com.matryoshka.projectx.utils.exists
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,7 +42,7 @@ class InterestsViewModel @Inject constructor(
                     }
                 state = state.copy(interests = interests, status = ScreenStatus.READY)
                 _isInitialized = true
-            } catch (ex: ProjectxException) {
+            } catch (ex: AppException) {
                 setErrorState(ex)
             }
         }
@@ -60,12 +60,12 @@ class InterestsViewModel @Inject constructor(
                 ?.set(INTERESTS_KEY, selectedInterests)
             Log.d(TAG, "onSubmit: selectedInterests: $selectedInterests")
             navController.popBackStack()
-        } catch (ex: ProjectxException) {
+        } catch (ex: AppException) {
             setErrorState(ex)
         }
     }
 
-    private fun setErrorState(error: ProjectxException) {
+    private fun setErrorState(error: AppException) {
         state = state.copy(status = ScreenStatus.ERROR, error = error)
     }
 }
@@ -73,7 +73,7 @@ class InterestsViewModel @Inject constructor(
 data class InterestsScreenState(
     val interests: List<InterestState> = emptyList(),
     val status: ScreenStatus = ScreenStatus.READY,
-    val error: ProjectxException? = null
+    val error: AppException? = null
 ) {
     val isProgressIndicatorVisible: Boolean
         get() = status == ScreenStatus.LOADING

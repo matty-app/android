@@ -8,6 +8,7 @@ import com.google.gson.JsonPrimitive
 import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
 import java.lang.reflect.Type
+import java.time.Instant
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -23,15 +24,41 @@ class LocalDateTimeConverter : JsonSerializer<LocalDateTime>, JsonDeserializer<L
     }
 
     override fun deserialize(
-        json: JsonElement?,
-        typeOfT: Type?,
+        json: JsonElement,
+        typeOfT: Type,
         context: JsonDeserializationContext?
     ): LocalDateTime? {
-        return LocalDateTime.parse(json!!.asString, formatter)
+        return LocalDateTime.parse(json.asString, formatter)
     }
 }
 
-fun GsonBuilder.registerLocalDateTimeAdapter(): GsonBuilder = registerTypeAdapter(
+class InstantTypeConverter : JsonSerializer<Instant>,
+    JsonDeserializer<Instant> {
+    private val formatter = DateTimeFormatter.ISO_INSTANT
+
+    override fun serialize(
+        src: Instant,
+        srcType: Type,
+        context: JsonSerializationContext
+    ): JsonElement {
+        return JsonPrimitive(formatter.format(src))
+    }
+
+    override fun deserialize(
+        json: JsonElement,
+        type: Type,
+        context: JsonDeserializationContext
+    ): Instant {
+        return Instant.parse(json.asString)
+    }
+}
+
+fun GsonBuilder.registerAdapters(): GsonBuilder = registerTypeAdapter(
     LocalDateTime::class.java,
     LocalDateTimeConverter()
+).registerTypeAdapter(
+    Instant::class.java,
+    InstantTypeConverter()
 )
+
+fun buildGson() = GsonBuilder().registerAdapters().create()

@@ -13,9 +13,9 @@ import com.matryoshka.projectx.data.interest.FIRESTORE_INTERESTS
 import com.matryoshka.projectx.data.interest.Interest
 import com.matryoshka.projectx.data.interest.InterestsRepository
 import com.matryoshka.projectx.exception.SaveUserException
-import kotlinx.coroutines.tasks.await
 import java.io.ByteArrayOutputStream
 import javax.inject.Inject
+import kotlinx.coroutines.tasks.await
 
 const val FIRESTORE_USERS = "users"
 private const val COMPRESS_JPEG_QUALITY = 100
@@ -27,6 +27,9 @@ class FirestoreUsersRepository @Inject constructor(
     private val db: FirebaseFirestore,
     private val interestsRepository: InterestsRepository
 ) : UsersRepository {
+    override suspend fun getCurrent(): User? {
+        TODO("Not yet implemented")
+    }
 
     override suspend fun save(user: User) {
         try {

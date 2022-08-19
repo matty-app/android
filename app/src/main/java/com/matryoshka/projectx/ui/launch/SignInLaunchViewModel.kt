@@ -8,7 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.matryoshka.projectx.data.user.User
 import com.matryoshka.projectx.data.user.UsersRepository
-import com.matryoshka.projectx.exception.ProjectxException
+import com.matryoshka.projectx.exception.AppException
 import com.matryoshka.projectx.service.AuthService
 import com.matryoshka.projectx.ui.common.ScreenStatus
 import com.matryoshka.projectx.utils.isNewUser
@@ -27,7 +27,7 @@ class SignInLaunchViewModel @Inject constructor(
     var status by mutableStateOf(ScreenStatus.READY)
         private set
 
-    var error: ProjectxException? = null
+    var error: AppException? = null
 
     suspend fun signInByEmailLink(intent: Intent): User? {
         return try {
@@ -38,16 +38,16 @@ class SignInLaunchViewModel @Inject constructor(
                 usersRepository.save(user)
                 user
             } else return authService.signInByEmailLink(email, link)
-        } catch (ex: ProjectxException) {
+        } catch (ex: AppException) {
             setErrorState(ex)
             null
         } catch (ex: Exception) {
-            setErrorState(ProjectxException())
+            setErrorState(AppException())
             null
         }
     }
 
-    private fun setErrorState(error: ProjectxException) {
+    private fun setErrorState(error: AppException) {
         this.status = ScreenStatus.ERROR
         this.error = error
     }

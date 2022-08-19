@@ -11,7 +11,7 @@ import com.matryoshka.projectx.data.interest.FIRESTORE_INTERESTS
 import com.matryoshka.projectx.data.interest.FirestoreInterestsRepository
 import com.matryoshka.projectx.data.map.Coordinates
 import com.matryoshka.projectx.data.user.FIRESTORE_USERS
-import com.matryoshka.projectx.data.user.UsersRepository
+import com.matryoshka.projectx.data.user.FirestoreUsersRepository
 import com.matryoshka.projectx.service.AuthService
 import com.matryoshka.projectx.service.requireUser
 import java.time.LocalDateTime
@@ -25,7 +25,7 @@ class FirestoreEventsRepository @Inject constructor(
     private val db: FirebaseFirestore,
     private val authService: AuthService,
     private val interestsRepository: FirestoreInterestsRepository,
-    private val usersRepository: UsersRepository
+    private val usersRepository: FirestoreUsersRepository
 ) : EventsRepository {
 
     override suspend fun save(event: Event): Event {

@@ -4,16 +4,16 @@ import android.content.Intent
 import android.content.SharedPreferences
 import com.matryoshka.projectx.data.user.User
 import com.matryoshka.projectx.data.user.UsersRepository
-import com.matryoshka.projectx.exception.ProjectxException
+import com.matryoshka.projectx.exception.AppException
 import com.matryoshka.projectx.service.AuthService
 import com.matryoshka.projectx.support.CoroutineDispatcherRule
 import com.matryoshka.projectx.support.assert
 import com.matryoshka.projectx.support.callPrivateFunction
 import com.matryoshka.projectx.ui.common.ScreenStatus
-import com.matryoshka.projectx.ui.common.isNewUser
-import com.matryoshka.projectx.ui.common.userEmail
-import com.matryoshka.projectx.ui.common.userName
 import com.matryoshka.projectx.ui.launch.SignInLaunchViewModel
+import com.matryoshka.projectx.utils.isNewUser
+import com.matryoshka.projectx.utils.userEmail
+import com.matryoshka.projectx.utils.userName
 import io.mockk.coEvery
 import io.mockk.coJustRun
 import io.mockk.coVerify
@@ -41,7 +41,7 @@ class SignInLaunchViewModelTest {
     @Test
     fun `should set error`() {
         val viewModel = createViewModel()
-        val expectedException = ProjectxException()
+        val expectedException = AppException()
         val expectedStatus = ScreenStatus.ERROR
 
         viewModel.callPrivateFunction("setErrorState", arrayOf(expectedException))
@@ -114,7 +114,7 @@ class SignInLaunchViewModelTest {
         val actualUser = viewModel.signInByEmailLink(intent)
 
         with(viewModel) {
-            error.assert(ProjectxException())
+            error.assert(AppException())
             assertEquals(ScreenStatus.ERROR, status)
         }
         assertNull(actualUser)

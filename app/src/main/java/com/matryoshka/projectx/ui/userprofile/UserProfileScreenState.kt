@@ -3,10 +3,8 @@ package com.matryoshka.projectx.ui.userprofile
 import android.net.Uri
 import androidx.compose.runtime.Stable
 import com.matryoshka.projectx.data.interest.Interest
-import com.matryoshka.projectx.service.AuthService
 import com.matryoshka.projectx.ui.common.ScreenStatus
 import com.matryoshka.projectx.ui.common.textFieldState
-import com.matryoshka.projectx.ui.validator.EmailExistsValidator
 import com.matryoshka.projectx.ui.validator.EmailValidator
 import com.matryoshka.projectx.ui.validator.NameValidator
 
@@ -48,16 +46,12 @@ open class UserProfileFormStatePreview(
 
 @Stable
 class UserProfileFormState(
-    authService: AuthService,
     name: String? = null,
     email: String? = null,
     aboutMe: String? = null
 ) : UserProfileFormStatePreview(name, email, aboutMe) {
     override val emailField = textFieldState(
         initialValue = email ?: "",
-        validators = listOf(
-            EmailValidator(),
-            EmailExistsValidator(authService)
-        )
+        validators = listOf(EmailValidator())
     )
 }

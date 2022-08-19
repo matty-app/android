@@ -1,12 +1,22 @@
 package com.matryoshka.projectx.service
 
+import com.matryoshka.projectx.R
 import com.matryoshka.projectx.data.user.User
-import com.matryoshka.projectx.exception.ProjectxException
+import com.matryoshka.projectx.exception.AppException
+import java.time.Instant
 import javax.inject.Singleton
 
 
 @Singleton
 interface AuthService {
+    suspend fun sendRegistrationCodeToEmail(email: String): Instant
+
+    suspend fun sendLoginCodeToEmail(email: String): Instant
+
+    suspend fun register(email: String, userName: String, verificationCode: Int)
+
+    suspend fun login(email: String, verificationCode: Int)
+
     val currentUser: User?
 
     suspend fun sendSignInLinkToEmail(email: String)
@@ -28,5 +38,7 @@ interface AuthService {
 
 val AuthService.requireUser: User
     get() = requireNotNull(currentUser) {
-        ProjectxException("User can't be null!")
+        AppException("User can't be null!")
     }
+
+class InvalidVerificationCodeException : AppException(R.string.invalid_code)
