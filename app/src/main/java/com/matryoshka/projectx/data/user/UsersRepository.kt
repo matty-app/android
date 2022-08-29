@@ -2,7 +2,6 @@ package com.matryoshka.projectx.data.user
 
 import javax.inject.Singleton
 
-@Singleton
 interface UsersRepository {
     suspend fun getCurrent(): User?
 

@@ -49,16 +49,18 @@ import io.ktor.http.HttpStatusCode.Companion.ServiceUnavailable
 import io.ktor.http.HttpStatusCode.Companion.Unauthorized
 import io.ktor.http.isSuccess
 import io.ktor.serialization.gson.gson
+import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
 object ApiClientModule {
 
     @Provides
+    @Singleton
     fun provideMattyApiClient(sharedPrefs: SharedPreferences): HttpClient {
         val client = HttpClient(CIO) {
             install(Logging) {
-                logger = AppHttpLogger
+                logger = HttpLogger
                 level = LogLevel.ALL
             }
 
@@ -149,8 +151,8 @@ private suspend fun throwHttpException(client: HttpClient, response: HttpRespons
     }
 }
 
-private object AppHttpLogger : Logger {
-    private const val logTag = "AppHttpLogger"
+private object HttpLogger : Logger {
+    private const val logTag = "HttpLogger"
 
     override fun log(message: String) {
         Log.i(logTag, message)

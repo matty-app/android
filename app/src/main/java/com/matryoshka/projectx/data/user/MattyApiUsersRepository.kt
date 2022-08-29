@@ -34,7 +34,7 @@ class MattyApiUsersRepository @Inject constructor(
     override suspend fun getCurrent(): User? {
         return try {
             userCache.get(context = context) {
-                httpClient.get(MattyApiPath.GET_CURRENT_USER_PATH).body<ApiUser>().toDomain()
+                httpClient.get(MattyApiPath.CURRENT_USER_PATH).body<ApiUser>().toDomain()
             }
         } catch (ex: UnauthorizedException) {
             throwException(UserSignedOutException(), TAG)

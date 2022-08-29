@@ -11,9 +11,8 @@ import kotlin.time.Duration
 
 private const val TAG = "SharedPrefsCache"
 
-@Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
-class SharedPrefsCache<T> private constructor(
-    private val cacheContainerType: Type,
+class SharedPrefsCache<T>(
+    private val objectClass: Class<T>,
     private val key: String,
     private val lifeSpan: Duration
 ) {

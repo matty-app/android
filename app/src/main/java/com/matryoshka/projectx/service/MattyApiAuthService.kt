@@ -32,6 +32,7 @@ class MattyApiAuthService @Inject constructor(
 ) : AuthService {
     override suspend fun sendRegistrationCode(email: String): Instant {
         return try {
+            val result = httpClient.get(SEND_REGISTER_CODE_PATH) {
             val response: SendCodeResponse = httpClient.get(REGISTER_CODE_PATH) {
                 url {
                     parameters.append("email", email)
