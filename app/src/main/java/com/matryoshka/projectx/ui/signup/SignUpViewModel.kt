@@ -68,7 +68,7 @@ class SignUpViewModel @Inject constructor(
     }
 
     private suspend fun sendRegistrationCodeToEmail(email: String) =
-        authService.sendRegistrationCodeToEmail(email)
+        authService.sendRegistrationCode(email)
 
     private fun changeStatus(status: ScreenStatus) {
         state = state.copy(status = status)

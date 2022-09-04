@@ -2,40 +2,57 @@ package com.matryoshka.projectx.data.cache
 
 import android.content.Context
 import android.util.Log
-import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.matryoshka.projectx.utils.gson
 import com.matryoshka.projectx.utils.sharedPreferences
+import java.lang.ref.WeakReference
+import java.lang.reflect.Type
+import kotlin.time.Duration
 
 private const val TAG = "SharedPrefsCache"
 
-class SharedPrefsCache<T>(
-    private val objectClass: Class<T>,
+@Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
+class SharedPrefsCache<T> private constructor(
+    private val cacheContainerType: Type,
     private val key: String,
-    private val expiredPeriod: Long,
-    private val expiredTimeUnit: CacheExpireTimeUnit
+    private val lifeSpan: Duration
 ) {
+    private var expireTime: Long = 0
+    private var objRef = WeakReference<T?>(null)
+
     suspend fun get(
         context: Context,
         forceReload: Boolean = false,
         onReload: suspend () -> T?
     ): T? {
-        val json = context.sharedPreferences.getString(key, null)
-        if (forceReload || json == null)
-            return reload(context, onReload)
+        if (forceReload) return onReload()
 
-        val cacheContainer = Gson().fromJson(json, CacheContainer::class.java)
+        val obj = objRef.get()
+        if (obj != null)
+            return if (expireTime > System.currentTimeMillis()) obj
+            else reload(context, onReload)
+
+        val json = context.sharedPreferences.getString(key, null) ?: return reload(context, onReload)
+
+        val cacheContainer = gson.fromJson<CacheContainer<T>>(json, cacheContainerType)
         if (cacheContainer.expireTime < System.currentTimeMillis())
             return reload(context, onReload)
 
-        val cachedObject = Gson().fromJson(cacheContainer.objectJson, objectClass)
-        Log.d(TAG, "get $objectClass from cache: $cachedObject")
+        val cachedObject = cacheContainer.obj
+        expireTime = cacheContainer.expireTime
+        objRef = WeakReference(cachedObject)
+        Log.d(TAG, "get $key from cache: $cachedObject")
         return cachedObject
     }
 
     fun save(context: Context, targetObject: T) {
         val expireTime =
-            System.currentTimeMillis() + getExpiredPeriodInMillis(expiredPeriod, expiredTimeUnit)
-        val cacheContainer = CacheContainer(expireTime, Gson().toJson(targetObject))
-        val json = Gson().toJson(cacheContainer)
+            System.currentTimeMillis() + lifeSpan.inWholeMilliseconds
+        val cacheContainer = CacheContainer(expireTime, targetObject)
+
+        this.expireTime = expireTime
+        this.objRef = WeakReference(targetObject)
+        val json = gson.toJson(cacheContainer)
         context.sharedPreferences.edit().putString(key, json).apply()
     }
 
@@ -44,27 +61,26 @@ class SharedPrefsCache<T>(
         if (targetObject != null) {
             save(context, targetObject)
         }
-        Log.d(TAG, "get $objectClass from source: $targetObject")
+        Log.d(TAG, "get $key from source: $targetObject")
         return targetObject
     }
-}
 
-enum class CacheExpireTimeUnit {
-    SECONDS,
-    MINUTES,
-    HOURS,
-    DAYS
-}
-
-data class CacheContainer(
-    val expireTime: Long,
-    val objectJson: String
-)
-
-fun getExpiredPeriodInMillis(expiredPeriod: Long, expiredTimeUnit: CacheExpireTimeUnit): Long =
-    when (expiredTimeUnit) {
-        CacheExpireTimeUnit.SECONDS -> expiredPeriod * 1000L
-        CacheExpireTimeUnit.MINUTES -> expiredPeriod * 60 * 1000L
-        CacheExpireTimeUnit.HOURS -> expiredPeriod * 60 * 60 * 1000L
-        CacheExpireTimeUnit.DAYS -> expiredPeriod * 24 * 60 * 60 * 1000L
+    companion object {
+        inline operator fun <reified T> invoke(
+            key: String,
+            lifeSpan: Duration,
+        ) = SharedPrefsCache<T>(
+            cacheContainerType = TypeToken.getParameterized(
+                CacheContainer::class.java,
+                T::class.java
+            ).type,
+            key = key,
+            lifeSpan = lifeSpan,
+        )
     }
+}
+
+data class CacheContainer<out T>(
+    val expireTime: Long,
+    val obj: T
+)

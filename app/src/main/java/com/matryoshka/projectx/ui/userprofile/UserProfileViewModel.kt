@@ -63,9 +63,8 @@ class UserProfileViewModel @Inject constructor(
             viewModelScope.launch {
                 try {
                     authorizedAction(navController) {
-                        user = userRepository.getCurrent()!!
+                        user = userRepository.getRequireUser()
                     }
-                    user = userRepository.getCurrent()!!
                     photoUri = localImagesRepository.getAvatarUri(user.id)
                     val photoExists = imagesRepository.getAvatar(
                         user.id,

@@ -9,9 +9,9 @@ import javax.inject.Singleton
 
 @Singleton
 interface AuthService {
-    suspend fun sendRegistrationCodeToEmail(email: String): Instant
+    suspend fun sendRegistrationCode(email: String): Instant
 
-    suspend fun sendLoginCodeToEmail(email: String): Instant
+    suspend fun sendLoginCode(email: String): Instant
 
     suspend fun register(email: String, userName: String, verificationCode: Int)
 

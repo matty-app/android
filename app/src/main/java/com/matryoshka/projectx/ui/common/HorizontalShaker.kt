@@ -17,8 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun XShaker(
-    state: XShakerState,
+fun HorizontalShaker(
+    state: HorizontalShakerState,
     content: @Composable () -> Unit
 ) {
     val xOffset = remember { Animatable(initialValue = 0.0f) }
@@ -48,7 +48,7 @@ fun XShaker(
 }
 
 @Stable
-class XShakerState {
+class HorizontalShakerState {
     var shouldShake by mutableStateOf(false)
         private set
 

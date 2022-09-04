@@ -59,7 +59,7 @@ class SignInViewModel @Inject constructor(
     private suspend fun validate() = emailField.validate()
 
     private suspend fun sendLoginCodeToEmail(email: String) =
-        authService.sendLoginCodeToEmail(email)
+        authService.sendLoginCode(email)
 
     private fun changeStatus(status: ScreenStatus) {
         state = state.copy(status = status)

@@ -56,8 +56,9 @@ open class AppException : Exception {
     fun toLocalString(context: Context) = context.getString(resId, args)
 }
 
-fun throwException(ex: Exception, logTag: String, methodName: String): Nothing {
-    val logMessage = "$methodName: ${ex.message}"
-    Log.d(logTag, logMessage)
+fun throwException(ex: Exception, logTag: String): Nothing {
+    val methodName = Throwable().stackTrace[1].methodName
+    val logMessage = "$methodName: $ex: ${ex.message}"
+    Log.e(logTag, logMessage)
     throw ex
 }

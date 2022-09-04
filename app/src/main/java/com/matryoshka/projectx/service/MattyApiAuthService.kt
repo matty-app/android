@@ -2,11 +2,11 @@ package com.matryoshka.projectx.service
 
 import android.content.SharedPreferences
 import android.util.Log
+import com.matryoshka.projectx.MattyApiPath.LOGIN_CODE_PATH
 import com.matryoshka.projectx.MattyApiPath.LOGIN_PATH
+import com.matryoshka.projectx.MattyApiPath.REGISTER_CODE_PATH
 import com.matryoshka.projectx.MattyApiPath.REGISTER_PATH
-import com.matryoshka.projectx.MattyApiPath.SEND_LOGIN_CODE_PATH
-import com.matryoshka.projectx.MattyApiPath.SEND_REGISTER_CODE_PATH
-import com.matryoshka.projectx.data.auth.TokensInfo
+import com.matryoshka.projectx.data.auth.AuthTokens
 import com.matryoshka.projectx.data.user.User
 import com.matryoshka.projectx.exception.AppException
 import com.matryoshka.projectx.exception.UnauthorizedException
@@ -27,76 +27,70 @@ private const val TAG = "MattyApiAuthService"
 
 @Singleton
 class MattyApiAuthService @Inject constructor(
-    private val client: HttpClient,
+    private val httpClient: HttpClient,
     private val sharedPrefs: SharedPreferences
 ) : AuthService {
-    override suspend fun sendRegistrationCodeToEmail(email: String): Instant {
-        val methodName = "sendRegistrationCodeToEmail"
+    override suspend fun sendRegistrationCode(email: String): Instant {
         return try {
-            val result = client.get(SEND_REGISTER_CODE_PATH) {
+            val response: SendCodeResponse = httpClient.get(REGISTER_CODE_PATH) {
                 url {
                     parameters.append("email", email)
                 }
-            }
-            Log.d(TAG, "$methodName: $result")
-            result.body<SendCodeResponse>().expiresAt
+            }.body()
+            Log.d(TAG, "$REGISTER_CODE_PATH: $response")
+            response.expiresAt
         } catch (ex: Exception) {
-            throwException(AppException(ex), TAG, methodName)
+            throwException(AppException(ex), TAG)
         }
     }
 
-    override suspend fun sendLoginCodeToEmail(email: String): Instant {
-        val methodName = "sendLoginCodeToEmail"
+    override suspend fun sendLoginCode(email: String): Instant {
         return try {
-            val result = client.get(SEND_LOGIN_CODE_PATH) {
+            val response: SendCodeResponse = httpClient.get(LOGIN_CODE_PATH) {
                 url {
                     parameters.append("email", email)
                 }
-            }
-            Log.d(TAG, "$methodName: $result")
-            result.body<SendCodeResponse>().expiresAt
+            }.body()
+            Log.d(TAG, "$LOGIN_CODE_PATH: $response")
+            response.expiresAt
         } catch (ex: Exception) {
-            throwException(AppException(ex), TAG, methodName)
+            throwException(AppException(ex), TAG)
         }
     }
 
     override suspend fun register(email: String, userName: String, verificationCode: Int) {
-        val methodName = "register"
         try {
-            val result = client.post(REGISTER_PATH) {
+            val authTokens: AuthTokens = httpClient.post(REGISTER_PATH) {
                 contentType(ContentType.Application.Json)
                 setBody(RegisterModel(email, userName, verificationCode))
-            }
-            val tokensInfo: TokensInfo = result.body()
+            }.body()
             sharedPrefs.setTokens(
-                accessToken = tokensInfo.accessToken,
-                refreshToken = tokensInfo.refreshToken
+                accessToken = authTokens.accessToken,
+                refreshToken = authTokens.refreshToken
             )
-            Log.d(TAG, "$methodName: $result")
+            Log.d(TAG, "$REGISTER_PATH: $authTokens")
         } catch (ex: UnauthorizedException) {
-            throwException(InvalidVerificationCodeException(), TAG, methodName)
+            throwException(InvalidVerificationCodeException(), TAG)
         } catch (ex: Exception) {
-            throwException(AppException(ex), TAG, methodName)
+            throwException(AppException(ex), TAG)
         }
     }
 
     override suspend fun login(email: String, verificationCode: Int) {
-        val methodName = "login"
         try {
-            val tokensInfo: TokensInfo = client.post(LOGIN_PATH) {
+            val authTokens: AuthTokens = httpClient.post(LOGIN_PATH) {
                 contentType(ContentType.Application.Json)
                 setBody(LoginModel(email, verificationCode))
             }.body()
-            //val tokensInfo: TokensInfo = result.body()
             sharedPrefs.setTokens(
-                accessToken = tokensInfo.accessToken,
-                refreshToken = tokensInfo.refreshToken
+                accessToken = authTokens.accessToken,
+                refreshToken = authTokens.refreshToken
             )
-            //Log.d(TAG, "$methodName: $result")
+            Log.d(TAG, "$LOGIN_PATH: $authTokens")
         } catch (ex: UnauthorizedException) {
-            throwException(InvalidVerificationCodeException(), TAG, methodName)
+            throwException(InvalidVerificationCodeException(), TAG)
         } catch (ex: Exception) {
-            throwException(AppException(ex), TAG, methodName)
+            throwException(AppException(ex), TAG)
         }
     }
 

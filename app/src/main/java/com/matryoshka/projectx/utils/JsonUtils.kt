@@ -1,5 +1,6 @@
 package com.matryoshka.projectx.utils
 
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
@@ -53,6 +54,8 @@ class InstantTypeConverter : JsonSerializer<Instant>,
     }
 }
 
+val gson: Gson = GsonBuilder().registerAdapters().create()
+
 fun GsonBuilder.registerAdapters(): GsonBuilder = registerTypeAdapter(
     LocalDateTime::class.java,
     LocalDateTimeConverter()
@@ -60,5 +63,3 @@ fun GsonBuilder.registerAdapters(): GsonBuilder = registerTypeAdapter(
     Instant::class.java,
     InstantTypeConverter()
 )
-
-fun buildGson() = GsonBuilder().registerAdapters().create()

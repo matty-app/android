@@ -9,11 +9,12 @@ import androidx.navigation.NavController
 import com.matryoshka.projectx.SavedStateKey
 import com.matryoshka.projectx.data.event.Event
 import com.matryoshka.projectx.data.event.EventsRepository
+import com.matryoshka.projectx.data.user.User
+import com.matryoshka.projectx.data.user.UsersRepository
 import com.matryoshka.projectx.exception.AppException
 import com.matryoshka.projectx.navigation.navToEventEditingScreen
-import com.matryoshka.projectx.service.AuthService
-import com.matryoshka.projectx.service.requireUser
 import com.matryoshka.projectx.ui.common.ScreenStatus
+import com.matryoshka.projectx.ui.common.authorizedAction
 import com.matryoshka.projectx.utils.collectOnce
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -22,20 +23,23 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class EventViewingViewModel @Inject constructor(
     private val eventsRepository: EventsRepository,
-    private val authService: AuthService
+    private val usersRepository: UsersRepository
 ) : ViewModel() {
     private var isInitialized = false
     var state by mutableStateOf(EventViewingState(status = ScreenStatus.LOADING))
         private set
 
-    suspend fun init(eventId: String) {
+    suspend fun init(eventId: String, navController: NavController) {
         if (!isInitialized) {
             try {
                 val event = eventsRepository.getById(eventId)
-                val user = authService.requireUser
+                var user: User? = null
+                authorizedAction(navController) {
+                    user = usersRepository.getRequireUser()
+                }
                 state = state.copy(
                     event = event,
-                    isMine = user.id == event?.creator?.id,
+                    isMine = user?.id == event?.creator?.id,
                     status = ScreenStatus.READY
                 )
                 isInitialized = true

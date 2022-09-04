@@ -11,8 +11,8 @@ import com.matryoshka.projectx.navigation.navToEventsFeedScreen
 import com.matryoshka.projectx.service.AuthService
 import com.matryoshka.projectx.service.InvalidVerificationCodeException
 import com.matryoshka.projectx.service.MattyApiAuthService
+import com.matryoshka.projectx.ui.common.HorizontalShakerState
 import com.matryoshka.projectx.ui.common.ScreenStatus
-import com.matryoshka.projectx.ui.common.XShakerState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
@@ -80,7 +80,7 @@ class EmailConfirmationViewModel @Inject constructor(
 
 data class EmailConfirmationScreenState(
     val verificationCodeState: VerificationCodeState = VerificationCodeState(),
-    val shakerState: XShakerState = XShakerState(),
+    val shakerState: HorizontalShakerState = HorizontalShakerState(),
     val status: ScreenStatus = ScreenStatus.READY,
     val error: AppException? = null
 ) {

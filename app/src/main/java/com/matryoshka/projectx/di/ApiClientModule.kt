@@ -6,7 +6,7 @@ import com.matryoshka.projectx.BuildConfig.MATTY_API_URL
 import com.matryoshka.projectx.MattyApiPath.LOGIN_PATH
 import com.matryoshka.projectx.MattyApiPath.REFRESH_TOKENS_PATH
 import com.matryoshka.projectx.MattyApiPath.REGISTER_PATH
-import com.matryoshka.projectx.data.auth.TokensInfo
+import com.matryoshka.projectx.data.auth.AuthTokens
 import com.matryoshka.projectx.exception.BadRequestException
 import com.matryoshka.projectx.exception.ForbiddenException
 import com.matryoshka.projectx.exception.HttpError
@@ -40,7 +40,13 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.plugin
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
-import io.ktor.http.HttpStatusCode
+import io.ktor.http.HttpStatusCode.Companion.BadRequest
+import io.ktor.http.HttpStatusCode.Companion.Forbidden
+import io.ktor.http.HttpStatusCode.Companion.InternalServerError
+import io.ktor.http.HttpStatusCode.Companion.NotFound
+import io.ktor.http.HttpStatusCode.Companion.NotImplemented
+import io.ktor.http.HttpStatusCode.Companion.ServiceUnavailable
+import io.ktor.http.HttpStatusCode.Companion.Unauthorized
 import io.ktor.http.isSuccess
 import io.ktor.serialization.gson.gson
 
@@ -86,16 +92,13 @@ object ApiClientModule {
                                 }
                                 markAsRefreshTokenRequest()
                             }
-                            val tokensInfo: TokensInfo = result.body()
-                            val accessToken = tokensInfo.accessToken
-                            val refreshToken = tokensInfo.refreshToken
+                            val authTokens: AuthTokens = result.body()
+                            val accessToken = authTokens.accessToken
+                            val refreshToken = authTokens.refreshToken
                             sharedPrefs.setTokens(accessToken, refreshToken)
                             BearerTokens(accessToken, refreshToken)
                         } else {
-                            //to avoid hanging on repeated 401
-                            client.plugin(Auth).providers.filterIsInstance<BearerAuthProvider>()
-                                .firstOrNull()!!.clearToken()
-                            throwHttpException(response)
+                            throwHttpException(client, response)
                         }
                     }
                 }
@@ -104,7 +107,7 @@ object ApiClientModule {
             HttpResponseValidator {
                 validateResponse { response ->
                     if (!response.status.isSuccess()) {
-                        throwHttpException(response)
+                        throwHttpException(response.call.client, response)
                     }
                 }
             }
@@ -122,19 +125,26 @@ private fun shouldRefreshTokens(response: HttpResponse): Boolean {
     return conditions.none { it() }
 }
 
-private suspend fun throwHttpException(response: HttpResponse): Nothing {
-    val body: Any = response.body()
-    val error = if (body is HttpError) {
-        body.error
-    } else ""
+private suspend fun throwHttpException(client: HttpClient, response: HttpResponse): Nothing {
+    val body: HttpError = try {
+        response.body()
+    } catch (ex: Exception) {
+        HttpError("")
+    }
+    val error = body.error
     when (response.status) {
-        HttpStatusCode.Unauthorized -> throw UnauthorizedException(error)
-        HttpStatusCode.BadRequest -> throw BadRequestException(error)
-        HttpStatusCode.Forbidden -> throw ForbiddenException(error)
-        HttpStatusCode.NotFound -> throw NotFoundException(error)
-        HttpStatusCode.InternalServerError -> throw InternalServerErrorException(error)
-        HttpStatusCode.NotImplemented -> throw NotImplementedException(error)
-        HttpStatusCode.ServiceUnavailable -> throw ServiceUnavailableException(error)
+        Unauthorized -> {
+            //to avoid hanging on repeated 401
+            client.plugin(Auth).providers.filterIsInstance<BearerAuthProvider>()
+                .firstOrNull()!!.clearToken()
+            throw UnauthorizedException(error)
+        }
+        BadRequest -> throw BadRequestException(error)
+        Forbidden -> throw ForbiddenException(error)
+        NotFound -> throw NotFoundException(error)
+        InternalServerError -> throw InternalServerErrorException(error)
+        NotImplemented -> throw NotImplementedException(error)
+        ServiceUnavailable -> throw ServiceUnavailableException(error)
         else -> throw HttpException(error)
     }
 }

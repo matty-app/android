@@ -27,8 +27,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.matryoshka.projectx.R
 import com.matryoshka.projectx.ui.common.ErrorToast
+import com.matryoshka.projectx.ui.common.HorizontalShaker
 import com.matryoshka.projectx.ui.common.ScreenStatus
-import com.matryoshka.projectx.ui.common.XShaker
 import com.matryoshka.projectx.ui.common.scaffold.TopBar
 import com.matryoshka.projectx.ui.theme.DarkGray
 import com.matryoshka.projectx.ui.theme.ProjectxTheme
@@ -81,7 +81,7 @@ fun EmailConfirmationScreen(
                 color = DarkGray,
                 modifier = Modifier.fillMaxWidth()
             )
-            XShaker(state.shakerState) {
+            HorizontalShaker(state.shakerState) {
                 VerificationCode(
                     state = state.verificationCodeState,
                     onChanged = onCodeChanged

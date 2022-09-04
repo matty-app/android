@@ -3,7 +3,6 @@ package com.matryoshka.projectx.data.user
 import android.content.Context
 import com.matryoshka.projectx.MattyApiPath
 import com.matryoshka.projectx.SharedPrefsKey
-import com.matryoshka.projectx.data.cache.CacheExpireTimeUnit
 import com.matryoshka.projectx.data.cache.SharedPrefsCache
 import com.matryoshka.projectx.data.interest.Interest
 import com.matryoshka.projectx.exception.AppException
@@ -17,34 +16,32 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.time.Duration.Companion.hours
 
 private const val TAG = "MattyApiUsersRepository"
 
 @Singleton
 class MattyApiUsersRepository @Inject constructor(
-    private val client: HttpClient,
+    private val httpClient: HttpClient,
     @ApplicationContext private val context: Context
 ) : UsersRepository {
 
-    private val userCache = SharedPrefsCache(
-        objectClass = User::class.java,
+    private val userCache = SharedPrefsCache<User>(
         key = SharedPrefsKey.PREF_USER_CACHE,
-        expiredPeriod = 1,
-        expiredTimeUnit = CacheExpireTimeUnit.HOURS
+        lifeSpan = 1.hours,
     )
 
     override suspend fun getCurrent(): User? {
-        val methodName = "getCurrent"
         return try {
             userCache.get(context = context) {
-                client.get(MattyApiPath.GET_CURRENT_USER_PATH).body<ApiUser>().toDomain()
+                httpClient.get(MattyApiPath.GET_CURRENT_USER_PATH).body<ApiUser>().toDomain()
             }
         } catch (ex: UnauthorizedException) {
-            throwException(UserSignedOutException(), TAG, methodName)
+            throwException(UserSignedOutException(), TAG)
         } catch (ex: ForbiddenException) {
-            throwException(UserSignedOutException(), TAG, methodName)
+            throwException(UserSignedOutException(), TAG)
         } catch (ex: Exception) {
-            throwException(AppException(ex), TAG, methodName)
+            throwException(AppException(ex), TAG)
         }
     }
 

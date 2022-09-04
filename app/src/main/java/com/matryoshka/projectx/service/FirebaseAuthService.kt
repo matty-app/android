@@ -30,11 +30,11 @@ class FirebaseAuthService @Inject constructor(private val auth: FirebaseAuth) : 
     private val currentFirebaseUser: FirebaseUser?
         get() = auth.currentUser
 
-    override suspend fun sendRegistrationCodeToEmail(email: String): Instant {
+    override suspend fun sendRegistrationCode(email: String): Instant {
         TODO("Not yet implemented")
     }
 
-    override suspend fun sendLoginCodeToEmail(email: String): Instant {
+    override suspend fun sendLoginCode(email: String): Instant {
         TODO("Not yet implemented")
     }
 

@@ -17,9 +17,9 @@ object NavArgument {
 }
 
 object MattyApiPath {
-    const val SEND_REGISTER_CODE_PATH = "registration/code"
+    const val REGISTER_CODE_PATH = "registration/code"
     const val REGISTER_PATH = "registration"
-    const val SEND_LOGIN_CODE_PATH = "login/code"
+    const val LOGIN_CODE_PATH = "login/code"
     const val LOGIN_PATH = "login"
     const val REFRESH_TOKENS_PATH = "auth/refresh"
     const val GET_CURRENT_USER_PATH = "user/me"
