@@ -18,6 +18,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.time.Duration.Companion.hours
 
+private val USER_CACHE_LIFE_SPAN = 1.hours
+
 private const val TAG = "MattyApiUsersRepository"
 
 @Singleton
@@ -28,7 +30,7 @@ class MattyApiUsersRepository @Inject constructor(
 
     private val userCache = SharedPrefsCache<User>(
         key = SharedPrefsKey.PREF_USER_CACHE,
-        lifeSpan = 1.hours,
+        lifeSpan = USER_CACHE_LIFE_SPAN,
     )
 
     override suspend fun getCurrent(): User? {

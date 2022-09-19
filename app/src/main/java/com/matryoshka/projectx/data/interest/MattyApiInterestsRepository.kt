@@ -19,7 +19,6 @@ class MattyApiInterestsRepository @Inject constructor(
 ) : InterestsRepository {
 
     override suspend fun getAll(): List<Interest> {
-        val methodName = "getAll"
         return try {
             cache.getAll {
                 httpClient.get(MattyApiPath.GET_INTERESTS_PATH)
@@ -27,7 +26,7 @@ class MattyApiInterestsRepository @Inject constructor(
                     .map { it.toInterest() }
             }
         } catch (ex: Exception) {
-            throwException(AppException(ex), TAG, methodName)
+            throwException(AppException(ex), TAG)
         }
     }
 

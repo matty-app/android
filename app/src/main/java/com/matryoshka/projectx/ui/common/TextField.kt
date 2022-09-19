@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
@@ -28,6 +30,7 @@ fun TextField(
     placeholder: String? = null,
     enabled: Boolean = true,
     keyBoardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions(),
     trailingIcon: @Composable (() -> Unit)? = null,
     maxLines: Int = Int.MAX_VALUE
 ) {
@@ -40,6 +43,7 @@ fun TextField(
         singleLine = maxLines == 1,
         enabled = enabled,
         keyboardOptions = keyBoardOptions,
+        keyboardActions = keyboardActions,
         modifier = modifier
             .fillMaxWidth()
             .shadow(
@@ -66,9 +70,11 @@ fun OutlinedTextFieldSm(
     modifier: Modifier = Modifier,
     placeholder: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
-    label: @Composable (() -> Unit)? = null
+    label: @Composable (() -> Unit)? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions()
 ) {
-    androidx.compose.foundation.text.BasicTextField(
+    BasicTextField(
         value = value,
         onValueChange = onValueChange,
         modifier = if (label != null) {
@@ -76,6 +82,8 @@ fun OutlinedTextFieldSm(
         } else {
             modifier
         },
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
         maxLines = 3,
         decorationBox = @Composable { innerTextField ->
             TextFieldDefaults.OutlinedTextFieldDecorationBox(

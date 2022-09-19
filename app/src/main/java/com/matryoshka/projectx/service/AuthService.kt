@@ -4,7 +4,6 @@ import com.matryoshka.projectx.R
 import com.matryoshka.projectx.data.user.User
 import com.matryoshka.projectx.exception.AppException
 import java.time.Instant
-import javax.inject.Singleton
 
 interface AuthService {
     suspend fun sendRegistrationCode(email: String): Instant

@@ -1,7 +1,6 @@
 package com.matryoshka.projectx.data.cache.db.interest
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query

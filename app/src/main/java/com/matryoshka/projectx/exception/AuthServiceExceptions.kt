@@ -2,6 +2,8 @@ package com.matryoshka.projectx.exception
 
 import com.matryoshka.projectx.R
 
+class EmailExistsException(cause: Throwable) : AppException(cause, R.string.email_exists)
+
 class SendSignInLinkToEmailException(cause: Throwable) :
     AppException(cause, R.string.error_sending_link)
 

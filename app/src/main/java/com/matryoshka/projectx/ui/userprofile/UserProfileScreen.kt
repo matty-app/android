@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
@@ -38,6 +40,8 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -114,6 +118,7 @@ private fun UserProfileBody(
             display = state.displayEmailDialog,
             state = state.formState.emailField,
             title = stringResource(id = R.string.email),
+            keyboardType = KeyboardType.Email,
             warning = stringResource(id = R.string.email_link_will_be_sent),
             onClose = { actions.setDisplayEmailDialog(false) },
             onSave = { actions.onEmailChanged(navController) }
@@ -123,6 +128,7 @@ private fun UserProfileBody(
             display = state.displayAboutMeDialog,
             state = state.formState.aboutMeField,
             title = stringResource(id = R.string.about_me),
+            imeAction = ImeAction.Default,
             maxLines = 5,
             onClose = { actions.setDisplayAboutMeDialog(false) },
             onSave = actions.onAboutMeChanged
@@ -224,6 +230,8 @@ private fun ChangeValueDialog(
     state: FieldState<String>,
     title: String,
     warning: String? = null,
+    keyboardType: KeyboardType = KeyboardType.Text,
+    imeAction: ImeAction = ImeAction.Done,
     maxLines: Int = 1,
     onClose: () -> Unit,
     onSave: () -> Unit
@@ -249,7 +257,12 @@ private fun ChangeValueDialog(
                         modifier = Modifier
                             .fillMaxWidth()
                             .focusRequester(focusRequester),
-                        maxLines = maxLines
+                        maxLines = maxLines,
+                        keyBoardOptions = KeyboardOptions(
+                            keyboardType = keyboardType,
+                            imeAction = imeAction
+                        ),
+                        keyboardActions = KeyboardActions(onDone = { onSave() })
                     )
                     warning?.let {
                         Spacer(modifier = Modifier.height(12.dp))
