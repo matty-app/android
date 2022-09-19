@@ -11,18 +11,16 @@ import androidx.navigation.NavController
 import com.matryoshka.projectx.SavedStateKey.INTERESTS_KEY
 import com.matryoshka.projectx.data.image.ImagesRepository
 import com.matryoshka.projectx.data.image.LocalImagesRepository
-import com.matryoshka.projectx.data.interest.InterestsRepository
 import com.matryoshka.projectx.data.user.User
 import com.matryoshka.projectx.data.user.UsersRepository
 import com.matryoshka.projectx.navigation.Screen
-import com.matryoshka.projectx.navigation.navToMailConfirmScreen
-import com.matryoshka.projectx.service.AuthService
 import com.matryoshka.projectx.ui.common.ScreenStatus
+import com.matryoshka.projectx.ui.common.authorizedAction
 import com.matryoshka.projectx.utils.collectOnce
 import com.matryoshka.projectx.utils.compressImage
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 private const val TAG = "UserProfileViewModel"
 
@@ -30,13 +28,13 @@ private const val TAG = "UserProfileViewModel"
 class UserProfileViewModel @Inject constructor(
     private val localImagesRepository: LocalImagesRepository,
     private val imagesRepository: ImagesRepository,
-    private val userRepository: UsersRepository,
-    private val interestsRepository: InterestsRepository,
-    private val authService: AuthService
+    private val userRepository: UsersRepository
 ) : ViewModel() {
 
     private lateinit var user: User
     private lateinit var photoUri: Uri
+
+    private var isInitialized = false
 
     var state by mutableStateOf(
         UserProfileScreenState(
@@ -60,33 +58,35 @@ class UserProfileViewModel @Inject constructor(
         setDisplayAboutMeDialog = { isDisplayed -> setDisplayAboutMeDialog(isDisplayed) }
     )
 
-    init {
-        viewModelScope.launch {
-            try {
-                val authedUser = authService.currentUser!!
-                user = userRepository.getById(authedUser.id, flat = false)!!
-                photoUri = localImagesRepository.getAvatarUri(user.id)
-                val photoExists = imagesRepository.getAvatar(
-                    user.id,
-                    localImagesRepository.getAvatarFile(user.id)
-                ) != null
-                state = state.copy(
-                    photoUri = photoUri,
-                    photoExists = photoExists,
-                    name = user.name,
-                    email = user.email ?: "",
-                    aboutMe = user.aboutMe ?: "",
-                    formState = UserProfileFormState(
-                        authService,
-                        user.name,
-                        user.email,
-                        user.aboutMe
-                    ),
-                    interests = user.interests,
-                    status = ScreenStatus.READY
-                )
-            } catch (ex: Exception) {
-                //TODO("Set error status")
+    fun init(navController: NavController) {
+        if (!isInitialized) {
+            viewModelScope.launch {
+                try {
+                    authorizedAction(navController) {
+                        user = userRepository.getRequireUser()
+                    }
+                    photoUri = localImagesRepository.getAvatarUri(user.id)
+                    val photoExists = imagesRepository.getAvatar(
+                        user.id,
+                        localImagesRepository.getAvatarFile(user.id)
+                    ) != null
+                    state = state.copy(
+                        photoUri = photoUri,
+                        photoExists = photoExists,
+                        name = user.name,
+                        email = user.email ?: "",
+                        aboutMe = user.aboutMe ?: "",
+                        formState = UserProfileFormState(
+                            user.name,
+                            user.email,
+                            user.aboutMe
+                        ),
+                        interests = user.interests,
+                        status = ScreenStatus.READY
+                    )
+                } catch (ex: Exception) {
+                    //TODO("Set error status")
+                }
             }
         }
     }
@@ -155,7 +155,6 @@ class UserProfileViewModel @Inject constructor(
                 if (state.formState.nameField.validate()) {
                     state = state.copy(name = state.formState.nameField.value)
                     user = user.copy(name = state.name)
-                    authService.updateUser(user)
                     userRepository.save(user)
                     setDisplayNameDialog(false)
                 }
@@ -172,8 +171,8 @@ class UserProfileViewModel @Inject constructor(
             try {
                 if (state.formState.emailField.validate()) {
                     state = state.copy(email = state.formState.emailField.value)
-                    authService.sendSignInLinkToEmail(state.email)
-                    navController.navToMailConfirmScreen(state.email)
+                    //authService.sendSignInLinkToEmail(state.email)
+                    //navController.navToMailConfirmScreen(state.email)
                     setDisplayEmailDialog(false)
                 }
                 setReadyStatus()

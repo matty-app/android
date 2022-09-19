@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.matryoshka.projectx.data.event.Event
 import com.matryoshka.projectx.data.event.EventsRepository
-import com.matryoshka.projectx.exception.ProjectxException
+import com.matryoshka.projectx.exception.AppException
 import com.matryoshka.projectx.ui.common.ScreenStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -36,7 +36,7 @@ class EventsFeedViewModel @Inject constructor(
 data class EventsFeedState(
     val events: List<Event> = emptyList(),
     val status: ScreenStatus = ScreenStatus.READY,
-    val error: ProjectxException? = null
+    val error: AppException? = null
 ) {
     val enabled: Boolean
         get() = status == ScreenStatus.READY

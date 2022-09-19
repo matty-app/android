@@ -1,7 +1,7 @@
 package com.matryoshka.projectx.di
 
 import com.matryoshka.projectx.service.AuthService
-import com.matryoshka.projectx.service.FirebaseAuthService
+import com.matryoshka.projectx.service.MattyApiAuthService
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -12,5 +12,5 @@ import dagger.hilt.components.SingletonComponent
 abstract class AuthModule {
 
     @Binds
-    abstract fun bindAuthService(implementation: FirebaseAuthService): AuthService
+    abstract fun bindAuthService(implementation: MattyApiAuthService): AuthService
 }

@@ -13,7 +13,7 @@ fun EventViewingRouter(
     navController: NavController
 ) {
     LaunchedEffect(Unit) {
-        viewModel.init(eventId)
+        viewModel.init(eventId, navController)
     }
 
     EventViewingScreen(

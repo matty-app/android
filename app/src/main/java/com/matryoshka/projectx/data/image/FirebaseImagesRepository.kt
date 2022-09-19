@@ -5,10 +5,10 @@ import android.util.Log
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageException
 import com.matryoshka.projectx.data.image.ImagesRepository
-import com.matryoshka.projectx.exception.ProjectxException
-import kotlinx.coroutines.tasks.await
+import com.matryoshka.projectx.exception.AppException
 import java.io.File
 import javax.inject.Inject
+import kotlinx.coroutines.tasks.await
 
 private const val TAG = "FirebaseImagesRepo"
 private const val IMAGES_PATH = "images/"
@@ -64,4 +64,4 @@ class FirebaseImagesRepository @Inject constructor(storage: FirebaseStorage) :
     private fun getAvatarStoragePath(userUid: String) = "$AVATARS_PATH$userUid.jpg"
 }
 
-class ImagesRepositoryException(cause: Throwable?) : ProjectxException(cause)
+class ImagesRepositoryException(cause: Throwable?) : AppException(cause)

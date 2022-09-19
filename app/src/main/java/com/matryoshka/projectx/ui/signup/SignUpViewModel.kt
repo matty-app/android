@@ -1,31 +1,25 @@
 package com.matryoshka.projectx.ui.signup
 
-import android.content.SharedPreferences
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.matryoshka.projectx.exception.ProjectxException
+import com.matryoshka.projectx.exception.AppException
 import com.matryoshka.projectx.navigation.navToMailConfirmScreen
 import com.matryoshka.projectx.service.AuthService
 import com.matryoshka.projectx.ui.common.FieldState
 import com.matryoshka.projectx.ui.common.ScreenStatus
-import com.matryoshka.projectx.ui.validator.EmailExistsValidator
 import com.matryoshka.projectx.ui.validator.EmailValidator
 import com.matryoshka.projectx.ui.validator.NameValidator
-import com.matryoshka.projectx.utils.setIsNewUser
-import com.matryoshka.projectx.utils.setUserEmail
-import com.matryoshka.projectx.utils.setUserName
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    private val authService: AuthService,
-    private val sharedPrefs: SharedPreferences,
+    private val authService: AuthService
 ) : ViewModel() {
 
     var state by mutableStateOf(
@@ -35,7 +29,7 @@ class SignUpViewModel @Inject constructor(
                 initialValue = "",
                 validators = listOf(
                     EmailValidator(),
-                    EmailExistsValidator(authService)
+                    //EmailExistsValidator(authService)
                 )
             )
         )
@@ -55,14 +49,13 @@ class SignUpViewModel @Inject constructor(
                 if (validate()) {
                     val email = emailField.value
                     val name = nameField.value
-                    sendLinkToEmail(email)
-                    saveSignUpPrefs(email, name)
+                    sendRegistrationCodeToEmail(email)
                     changeStatus(ScreenStatus.READY)
-                    navController.navToMailConfirmScreen(email)
+                    navController.navToMailConfirmScreen(email = email, userName = name)
                 } else {
                     changeStatus(ScreenStatus.READY)
                 }
-            } catch (ex: ProjectxException) {
+            } catch (ex: AppException) {
                 setError(ex)
             }
         }
@@ -74,21 +67,14 @@ class SignUpViewModel @Inject constructor(
         return nameValid && emailValid
     }
 
-    private suspend fun sendLinkToEmail(email: String) {
-        authService.sendSignInLinkToEmail(email)
-    }
-
-    private fun saveSignUpPrefs(email: String, name: String) {
-        sharedPrefs.setUserEmail(email)
-        sharedPrefs.setUserName(name)
-        sharedPrefs.setIsNewUser(true)
-    }
+    private suspend fun sendRegistrationCodeToEmail(email: String) =
+        authService.sendRegistrationCode(email)
 
     private fun changeStatus(status: ScreenStatus) {
         state = state.copy(status = status)
     }
 
-    private fun setError(error: ProjectxException) {
+    private fun setError(error: AppException) {
         state = state.copy(status = ScreenStatus.ERROR, error = error)
     }
 }
@@ -97,7 +83,7 @@ data class SignUpScreenState(
     val nameField: FieldState<String>,
     val emailField: FieldState<String>,
     val status: ScreenStatus = ScreenStatus.READY,
-    val error: ProjectxException? = null
+    val error: AppException? = null
 ) {
     val enabled: Boolean
         get() = status != ScreenStatus.SUBMITTING

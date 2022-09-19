@@ -10,6 +10,10 @@ def apikeyPropertiesFile = rootProject.file("apikey.properties")
 def apikeyProperties = new Properties()
 apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
 
+def urlPropertiesFile = rootProject.file("url.properties")
+def urlProperties = new Properties()
+urlProperties.load(new FileInputStream(urlPropertiesFile))
+
 android {
     compileSdk 32
     defaultConfig {
@@ -22,6 +26,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "MAPS_API_KEY", apikeyProperties['MAPS_API_KEY'])
+        buildConfigField("String", "MATTY_API_URL", urlProperties['MATTY_API_URL'])
     }
 
     buildTypes {
@@ -70,6 +75,13 @@ dependencies {
     implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     implementation "io.coil-kt:coil-compose:1.4.0"
+
+    //ktor
+    implementation "io.ktor:ktor-client-cio:$ktor_version"
+    implementation "io.ktor:ktor-serialization-gson:$ktor_version"
+    implementation "io.ktor:ktor-client-content-negotiation:$ktor_version"
+    implementation "io.ktor:ktor-client-auth:$ktor_version"
+    implementation "io.ktor:ktor-client-logging:$ktor_version"
 
     //gson
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.9.0'

@@ -15,8 +15,9 @@ import com.matryoshka.projectx.exception.SendSignInLinkToEmailException
 import com.matryoshka.projectx.exception.SignInByEmailLinkException
 import com.matryoshka.projectx.exception.SignUpByEmailLinkException
 import com.matryoshka.projectx.exception.UpdateUserException
-import kotlinx.coroutines.tasks.await
+import java.time.Instant
 import javax.inject.Inject
+import kotlinx.coroutines.tasks.await
 
 
 const val SIGN_UP_URL = "https://appprojectx.page.link/signUpFinish"
@@ -28,6 +29,22 @@ private const val NEW_EMAIL_PARAM = "newEmail"
 class FirebaseAuthService @Inject constructor(private val auth: FirebaseAuth) : AuthService {
     private val currentFirebaseUser: FirebaseUser?
         get() = auth.currentUser
+
+    override suspend fun sendRegistrationCode(email: String): Instant {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun sendLoginCode(email: String): Instant {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun register(email: String, userName: String, verificationCode: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun login(email: String, verificationCode: Int) {
+        TODO("Not yet implemented")
+    }
 
     override val currentUser: User?
         get() = currentFirebaseUser?.toUser()

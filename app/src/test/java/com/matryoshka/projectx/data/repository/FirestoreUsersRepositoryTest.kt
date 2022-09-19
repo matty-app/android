@@ -1,29 +1,13 @@
 package com.matryoshka.projectx.data.repository
 
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
-import com.matryoshka.projectx.data.user.FIRESTORE_USERS
-import com.matryoshka.projectx.data.user.FirestoreUsersRepository
 import com.matryoshka.projectx.data.user.User
-import com.matryoshka.projectx.exception.SaveUserException
-import com.matryoshka.projectx.support.taskMock
-import com.matryoshka.projectx.support.voidObject
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
-import org.junit.Test
-import kotlin.test.assertFailsWith
 
 @ExperimentalCoroutinesApi
 class FirestoreUsersRepositoryTest {
     private val user = User(id = "1", name = "John", email = "john@gmail.com")
 
-    @Test
+/*    @Test
     fun `should save user`() = runTest {
         val document = mockk<DocumentReference>().apply {
             every { set(any(), any()) } returns taskMock(voidObject)
@@ -41,9 +25,9 @@ class FirestoreUsersRepositoryTest {
         verify { firestore.collection(FIRESTORE_USERS) }
         verify { collectionReference.document(user.id) }
         verify { document.set(any(), SetOptions.merge()) }
-    }
+    }*/
 
-    @Test
+/*    @Test
     fun `should throw SaveUserException if error occurred`() = runTest {
         val firestore = mockk<FirebaseFirestore>().apply {
             coEvery { collection(any()) } throws Exception()
@@ -51,5 +35,5 @@ class FirestoreUsersRepositoryTest {
         val repository = FirestoreUsersRepository(firestore, mockk(relaxed = true))
 
         assertFailsWith<SaveUserException> { repository.save(user) }
-    }
+    }*/
 }

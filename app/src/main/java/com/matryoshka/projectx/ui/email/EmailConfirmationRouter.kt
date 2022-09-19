@@ -8,12 +8,16 @@ import androidx.navigation.NavController
 fun EmailConfirmationRouter(
     navController: NavController,
     email: String,
+    userName: String? = null,
     viewModel: EmailConfirmationViewModel = hiltViewModel()
 ) {
     EmailConfirmationScreen(
         state = viewModel.state,
         email = email,
         onBackClicked = navController::popBackStack,
-        onSendAgainClicked = { viewModel.onSendAgainClicked(email) }
+        onSendAgainClicked = { viewModel.onSendAgainClicked(email) },
+        onCodeChanged = {
+            viewModel.onCodeChanged(email, userName, navController)
+        }
     )
 }

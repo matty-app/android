@@ -1,18 +1,18 @@
 package com.matryoshka.projectx.navigation
 
+import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.matryoshka.projectx.NavArgument.ARG_EMAIL
 import com.matryoshka.projectx.NavArgument.ARG_EVENT
 import com.matryoshka.projectx.NavArgument.ARG_EVENT_ID
 import com.matryoshka.projectx.NavArgument.ARG_INTEREST_ID
 import com.matryoshka.projectx.NavArgument.ARG_LOCATION
+import com.matryoshka.projectx.NavArgument.ARG_USER_NAME
 import com.matryoshka.projectx.data.event.Event
 import com.matryoshka.projectx.data.event.Location
 import com.matryoshka.projectx.data.map.LocationInfo
@@ -29,7 +29,9 @@ import com.matryoshka.projectx.ui.map.viewing.LocationViewingRouter
 import com.matryoshka.projectx.ui.signin.SignInRouter
 import com.matryoshka.projectx.ui.signup.SignUpRouter
 import com.matryoshka.projectx.ui.userprofile.UserProfileRouter
-import com.matryoshka.projectx.utils.registerLocalDateTimeAdapter
+import com.matryoshka.projectx.utils.gson
+
+private const val TAG = "AppNavGraph"
 
 fun NavGraphBuilder.appNavGraph(navController: NavController) {
 
@@ -50,16 +52,23 @@ fun NavGraphBuilder.appNavGraph(navController: NavController) {
     }
 
     composable(
-        route = "${Screen.EMAIL_CONFIRM}?$ARG_EMAIL={$ARG_EMAIL}",
+        route = "${Screen.EMAIL_CONFIRM}?$ARG_EMAIL={$ARG_EMAIL}&$ARG_USER_NAME={$ARG_USER_NAME}",
         arguments = listOf(
             navArgument(ARG_EMAIL) {
                 type = NavType.StringType
+            },
+            navArgument(ARG_USER_NAME) {
+                type = NavType.StringType
+                nullable = true
             }
         )
     ) { backStackEntry ->
+        val email = backStackEntry.arguments?.getString(ARG_EMAIL)!!
+        val userName = backStackEntry.arguments?.getString(ARG_USER_NAME)
         EmailConfirmationRouter(
             navController = navController,
-            email = backStackEntry.arguments?.getString(ARG_EMAIL) ?: ""
+            email = email,
+            userName = userName
         )
     }
 
@@ -76,9 +85,11 @@ fun NavGraphBuilder.appNavGraph(navController: NavController) {
             }
         )
     ) { backStackEntry ->
-        val event = backStackEntry.arguments?.getString(ARG_EVENT)?.let { json ->
-            val gson = GsonBuilder().registerLocalDateTimeAdapter().create()
-            gson.fromJson(json, Event::class.java)
+        val argEvent = backStackEntry.arguments?.getString(ARG_EVENT)
+        val event = remember(argEvent) {
+            argEvent?.let { json ->
+                gson.fromJson(json, Event::class.java)
+            }
         }
         EventEditingRouter(
             navController = navController,
@@ -106,8 +117,11 @@ fun NavGraphBuilder.appNavGraph(navController: NavController) {
             type = NavType.StringType
         })
     ) { backStackEntry ->
-        val location = backStackEntry.arguments?.getString(ARG_LOCATION)?.let { json ->
-            Gson().fromJson(json, LocationInfo::class.java)
+        val argLocation = backStackEntry.arguments?.getString(ARG_LOCATION)
+        val location = remember(argLocation) {
+            argLocation?.let { json ->
+                gson.fromJson(json, LocationInfo::class.java)
+            }
         }
         LocationSelectionRouter(
             navController = navController,
@@ -122,8 +136,11 @@ fun NavGraphBuilder.appNavGraph(navController: NavController) {
             type = NavType.StringType
         })
     ) { backStackEntry ->
-        val location = backStackEntry.arguments?.getString(ARG_LOCATION)?.let { json ->
-            Gson().fromJson(json, Location::class.java)
+        val argLocation = backStackEntry.arguments?.getString(ARG_LOCATION)
+        val location = remember(argLocation) {
+            argLocation?.let { json ->
+                gson.fromJson(json, Location::class.java)
+            }
         }
         LocationViewingRouter(
             navController = navController,

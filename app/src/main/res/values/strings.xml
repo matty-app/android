@@ -10,7 +10,7 @@
     <string name="sign_up">Sign up</string>
     <string name="log_in">Log in</string>
     <string name="check_email">Check your email</string>
-    <string name="tap_email_link">Tap the link in the email we sent to</string>
+    <string name="enter_code">Enter the code below sent to</string>
     <string name="didnt_get_email">Didn’t get the email?&#160;</string>
     <string name="send_again">Send again</string>
     <string name="what_interests">What are your interests?</string>

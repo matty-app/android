@@ -1,6 +1,7 @@
 package com.matryoshka.projectx.ui.viewmodel
 
 import com.matryoshka.projectx.data.user.User
+import com.matryoshka.projectx.data.user.UsersRepository
 import com.matryoshka.projectx.service.AuthService
 import com.matryoshka.projectx.support.CoroutineDispatcherRule
 import com.matryoshka.projectx.ui.launch.LaunchViewModel
@@ -18,10 +19,10 @@ class LaunchViewModelTest {
 
     @Test
     fun `should go to sign up screen if user is not signed in`() = runTest {
-        val authService = mockk<AuthService>().apply {
-            coEvery { currentUser } returns null
+        val usersRepository = mockk<UsersRepository>().apply {
+            coEvery { getCurrent() } returns null
         }
-        val viewModel = LaunchViewModel(authService)
+        val viewModel = LaunchViewModel(usersRepository)
 
 //        viewModel.checkUserSignedIn()
 //

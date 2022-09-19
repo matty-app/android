@@ -5,13 +5,13 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import com.matryoshka.projectx.exception.ProjectxException
+import com.matryoshka.projectx.exception.AppException
 import com.matryoshka.projectx.ui.common.ScreenStatus
 
 @Composable
 fun SignInLaunchScreen(
     status: ScreenStatus,
-    error: ProjectxException?,
+    error: AppException?,
     signIn: suspend () -> Unit
 ) {
     val context = LocalContext.current

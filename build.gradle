@@ -8,6 +8,7 @@ buildscript {
         google_services_version = '4.3.10'
         firebase_version = '29.3.0'
         map_secrets_version = '2.0.1'
+        ktor_version = '2.1.0'
     }
 
     dependencies {
