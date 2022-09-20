@@ -16,7 +16,7 @@ class SharedPrefsCache<T> private constructor(
     private val cacheContainerType: Type,
     private val key: String,
     private val lifeSpan: Duration
-) {
+) : TimeCache() {
     private var expireTime: Long = 0
     private var objRef = WeakReference<T?>(null)
 
@@ -29,13 +29,13 @@ class SharedPrefsCache<T> private constructor(
 
         val obj = objRef.get()
         if (obj != null)
-            return if (expireTime > System.currentTimeMillis()) obj
-            else reload(context, onReload)
+            return if (isStaled(expireTime)) reload(context, onReload)
+            else obj
 
         val json = context.sharedPreferences.getString(key, null) ?: return reload(context, onReload)
 
         val cacheContainer = gson.fromJson<CacheContainer<T>>(json, cacheContainerType)
-        if (cacheContainer.expireTime < System.currentTimeMillis())
+        if (isStaled(cacheContainer.expireTime))
             return reload(context, onReload)
 
         val cachedObject = cacheContainer.obj
@@ -46,8 +46,7 @@ class SharedPrefsCache<T> private constructor(
     }
 
     fun save(context: Context, targetObject: T) {
-        val expireTime =
-            System.currentTimeMillis() + lifeSpan.inWholeMilliseconds
+        val expireTime = calculateExpireTime(lifeSpan)
         val cacheContainer = CacheContainer(expireTime, targetObject)
 
         this.expireTime = expireTime

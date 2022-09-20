@@ -22,7 +22,8 @@ object MattyApiPath {
     const val LOGIN_CODE_PATH = "login/code"
     const val LOGIN_PATH = "login"
     const val REFRESH_TOKENS_PATH = "auth/refresh"
-    const val GET_CURRENT_USER_PATH = "user/me"
+    const val CURRENT_USER_PATH = "user/me"
+    const val GET_INTERESTS_PATH = "interests"
 }
 
 object SharedPrefsKey {
@@ -32,4 +33,5 @@ object SharedPrefsKey {
     const val PREF_ACCESS_TOKEN = "ACCESS_TOKEN"
     const val PREF_REFRESH_TOKEN = "REFRESH_TOKEN"
     const val PREF_USER_CACHE = "USER_CACHE"
+    const val PREF_INTERESTS_CACHE_EXPIRE = "INTERESTS_CACHE_EXPIRE_TIME"
 }

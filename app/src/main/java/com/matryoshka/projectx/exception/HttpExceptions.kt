@@ -11,6 +11,8 @@ class ForbiddenException(message: String) : HttpException(message)
 
 class NotFoundException(message: String) : HttpException(message)
 
+class ConflictException(message: String) : HttpException(message)
+
 //server errors
 class InternalServerErrorException(message: String) : HttpException(message)
 

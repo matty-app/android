@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.LinearProgressIndicator
@@ -76,7 +78,9 @@ fun EventViewingScreen(
         if (state.status == ScreenStatus.READY) {
             val event = state.requireEvent
             Column(
-                modifier = Modifier.padding(vertical = 12.dp)
+                modifier = Modifier
+                    .padding(vertical = 12.dp)
+                    .verticalScroll(rememberScrollState())
             ) {
                 EventHeader(
                     event = event,

@@ -126,7 +126,11 @@ class MattyApiAuthService @Inject constructor(
     }
 }
 
-private data class RegisterModel(val email: String, val fullName: String, val verificationCode: Int)
+private data class RegisterModel(
+    val email: String,
+    val fullName: String,
+    val verificationCode: Int
+)
 
 private data class LoginModel(val email: String, val verificationCode: Int)
 

@@ -8,6 +8,7 @@ import com.matryoshka.projectx.MattyApiPath.REFRESH_TOKENS_PATH
 import com.matryoshka.projectx.MattyApiPath.REGISTER_PATH
 import com.matryoshka.projectx.data.auth.AuthTokens
 import com.matryoshka.projectx.exception.BadRequestException
+import com.matryoshka.projectx.exception.ConflictException
 import com.matryoshka.projectx.exception.ForbiddenException
 import com.matryoshka.projectx.exception.HttpError
 import com.matryoshka.projectx.exception.HttpException
@@ -41,6 +42,7 @@ import io.ktor.client.plugins.plugin
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
+import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.Forbidden
 import io.ktor.http.HttpStatusCode.Companion.InternalServerError
 import io.ktor.http.HttpStatusCode.Companion.NotFound
@@ -49,16 +51,18 @@ import io.ktor.http.HttpStatusCode.Companion.ServiceUnavailable
 import io.ktor.http.HttpStatusCode.Companion.Unauthorized
 import io.ktor.http.isSuccess
 import io.ktor.serialization.gson.gson
+import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
 object ApiClientModule {
 
     @Provides
+    @Singleton
     fun provideMattyApiClient(sharedPrefs: SharedPreferences): HttpClient {
         val client = HttpClient(CIO) {
             install(Logging) {
-                logger = AppHttpLogger
+                logger = HttpLogger
                 level = LogLevel.ALL
             }
 
@@ -143,14 +147,15 @@ private suspend fun throwHttpException(client: HttpClient, response: HttpRespons
         Forbidden -> throw ForbiddenException(error)
         NotFound -> throw NotFoundException(error)
         InternalServerError -> throw InternalServerErrorException(error)
+        Conflict -> throw ConflictException(error)
         NotImplemented -> throw NotImplementedException(error)
         ServiceUnavailable -> throw ServiceUnavailableException(error)
         else -> throw HttpException(error)
     }
 }
 
-private object AppHttpLogger : Logger {
-    private const val logTag = "AppHttpLogger"
+private object HttpLogger : Logger {
+    private const val logTag = "HttpLogger"
 
     override fun log(message: String) {
         Log.i(logTag, message)
